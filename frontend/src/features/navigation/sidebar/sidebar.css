@@ -5,31 +5,22 @@
   color: var(--app-text);
   border-color: var(--app-border);
   background: var(--app-panel);
-  box-shadow: var(--app-shadow);
   backdrop-filter: blur(28px) saturate(150%);
 }
 
 .sidebar-brand {
-  @apply flex items-center gap-3 px-2 pb-4;
+  @apply flex items-center px-2 pb-4;
 }
 
 .sidebar-logo {
-  @apply grid h-11 place-items-center rounded-xl bg-white px-2;
+  @apply grid h-11 place-items-center;
   width: 133px;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
 }
 
 .sidebar-logo img {
   width: 119px;
   height: 37px;
-}
-
-.sidebar-product {
-  @apply ml-auto text-right text-xs font-semibold uppercase;
-  color: var(--app-muted);
-  font-size: 8px;
-  line-height: 1.35;
-  letter-spacing: 0.06em;
+  filter: brightness(0);
 }
 
 .workspace-control {
@@ -56,23 +47,25 @@
 }
 
 .workspace-copy,
-.sidebar-profile-copy,
-.sidebar-security span {
+.sidebar-profile-copy {
   @apply flex min-w-0 flex-col text-left;
 }
 
 .workspace-copy strong,
-.sidebar-profile-copy strong,
-.sidebar-security strong {
+.sidebar-profile-copy strong {
   @apply truncate text-xs font-semibold;
 }
 
 .workspace-copy small,
-.sidebar-profile-copy small,
-.sidebar-security small {
+.sidebar-profile-copy small {
   @apply mt-1 block text-xs;
   color: var(--app-muted);
   font-size: 9px;
+}
+
+.workspace-copy small {
+  font-weight: 700;
+  letter-spacing: 0.09em;
 }
 
 .workspace-trigger[aria-expanded='true'] .workspace-chevron {
@@ -83,7 +76,6 @@
   @apply absolute top-full z-10 mt-2 w-full rounded-xl border p-1.5;
   border-color: var(--app-border);
   background: var(--app-panel-solid);
-  box-shadow: var(--app-shadow);
 }
 
 .workspace-menu button {
@@ -130,29 +122,18 @@
 
 .sidebar-navigation-item[aria-current='page'] .sidebar-active-dot {
   background: var(--app-accent);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--app-accent) 13%, transparent);
 }
 
-.sidebar-footer {
-  @apply mt-auto;
-}
-
-.sidebar-security {
-  @apply mb-3 flex gap-2.5 rounded-2xl border p-3;
+.sidebar-profile {
+  @apply mb-3 grid w-full cursor-pointer items-center gap-2.5 rounded-2xl border p-2.5 text-left;
+  grid-template-columns: 38px minmax(0, 1fr) 18px;
+  color: var(--app-text);
   border-color: var(--app-border);
   background: var(--app-soft);
 }
 
-.sidebar-security-icon {
-  @apply shrink-0;
-  color: #34c759;
-}
-
-.sidebar-profile {
-  @apply grid w-full cursor-pointer items-center gap-2.5 border-0 border-t bg-transparent px-2 pt-3 text-left;
-  grid-template-columns: 38px minmax(0, 1fr) 18px;
-  color: var(--app-text);
-  border-color: var(--app-border);
+.sidebar-profile:hover {
+  background: var(--app-accent-soft);
 }
 
 .sidebar-avatar {

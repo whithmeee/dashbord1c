@@ -1,8 +1,9 @@
 @reference "./index.css";
 
 .application-shell {
-  @apply grid min-h-screen gap-4 p-3;
+  @apply grid min-h-screen gap-4 overflow-hidden p-3;
   grid-template-columns: 286px minmax(0, 1fr);
+  height: 100dvh;
   background:
     radial-gradient(circle at 85% 0%, rgb(98 126 234 / 16%), transparent 34%),
     radial-gradient(circle at 58% 100%, rgb(41 151 255 / 11%), transparent 31%),
@@ -10,9 +11,14 @@
 }
 
 .application-content {
-  @apply grid min-w-0 place-items-center rounded-3xl border;
+  @apply grid min-h-0 min-w-0 place-items-center overflow-hidden rounded-3xl border;
   color: var(--app-text);
   border-color: var(--app-border);
+}
+
+.application-content-chat {
+  @apply block w-full;
+  background: var(--app-panel-solid);
 }
 
 .application-heading {
@@ -49,7 +55,11 @@
     padding: 10px;
   }
 
-  .application-content {
+  .application-shell:has(.application-content-chat) .sidebar {
+    display: none;
+  }
+
+  .application-content:not(.application-content-chat) {
     display: none;
   }
 }
