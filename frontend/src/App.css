@@ -1,0 +1,61 @@
+@reference "./index.css";
+
+.application-shell {
+  @apply grid min-h-screen gap-4 p-3;
+  grid-template-columns: 286px minmax(0, 1fr);
+  background:
+    radial-gradient(circle at 85% 0%, rgb(98 126 234 / 16%), transparent 34%),
+    radial-gradient(circle at 58% 100%, rgb(41 151 255 / 11%), transparent 31%),
+    var(--app-background);
+}
+
+.application-content {
+  @apply grid min-w-0 place-items-center rounded-3xl border;
+  color: var(--app-text);
+  border-color: var(--app-border);
+}
+
+.application-heading {
+  @apply text-center;
+  animation: content-enter 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.application-eyebrow {
+  @apply text-xs font-bold uppercase;
+  color: var(--app-accent);
+  letter-spacing: 0.16em;
+}
+
+.application-heading h1 {
+  @apply m-0 mt-4 text-5xl font-semibold;
+  letter-spacing: -0.055em;
+}
+
+@keyframes content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .application-shell {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 10px;
+  }
+
+  .application-content {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .application-heading {
+    animation-duration: 1ms;
+  }
+}

@@ -1,0 +1,167 @@
+@reference "../../../index.css";
+
+.sidebar {
+  @apply relative flex min-h-0 flex-col rounded-3xl border p-3;
+  color: var(--app-text);
+  border-color: var(--app-border);
+  background: var(--app-panel);
+  box-shadow: var(--app-shadow);
+  backdrop-filter: blur(28px) saturate(150%);
+}
+
+.sidebar-brand {
+  @apply flex items-center gap-3 px-2 pb-4;
+}
+
+.sidebar-logo {
+  @apply grid h-11 place-items-center rounded-xl bg-white px-2;
+  width: 133px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+}
+
+.sidebar-logo img {
+  width: 119px;
+  height: 37px;
+}
+
+.sidebar-product {
+  @apply ml-auto text-right text-xs font-semibold uppercase;
+  color: var(--app-muted);
+  font-size: 8px;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+}
+
+.workspace-control {
+  @apply relative;
+}
+
+.workspace-trigger {
+  @apply grid w-full cursor-pointer items-center gap-2.5 rounded-2xl border p-2.5 text-left;
+  grid-template-columns: 38px minmax(0, 1fr) 18px;
+  color: var(--app-text);
+  border-color: var(--app-border);
+  background: var(--app-soft);
+}
+
+.workspace-trigger:hover {
+  background: var(--app-accent-soft);
+  transform: translateY(-1px);
+}
+
+.workspace-icon {
+  @apply grid size-9 place-items-center rounded-xl;
+  color: var(--app-accent);
+  background: var(--app-panel-solid);
+}
+
+.workspace-copy,
+.sidebar-profile-copy,
+.sidebar-security span {
+  @apply flex min-w-0 flex-col text-left;
+}
+
+.workspace-copy strong,
+.sidebar-profile-copy strong,
+.sidebar-security strong {
+  @apply truncate text-xs font-semibold;
+}
+
+.workspace-copy small,
+.sidebar-profile-copy small,
+.sidebar-security small {
+  @apply mt-1 block text-xs;
+  color: var(--app-muted);
+  font-size: 9px;
+}
+
+.workspace-trigger[aria-expanded='true'] .workspace-chevron {
+  transform: rotate(180deg);
+}
+
+.workspace-menu {
+  @apply absolute top-full z-10 mt-2 w-full rounded-xl border p-1.5;
+  border-color: var(--app-border);
+  background: var(--app-panel-solid);
+  box-shadow: var(--app-shadow);
+}
+
+.workspace-menu button {
+  @apply w-full cursor-pointer rounded-lg border-0 bg-transparent p-2 text-left text-xs;
+  color: var(--app-text);
+}
+
+.sidebar-section-label {
+  @apply px-2 pb-2 pt-5 text-xs font-bold uppercase;
+  color: var(--app-muted);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.sidebar-navigation {
+  @apply grid gap-1;
+}
+
+.sidebar-navigation-item {
+  @apply grid min-h-11 cursor-pointer items-center rounded-xl border-0 bg-transparent px-2 text-left;
+  grid-template-columns: 34px minmax(0, 1fr) 8px;
+  color: var(--app-muted);
+  opacity: 0;
+}
+
+.sidebar-navigation-item:hover {
+  color: var(--app-text);
+  background: var(--app-soft);
+  transform: translateX(3px);
+}
+
+.sidebar-navigation-item[aria-current='page'] {
+  color: var(--app-accent);
+  background: var(--app-accent-soft);
+}
+
+.sidebar-navigation-icon {
+  @apply grid size-8 place-items-center rounded-lg;
+}
+
+.sidebar-active-dot {
+  @apply size-1.5 rounded-full;
+}
+
+.sidebar-navigation-item[aria-current='page'] .sidebar-active-dot {
+  background: var(--app-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--app-accent) 13%, transparent);
+}
+
+.sidebar-footer {
+  @apply mt-auto;
+}
+
+.sidebar-security {
+  @apply mb-3 flex gap-2.5 rounded-2xl border p-3;
+  border-color: var(--app-border);
+  background: var(--app-soft);
+}
+
+.sidebar-security-icon {
+  @apply shrink-0;
+  color: #34c759;
+}
+
+.sidebar-profile {
+  @apply grid w-full cursor-pointer items-center gap-2.5 border-0 border-t bg-transparent px-2 pt-3 text-left;
+  grid-template-columns: 38px minmax(0, 1fr) 18px;
+  color: var(--app-text);
+  border-color: var(--app-border);
+}
+
+.sidebar-avatar {
+  @apply grid size-9 place-items-center rounded-full text-xs font-bold text-white;
+  background: linear-gradient(145deg, #ff9f0a, #ff453a);
+}
+
+@media (max-width: 760px) {
+  .sidebar {
+    min-height: calc(100vh - 20px);
+  }
+}

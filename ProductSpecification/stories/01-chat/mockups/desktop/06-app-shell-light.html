@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1400">
+  <title>Навигационный каркас — светлая тема</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script async src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root { --bg:#f5f5f7; --panel:rgba(255,255,255,.76); --panel-solid:#fff; --text:#1d1d1f; --muted:#737379; --border:rgba(20,20,24,.09); --soft:rgba(0,0,0,.045); --accent:#0071e3; --accent-soft:rgba(0,113,227,.11); --shadow:0 28px 80px rgba(25,25,32,.12); }
+    [data-theme="dark"] { --bg:#0d0d0f; --panel:rgba(30,30,33,.78); --panel-solid:#1d1d20; --text:#f5f5f7; --muted:#9f9fa7; --border:rgba(255,255,255,.09); --soft:rgba(255,255,255,.06); --accent:#2997ff; --accent-soft:rgba(41,151,255,.14); --shadow:0 30px 90px rgba(0,0,0,.42); }
+    * { box-sizing:border-box; }
+    body { margin:0; height:900px; overflow:hidden; background:var(--bg); color:var(--text); font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif; }
+    button { color:inherit; font:inherit; }
+    svg { width:18px; height:18px; stroke-width:1.8; }
+    .stage { position:relative; display:grid; grid-template-columns:314px 1fr; height:100%; overflow:hidden; background:radial-gradient(circle at 85% 0%,rgba(98,126,234,.16),transparent 34%),radial-gradient(circle at 58% 100%,rgba(41,151,255,.11),transparent 31%),var(--bg); }
+    .stage::after { position:absolute; right:-160px; bottom:-180px; width:520px; height:520px; border:1px solid var(--border); border-radius:50%; content:""; }
+    .sidebar { z-index:2; display:flex; flex-direction:column; height:872px; margin:14px 0 14px 14px; padding:18px 14px 14px; border:1px solid var(--border); border-radius:26px; background:var(--panel); box-shadow:var(--shadow); backdrop-filter:blur(28px) saturate(150%); animation:sidebarIn .7s cubic-bezier(.22,1,.36,1) both; }
+    .brand { display:flex; align-items:center; gap:11px; padding:3px 8px 18px; }
+    .brand-logo { display:grid; place-items:center; width:133px; height:45px; padding:4px 7px; border-radius:12px; background:white; box-shadow:0 8px 24px rgba(0,0,0,.14); }
+    .brand-logo img { display:block; width:119px; height:37px; }
+    .brand-caption { margin-left:auto; color:var(--muted); font-size:8px; font-weight:600; line-height:1.35; letter-spacing:.06em; text-transform:uppercase; }
+    .workspace { display:grid; grid-template-columns:38px 1fr 20px; gap:10px; align-items:center; min-height:62px; padding:10px; border:1px solid var(--border); border-radius:16px; background:var(--soft); cursor:pointer; transition:transform .25s cubic-bezier(.22,1,.36,1),background .25s ease; }
+    .workspace:hover { background:var(--accent-soft); transform:translateY(-1px); }
+    .workspace-mark { display:grid; place-items:center; width:38px; height:38px; border-radius:11px; color:var(--accent); background:var(--panel-solid); box-shadow:0 4px 12px rgba(0,0,0,.06); }
+    .workspace-name { display:block; font-size:11px; font-weight:650; }
+    .workspace-handle { display:block; margin-top:4px; color:var(--muted); font-size:9px; }
+    .section-label { margin:19px 10px 8px; color:var(--muted); font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+    .navigation { display:grid; gap:3px; }
+    .nav-item { position:relative; display:grid; grid-template-columns:34px 1fr 6px; align-items:center; min-height:46px; padding:0 10px 0 7px; border:0; border-radius:13px; background:transparent; color:var(--muted); text-align:left; cursor:pointer; opacity:0; animation:navIn .48s cubic-bezier(.22,1,.36,1) calc(var(--index) * 45ms + 180ms) forwards; transition:color .2s ease,background .2s ease,transform .24s cubic-bezier(.22,1,.36,1); }
+    .nav-item:hover { color:var(--text); background:var(--soft); transform:translateX(3px); }
+    .nav-item.active { color:var(--accent); background:var(--accent-soft); }
+    .nav-item.active::after { width:5px; height:5px; border-radius:50%; background:var(--accent); content:""; box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 13%,transparent); }
+    .nav-icon { display:grid; place-items:center; width:30px; height:30px; border-radius:9px; }
+    .nav-item.active .nav-icon { background:color-mix(in srgb,var(--accent) 12%,transparent); }
+    .nav-label { font-size:12px; font-weight:580; letter-spacing:-.01em; }
+    .sidebar-bottom { margin-top:auto; }
+    .security-note { display:flex; gap:10px; margin:0 3px 12px; padding:12px; border:1px solid var(--border); border-radius:15px; background:var(--soft); }
+    .security-icon { color:#34c759; }
+    .security-title { font-size:10px; font-weight:650; }
+    .security-copy { margin-top:4px; color:var(--muted); font-size:8px; line-height:1.45; }
+    .profile { display:grid; grid-template-columns:38px 1fr 28px; gap:10px; align-items:center; padding:11px 8px 1px; border-top:1px solid var(--border); cursor:pointer; }
+    .avatar { display:grid; place-items:center; width:38px; height:38px; border-radius:50%; color:white; background:linear-gradient(145deg,#ff9f0a,#ff453a); font-size:11px; font-weight:700; }
+    .profile-name { font-size:11px; font-weight:650; }
+    .profile-caption { margin-top:4px; color:var(--muted); font-size:9px; }
+    .main { z-index:1; display:grid; grid-template-rows:72px 1fr; min-width:0; animation:contentIn .75s .15s cubic-bezier(.22,1,.36,1) both; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:0 34px; border-bottom:1px solid var(--border); }
+    .breadcrumb { color:var(--muted); font-size:11px; }
+    .breadcrumb strong { color:var(--text); font-weight:600; }
+    .theme-button { display:grid; place-items:center; width:44px; height:44px; border:1px solid var(--border); border-radius:14px; background:var(--panel); backdrop-filter:blur(18px); cursor:pointer; transition:transform .25s cubic-bezier(.22,1,.36,1),background .2s ease; }
+    .theme-button:hover { background:var(--soft); transform:scale(1.04); }
+    .empty-content { display:grid; place-items:center; padding:48px; }
+    .empty-content.chat-active { place-items:stretch; padding:0; }
+    .title-wrap { text-align:center; }
+    .eyebrow { color:var(--accent); font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
+    h1 { margin:15px 0 0; font-size:52px; font-weight:650; letter-spacing:-.055em; }
+    .chat-view { display:none; width:100%; height:100%; overflow:hidden; grid-template-rows:62px 1fr auto; background:transparent; }
+    .chat-view.visible { display:grid; animation:chatOpen .55s cubic-bezier(.22,1,.36,1) both; }
+    .chat-header { display:flex; align-items:center; justify-content:space-between; padding:0 34px; border-bottom:1px solid var(--border); font-size:13px; font-weight:650; }
+    .online { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:10px; font-weight:500; }
+    .online::before { width:7px; height:7px; border-radius:50%; background:#34c759; content:""; }
+    .chat-messages { display:flex; flex-direction:column; justify-content:flex-end; gap:14px; width:min(900px,100%); margin:0 auto; padding:32px 24px; }
+    .message { max-width:72%; padding:13px 16px; border-radius:18px; background:var(--soft); font-size:12px; line-height:1.5; }
+    .message.user { align-self:flex-end; color:white; background:var(--accent); border-bottom-right-radius:6px; }
+    .composer { display:grid; grid-template-columns:1fr 42px; gap:8px; width:min(900px,calc(100% - 48px)); margin:0 auto 24px; padding:8px; border:1px solid var(--border); border-radius:17px; background:var(--panel-solid); box-shadow:0 16px 40px rgba(0,0,0,.12); }
+    .composer input { min-width:0; padding:0 8px; border:0; outline:0; background:transparent; color:var(--text); font:inherit; font-size:12px; }
+    .send-button { display:grid; place-items:center; width:42px; height:42px; border:0; border-radius:12px; color:white; background:var(--accent); }
+    @keyframes sidebarIn { from { opacity:0; transform:translateX(-24px) scale(.98); } to { opacity:1; transform:none; } }
+    @keyframes navIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:none; } }
+    @keyframes contentIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+    @keyframes chatOpen { from { opacity:0; transform:translateY(18px) scale(.97); } to { opacity:1; transform:none; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-delay:0ms!important; transition-duration:.01ms!important; } }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-logo"><img src="../../../../ui/assets/osminog-company-logo.svg" alt="Osminog"></span><div class="brand-caption">Личный<br>кабинет</div></div>
+      <button class="workspace"><span class="workspace-mark"><i data-lucide="layers-3"></i></span><span><span class="workspace-name">Основное пространство</span><span class="workspace-handle">Мой проект</span></span><i data-lucide="chevrons-up-down"></i></button>
+      <div class="section-label">Рабочее пространство</div>
+      <nav class="navigation">
+        <button class="nav-item active" style="--index:0" onclick="activateSection(this,'Мой кабинет')"><span class="nav-icon"><i data-lucide="house"></i></span><span class="nav-label">Мой кабинет</span></button>
+        <button class="nav-item" style="--index:1" onclick="activateSection(this,'Чат')"><span class="nav-icon"><i data-lucide="messages-square"></i></span><span class="nav-label">Чат</span></button>
+        <button class="nav-item" style="--index:2" onclick="activateSection(this,'Дашборды')"><span class="nav-icon"><i data-lucide="chart-no-axes-combined"></i></span><span class="nav-label">Дашборды</span></button>
+        <button class="nav-item" style="--index:3" onclick="activateSection(this,'Автодействия')"><span class="nav-icon"><i data-lucide="zap"></i></span><span class="nav-label">Автодействия</span></button>
+        <button class="nav-item" style="--index:4" onclick="activateSection(this,'Свои отчёты')"><span class="nav-icon"><i data-lucide="file-chart-column"></i></span><span class="nav-label">Свои отчёты</span></button>
+        <button class="nav-item" style="--index:5" onclick="activateSection(this,'Обращения')"><span class="nav-icon"><i data-lucide="inbox"></i></span><span class="nav-label">Обращения</span></button>
+        <button class="nav-item" style="--index:6" onclick="activateSection(this,'Безопасность')"><span class="nav-icon"><i data-lucide="shield-check"></i></span><span class="nav-label">Безопасность</span></button>
+      </nav>
+      <div class="sidebar-bottom"><div class="security-note"><i class="security-icon" data-lucide="shield-check"></i><div><div class="security-title">Контроль в ваших руках</div><div class="security-copy">Интеграции и доступы настраивает администратор пространства.</div></div></div><div class="profile"><span class="avatar">АК</span><div><div class="profile-name">Алексей Ковалёв</div><div class="profile-caption">Личный кабинет</div></div><i data-lucide="chevron-up"></i></div></div>
+    </aside>
+    <main class="main"><header class="topbar"><div class="breadcrumb">Рабочее пространство / <strong id="breadcrumb">Мой кабинет</strong></div><button class="theme-button" aria-label="Переключить тему" onclick="toggleTheme()"><i data-lucide="moon"></i></button></header><section class="empty-content"><div class="title-wrap" id="titleView"><div class="eyebrow">Раздел</div><h1 id="pageTitle">Мой кабинет</h1></div><div class="chat-view" id="chatView"><header class="chat-header"><span>Чат</span><span class="online">Ассистент онлайн</span></header><div class="chat-messages"><div class="message">Здравствуйте! Чем могу помочь?</div><div class="message user">Давайте начнём новый проект.</div></div><div class="composer"><input placeholder="Напишите сообщение..."><button class="send-button" aria-label="Отправить"><i data-lucide="arrow-up"></i></button></div></div></section></main>
+  </div>
+  <script>function activateSection(item,title){document.querySelectorAll('.nav-item').forEach(button=>button.classList.remove('active'));item.classList.add('active');document.getElementById('breadcrumb').textContent=title;const isChat=title==='Чат';document.querySelector('.empty-content').classList.toggle('chat-active',isChat);document.getElementById('titleView').hidden=isChat;document.getElementById('chatView').classList.toggle('visible',isChat);if(!isChat)document.getElementById('pageTitle').textContent=title} function toggleTheme(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'} setTimeout(()=>window.lucide&&lucide.createIcons(),800)</script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1400">
+  <title>Чат — светлая тема</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root { --bg:#f7f7f8; --panel:#fff; --soft:#f0f0f2; --text:#17171a; --muted:#6b6b73; --border:#e5e5e9; --accent:#5b5ce2; --bubble:#ececff; --shadow:0 18px 60px rgba(28,28,35,.1); }
+    [data-theme="dark"] { --bg:#171719; --panel:#222225; --soft:#2a2a2e; --text:#f4f4f5; --muted:#a7a7b0; --border:#39393f; --accent:#818cf8; --bubble:#303044; --shadow:0 24px 70px rgba(0,0,0,.28); }
+    * { box-sizing:border-box; }
+    body { margin:0; height:900px; overflow:hidden; background:var(--bg); color:var(--text); font-family:Inter,sans-serif; }
+    button, textarea { font:inherit; }
+    a { color:inherit; text-decoration:none; }
+    button { color:inherit; }
+    .app { display:grid; grid-template-columns:236px minmax(0,1fr) 284px; height:100%; }
+    .sidebar { display:flex; flex-direction:column; padding:18px 14px; background:var(--panel); border-right:1px solid var(--border); }
+    .brand { display:flex; align-items:center; gap:10px; padding:4px 8px 22px; font-size:15px; font-weight:700; }
+    .brand-mark { display:grid; place-items:center; width:32px; height:32px; border-radius:10px; color:white; background:linear-gradient(135deg,#6366f1,#a855f7); }
+    .primary-nav { display:grid; gap:5px; margin-bottom:16px; }
+    .nav-link { display:flex; align-items:center; gap:10px; min-height:43px; padding:0 12px; border-radius:10px; color:var(--muted); font-size:13px; font-weight:600; }
+    .nav-link:hover, .nav-link.active { background:var(--soft); color:var(--text); }
+    .new-chat { display:flex; align-items:center; gap:9px; width:100%; min-height:44px; padding:0 13px; border:0; border-radius:11px; color:white; background:var(--accent); font-weight:600; cursor:pointer; }
+    .section-label { margin:24px 10px 10px; color:var(--muted); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; }
+    .history { display:grid; gap:4px; }
+    .history-item { display:flex; align-items:center; gap:10px; min-height:42px; padding:0 11px; border:0; border-radius:10px; background:transparent; color:var(--muted); text-align:left; cursor:pointer; }
+    .history-item.active { background:var(--soft); color:var(--text); }
+    .history-item span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .sidebar-foot { margin-top:auto; }
+    .profile { display:flex; align-items:center; gap:10px; padding:12px 8px 2px; border-top:1px solid var(--border); }
+    .avatar { display:grid; place-items:center; flex:0 0 auto; width:34px; height:34px; border-radius:11px; background:linear-gradient(135deg,#f59e0b,#ef4444); color:white; font-size:12px; font-weight:700; }
+    .profile-copy { min-width:0; flex:1; }
+    .profile-name { font-size:13px; font-weight:600; }
+    .profile-plan { margin-top:3px; color:var(--muted); font-size:11px; }
+    .main { display:grid; grid-template-rows:65px 1fr auto; min-width:0; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:0 28px; border-bottom:1px solid var(--border); background:color-mix(in srgb,var(--bg) 88%,transparent); }
+    .chat-title { display:flex; align-items:center; gap:9px; font-size:14px; font-weight:600; }
+    .status-dot { width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 0 4px rgba(34,197,94,.12); }
+    .top-actions { display:flex; gap:8px; }
+    .icon-button { display:grid; place-items:center; width:42px; height:42px; border:1px solid var(--border); border-radius:11px; background:var(--panel); cursor:pointer; }
+    .icon-button:hover { background:var(--soft); }
+    svg { width:18px; height:18px; }
+    .conversation { overflow:auto; padding:42px 28px 22px; }
+    .messages { width:min(840px,100%); margin:0 auto; }
+    .day { margin-bottom:34px; color:var(--muted); font-size:11px; text-align:center; }
+    .message { display:flex; gap:12px; margin-bottom:30px; }
+    .assistant-avatar { display:grid; place-items:center; flex:0 0 auto; width:34px; height:34px; border-radius:11px; color:white; background:linear-gradient(135deg,#6366f1,#a855f7); }
+    .message-body { max-width:680px; }
+    .message-meta { margin-bottom:8px; font-size:12px; font-weight:600; }
+    .message-text { font-size:15px; line-height:1.65; }
+    .message-text p { margin:0 0 10px; }
+    .message-text p:last-child { margin-bottom:0; }
+    .user-message { justify-content:flex-end; }
+    .user-bubble { max-width:560px; padding:13px 17px; border:1px solid color-mix(in srgb,var(--accent) 22%,var(--border)); border-radius:18px 18px 5px 18px; background:var(--bubble); font-size:14px; line-height:1.55; }
+    .quick-actions { display:flex; gap:8px; margin-top:16px; }
+    .quick-action { min-height:36px; padding:0 13px; border:1px solid var(--border); border-radius:10px; background:var(--panel); color:var(--muted); cursor:pointer; }
+    .composer-area { padding:12px 28px 20px; background:linear-gradient(transparent,var(--bg) 24%); }
+    .composer-wrap { width:min(840px,100%); margin:0 auto; }
+    .composer { padding:13px; border:1px solid var(--border); border-radius:20px; background:var(--panel); box-shadow:var(--shadow); }
+    .composer textarea { display:block; width:100%; height:50px; resize:none; padding:4px 5px; border:0; outline:0; background:transparent; color:var(--text); font-size:14px; }
+    .composer textarea::placeholder { color:var(--muted); }
+    .composer-actions { display:flex; align-items:center; justify-content:space-between; }
+    .tool-row { display:flex; gap:6px; }
+    .tool-button { display:flex; align-items:center; gap:7px; min-height:38px; padding:0 11px; border:0; border-radius:10px; background:transparent; color:var(--muted); cursor:pointer; }
+    .tool-button:hover { background:var(--soft); color:var(--text); }
+    .send { display:grid; place-items:center; width:40px; height:40px; border:0; border-radius:12px; color:white; background:var(--accent); cursor:pointer; }
+    .disclaimer { margin-top:10px; color:var(--muted); font-size:10px; text-align:center; }
+    .tools-panel { display:flex; flex-direction:column; padding:20px 16px; border-left:1px solid var(--border); background:var(--panel); }
+    .tools-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+    .tools-title { font-size:14px; font-weight:700; }
+    .tools-badge { padding:4px 7px; border-radius:7px; background:var(--soft); color:var(--muted); font-size:10px; }
+    .tools-list { display:grid; gap:8px; }
+    .tool-card { display:grid; grid-template-columns:36px 1fr auto; gap:10px; align-items:center; padding:11px; border:1px solid var(--border); border-radius:13px; background:var(--bg); }
+    .tool-icon { display:grid; place-items:center; width:36px; height:36px; border-radius:10px; background:var(--soft); color:var(--accent); }
+    .tool-name { font-size:12px; font-weight:600; }
+    .tool-desc { margin-top:3px; color:var(--muted); font-size:9px; line-height:1.35; }
+    .switch { width:30px; height:18px; padding:2px; border:0; border-radius:20px; background:var(--accent); }
+    .switch::after { content:""; display:block; width:14px; height:14px; margin-left:12px; border-radius:50%; background:white; }
+    .context-card { margin-top:auto; padding:14px; border-radius:14px; background:var(--soft); }
+    .context-title { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:600; }
+    .context-copy { margin:8px 0 0; color:var(--muted); font-size:10px; line-height:1.45; }
+    :focus-visible { outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent); outline-offset:2px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>Диалог</span></div>
+      <nav class="primary-nav">
+        <a class="nav-link active" href="02-chat-light.html"><i data-lucide="message-circle"></i><span>Чат</span></a>
+        <a class="nav-link" href="04-dashboard-light.html"><i data-lucide="layout-dashboard"></i><span>Дашборд</span></a>
+      </nav>
+      <button class="new-chat"><i data-lucide="plus"></i><span>Новый чат</span></button>
+      <div class="section-label">Сегодня</div>
+      <nav class="history">
+        <button class="history-item active"><i data-lucide="message-square"></i><span>План запуска продукта</span></button>
+        <button class="history-item"><i data-lucide="message-square"></i><span>Идеи для презентации</span></button>
+        <button class="history-item"><i data-lucide="message-square"></i><span>Разбор обратной связи</span></button>
+      </nav>
+      <div class="section-label">Ранее</div>
+      <nav class="history">
+        <button class="history-item"><i data-lucide="message-square"></i><span>Структура базы знаний</span></button>
+        <button class="history-item"><i data-lucide="message-square"></i><span>Подготовка интервью</span></button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="profile"><span class="avatar">АК</span><div class="profile-copy"><div class="profile-name">Алексей Ковалёв</div><div class="profile-plan">Личный аккаунт</div></div><i data-lucide="more-horizontal"></i></div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="chat-title"><span class="status-dot"></span><span>План запуска продукта</span></div>
+        <div class="top-actions"><button class="icon-button" aria-label="Поделиться"><i data-lucide="share-2"></i></button><button class="icon-button" aria-label="Переключить тему" onclick="toggleTheme()"><i data-lucide="moon"></i></button></div>
+      </header>
+      <section class="conversation">
+        <div class="messages">
+          <div class="day">Сегодня, 14:32</div>
+          <div class="message user-message"><div class="user-bubble">Помоги составить понятный план запуска нового продукта на ближайшие четыре недели.</div></div>
+          <article class="message"><span class="assistant-avatar"><i data-lucide="sparkles"></i></span><div class="message-body"><div class="message-meta">Ассистент</div><div class="message-text"><p>Конечно. Предлагаю разбить запуск на четыре коротких этапа: подготовка, тестирование, публикация и анализ.</p><p>Начнём с формулировки ценности продукта и списка первых пользователей. Затем соберём обратную связь и уточним сценарий запуска.</p></div><div class="quick-actions"><button class="quick-action">Сделать подробнее</button><button class="quick-action">Составить чек-лист</button></div></div></article>
+          <div class="message user-message"><div class="user-bubble">Сделай чек-лист и добавь ответственных за каждый этап.</div></div>
+        </div>
+      </section>
+      <footer class="composer-area">
+        <div class="composer-wrap"><div class="composer"><textarea placeholder="Напишите сообщение..."></textarea><div class="composer-actions"><div class="tool-row"><button class="tool-button"><i data-lucide="paperclip"></i><span>Прикрепить</span></button><button class="tool-button"><i data-lucide="sliders-horizontal"></i><span>Инструменты</span></button></div><button class="send" aria-label="Отправить"><i data-lucide="arrow-up"></i></button></div></div><div class="disclaimer">ИИ может допускать ошибки. Проверяйте важную информацию.</div></div>
+      </footer>
+    </main>
+    <aside class="tools-panel">
+      <div class="tools-heading"><span class="tools-title">Инструменты</span><span class="tools-badge">4 доступны</span></div>
+      <div class="tools-list">
+        <div class="tool-card"><span class="tool-icon"><i data-lucide="globe-2"></i></span><div><div class="tool-name">Поиск в интернете</div><div class="tool-desc">Свежая информация и источники</div></div><button class="switch" aria-label="Поиск включён"></button></div>
+        <div class="tool-card"><span class="tool-icon"><i data-lucide="file-search"></i></span><div><div class="tool-name">Анализ файлов</div><div class="tool-desc">PDF, таблицы и документы</div></div><button class="switch" aria-label="Анализ включён"></button></div>
+        <div class="tool-card"><span class="tool-icon"><i data-lucide="image"></i></span><div><div class="tool-name">Изображения</div><div class="tool-desc">Создание и редактирование</div></div><button class="switch" aria-label="Изображения включены"></button></div>
+        <div class="tool-card"><span class="tool-icon"><i data-lucide="code-2"></i></span><div><div class="tool-name">Работа с кодом</div><div class="tool-desc">Код, файлы и вычисления</div></div><button class="switch" aria-label="Код включён"></button></div>
+      </div>
+      <div class="context-card"><div class="context-title"><i data-lucide="shield-check"></i><span>Контекст защищён</span></div><p class="context-copy">Инструменты используют только данные текущего диалога.</p></div>
+    </aside>
+  </div>
+  <script>function toggleTheme(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'} lucide.createIcons()</script>
+</body>
+</html>
