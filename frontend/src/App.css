@@ -21,7 +21,8 @@
   background: var(--app-panel-solid);
 }
 
-.application-content-dashboard {
+.application-content-dashboard,
+.application-content-cabinet {
   display: block;
   overflow-y: auto;
   background: rgb(250 251 253 / 85%);
@@ -68,7 +69,7 @@
 
   .application-content:not(.application-content-chat):not(
       .application-content-dashboard
-    ) {
+    ):not(.application-content-cabinet) {
     display: none;
   }
 }
@@ -76,5 +77,33 @@
 @media (prefers-reduced-motion: reduce) {
   .application-heading {
     animation-duration: 1ms;
+  }
+}
+
+@media (max-width: 760px) {
+  .application-shell:has(.application-content-cabinet) {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .application-shell:has(.application-content-cabinet) .sidebar {
+    min-height: 0;
+    padding: 8px;
+  }
+
+  .application-shell:has(.application-content-cabinet)
+    .sidebar
+    > :not(.sidebar-navigation) {
+    display: none;
+  }
+
+  .application-shell:has(.application-content-cabinet) .sidebar-navigation {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .application-shell:has(.application-content-cabinet)
+    .sidebar-navigation-item {
+    flex-shrink: 0;
+    font-size: 12px;
   }
 }
