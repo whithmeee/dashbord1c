@@ -1,6 +1,6 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This template provides a minimal setup to get React working in Vite with HMR and a basic ESLint configuration.
 
 Currently, two official plugins are available:
 
@@ -11,22 +11,23 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the Oxlint configuration
+## Code quality
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+Run commands from `frontend/`:
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+npm run lint
+npm run lint:fix
+npm run build
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`eslint.config.js` enables recommended JavaScript and TypeScript checks, React
+Hooks rules, Vite Fast Refresh checks, strict equality, and consistent type imports.
+Lint fails on warnings. Build output and coverage reports are excluded.
+
+`lint:fix` applies available automatic fixes. ESLint checks code quality;
+formatting and type checking remain separate concerns. `build` runs TypeScript
+checking before bundling.
+
+TypeScript uses the 6.0 branch supported by `typescript-eslint`. Upgrade both
+together after checking parser compatibility.

@@ -1,0 +1,44 @@
+import type { ReactNode } from 'react'
+import type { LoadDashboard } from '../../application/load-dashboard'
+import { useDashboard } from './use-dashboard'
+import { DashboardHeader } from './dashboard-header'
+import { DashboardPeriods } from './dashboard-periods'
+import { DashboardContent } from './dashboard-content'
+import './dashboard.css'
+import './dashboard-responsive.css'
+
+type DashboardPageProps = {
+  loadDashboard: LoadDashboard
+  onBack: () => void
+  notice: ReactNode
+  footer: ReactNode
+}
+
+export function DashboardPage({
+  loadDashboard,
+  onBack,
+  notice,
+  footer,
+}: DashboardPageProps) {
+  const dashboard = useDashboard(loadDashboard)
+  const isLoading = dashboard.state.status === 'loading'
+
+  return (
+    <section className="dashboard" data-testid="dashboard">
+      <DashboardHeader
+        onBack={onBack}
+        onRefresh={dashboard.refresh}
+        isLoading={isLoading}
+      />
+      {notice}
+      <DashboardPeriods
+        period={dashboard.period}
+        onSelectPeriod={dashboard.selectPeriod}
+      />
+      <div aria-live="polite" aria-busy={isLoading}>
+        <DashboardContent state={dashboard.state} onRetry={dashboard.refresh} />
+      </div>
+      {footer}
+    </section>
+  )
+}

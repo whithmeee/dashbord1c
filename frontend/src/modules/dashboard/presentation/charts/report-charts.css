@@ -1,0 +1,11 @@
+.dashboard-chart {
+  position: relative;
+  height: 280px;
+  margin-top: 24px;
+}
+
+@media (max-width: 760px) {
+  .dashboard-chart {
+    height: 250px;
+  }
+}

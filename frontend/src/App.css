@@ -21,6 +21,12 @@
   background: var(--app-panel-solid);
 }
 
+.application-content-dashboard {
+  display: block;
+  overflow-y: auto;
+  background: rgb(250 251 253 / 85%);
+}
+
 .application-heading {
   @apply text-center;
   animation: content-enter 480ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -55,11 +61,14 @@
     padding: 10px;
   }
 
-  .application-shell:has(.application-content-chat) .sidebar {
+  .application-shell:has(.application-content-chat) .sidebar,
+  .application-shell:has(.application-content-dashboard) .sidebar {
     display: none;
   }
 
-  .application-content:not(.application-content-chat) {
+  .application-content:not(.application-content-chat):not(
+      .application-content-dashboard
+    ) {
     display: none;
   }
 }
