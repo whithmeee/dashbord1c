@@ -98,18 +98,17 @@
   @apply grid min-h-11 cursor-pointer items-center rounded-xl border-0 bg-transparent px-2 text-left;
   grid-template-columns: 34px minmax(0, 1fr) 8px;
   color: var(--app-muted);
-  opacity: 0;
+  position: relative;
+  isolation: isolate;
 }
 
 .sidebar-navigation-item:hover {
   color: var(--app-text);
   background: var(--app-soft);
-  transform: translateX(3px);
 }
 
 .sidebar-navigation-item[aria-current='page'] {
   color: var(--app-accent);
-  background: var(--app-accent-soft);
 }
 
 .sidebar-navigation-icon {

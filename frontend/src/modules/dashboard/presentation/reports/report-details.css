@@ -1,0 +1,19 @@
+.report-details-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--app-accent);
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.report-details-toggle span {
+  display: flex;
+}
+
+.report-details-content {
+  overflow: hidden;
+}

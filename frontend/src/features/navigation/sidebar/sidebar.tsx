@@ -1,4 +1,5 @@
-import type { CSSProperties } from 'react'
+import { LayoutGroup, motion } from 'motion/react'
+import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
 import { ChevronDown, Layers3, MoreHorizontal } from 'lucide-react'
 import osminogLogo from '../../../assets/osminog-company-logo.svg'
 import { sidebarSections } from './sidebar.config'
@@ -11,6 +12,8 @@ type SidebarProps = {
 }
 
 export function Sidebar({ controller }: SidebarProps) {
+  const { movement } = useInterfaceMotion()
+
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
@@ -54,25 +57,34 @@ export function Sidebar({ controller }: SidebarProps) {
 
       <span className="sidebar-section-label">Рабочее пространство</span>
 
-      <nav className="sidebar-navigation" aria-label="Основная навигация">
-        {sidebarSections.map(({ id, label, icon: Icon }, index) => (
-          <button
-            className="sidebar-navigation-item"
-            style={{ '--item-index': index } as CSSProperties}
-            type="button"
-            aria-current={controller.isSectionActive(id) ? 'page' : undefined}
-            onClick={() => controller.selectSection(id)}
-            key={id}
-          >
-            <span className="sidebar-navigation-icon">
-              <Icon size={20} />
-            </span>
-            <span>{label}</span>
-            <span className="sidebar-active-dot" />
-          </button>
-        ))}
-      </nav>
-
+      <LayoutGroup id="sidebar">
+        <nav className="sidebar-navigation" aria-label="Основная навигация">
+          {sidebarSections.map(({ id, label, icon: Icon }) => (
+            <button
+              className="sidebar-navigation-item"
+              type="button"
+              aria-current={controller.isSectionActive(id) ? 'page' : undefined}
+              onClick={() => controller.selectSection(id)}
+              key={id}
+              data-testid={`navigation-${id}`}
+            >
+              {controller.isSectionActive(id) && (
+                <motion.span
+                  className="sidebar-selection"
+                  layoutId="selection"
+                  transition={movement}
+                  aria-hidden="true"
+                />
+              )}
+              <span className="sidebar-navigation-icon">
+                <Icon size={20} />
+              </span>
+              <span>{label}</span>
+              <span className="sidebar-active-dot" />
+            </button>
+          ))}
+        </nav>
+      </LayoutGroup>
     </aside>
   )
 }

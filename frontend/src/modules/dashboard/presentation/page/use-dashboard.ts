@@ -14,7 +14,7 @@ export function useDashboard(loadDashboard: LoadDashboard) {
     dispatch({ type: 'loading' })
     loadDashboard(session.period, controller.signal).then((result) => {
       if (!controller.signal.aborted && result.status !== 'cancelled') {
-        dispatch({ type: 'loaded', result })
+        dispatch({ type: 'loaded', result, period: session.period })
       }
     })
     return () => controller.abort()

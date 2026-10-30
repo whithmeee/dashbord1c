@@ -6,12 +6,18 @@ import { OverviewAccess } from './overview-access'
 import './overview.css'
 
 type OverviewProps = {
+  animateEntrance: boolean
   overview: CabinetOverview
   onOpenChat: () => void
   onSelectTab: (tab: CabinetTab) => void
 }
 
-export function Overview({ overview, onOpenChat, onSelectTab }: OverviewProps) {
+export function Overview({
+  overview,
+  onOpenChat,
+  onSelectTab,
+  animateEntrance,
+}: OverviewProps) {
   const reducedMotion = useReducedMotion()
   const entrance = {
     hidden: { opacity: 0, y: reducedMotion ? 0 : 12 },
@@ -24,7 +30,7 @@ export function Overview({ overview, onOpenChat, onSelectTab }: OverviewProps) {
 
   return (
     <motion.div
-      initial="hidden"
+      initial={animateEntrance && !reducedMotion ? 'hidden' : false}
       animate="visible"
       transition={{ staggerChildren: reducedMotion ? 0 : 0.07 }}
       data-testid="cabinet-overview"

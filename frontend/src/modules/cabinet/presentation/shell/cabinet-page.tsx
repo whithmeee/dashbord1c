@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
+import { useInterfaceMotion } from '../../../../shared/motion/use-interface-motion'
 import { Construction, FlaskConical } from 'lucide-react'
 import {
   describeCabinet,
@@ -20,7 +21,12 @@ export function CabinetPage({
   onOpenChat: () => void
 }) {
   const [activeTab, setActiveTab] = useState<CabinetTab>('overview')
-  const reducedMotion = useReducedMotion()
+  const { appearance } = useInterfaceMotion()
+  const [animateOverview, setAnimateOverview] = useState(true)
+  const selectTab = (tab: CabinetTab) => {
+    setAnimateOverview(false)
+    setActiveTab(tab)
+  }
   const tab = cabinetTabs.find((item) => item.id === activeTab)
 
   return (
@@ -38,46 +44,45 @@ export function CabinetPage({
         </div>
         <span className="cabinet-badge">{overview.subscription.label}</span>
       </header>
-      <CabinetTabs active={activeTab} onSelect={setActiveTab} />
+      <CabinetTabs active={activeTab} onSelect={selectTab} />
       <div className="cabinet-demo">
         <FlaskConical size={16} />
         <span>
           Демонстрационный кабинет · данные и статусы подключения вымышлены.
         </span>
       </div>
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: reducedMotion ? 0 : -6 }}
-          transition={{ duration: reducedMotion ? 0 : 0.18 }}
-        >
-          {activeTab === 'overview' ? (
-            <Overview
-              overview={overview}
-              onOpenChat={onOpenChat}
-              onSelectTab={setActiveTab}
-            />
-          ) : (
-            <div
-              className="cabinet-placeholder"
-              data-testid="cabinet-placeholder"
+
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={appearance}
+      >
+        {activeTab === 'overview' ? (
+          <Overview
+            overview={overview}
+            onOpenChat={onOpenChat}
+            onSelectTab={selectTab}
+            animateEntrance={animateOverview}
+          />
+        ) : (
+          <div
+            className="cabinet-placeholder"
+            data-testid="cabinet-placeholder"
+          >
+            <Construction size={30} />
+            <h2>{tab?.label}</h2>
+            <p>Эту вкладку добавим на следующем этапе.</p>
+            <button
+              className="cabinet-button"
+              type="button"
+              onClick={() => selectTab('overview')}
             >
-              <Construction size={30} />
-              <h2>{tab?.label}</h2>
-              <p>Эту вкладку добавим на следующем этапе.</p>
-              <button
-                className="cabinet-button"
-                type="button"
-                onClick={() => setActiveTab('overview')}
-              >
-                Вернуться к обзору
-              </button>
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+              Вернуться к обзору
+            </button>
+          </div>
+        )}
+      </motion.div>
     </section>
   )
 }

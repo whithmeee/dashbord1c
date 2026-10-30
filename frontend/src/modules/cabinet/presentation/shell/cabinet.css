@@ -90,6 +90,7 @@
 }
 
 .cabinet-tabs button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -104,7 +105,6 @@
 }
 
 .cabinet-tabs button[aria-current='page'] {
-  border-bottom-color: var(--app-accent);
   color: var(--app-accent);
 }
 
@@ -167,4 +167,14 @@
 
 .cabinet-placeholder button {
   margin-top: 20px;
+}
+
+.cabinet-tab-indicator {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--app-accent);
+  pointer-events: none;
 }

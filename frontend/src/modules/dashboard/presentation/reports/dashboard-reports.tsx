@@ -2,42 +2,9 @@ import { motion, useReducedMotion } from 'motion/react'
 import { TrendingUp, Wallet } from 'lucide-react'
 import { RevenueChart, DebtorsChart } from '../charts/report-charts'
 import { formatMoney } from './money-format'
-import type {
-  DashboardReport,
-  ReportPoint,
-} from '../../domain/dashboard-report'
+import type { DashboardReport } from '../../domain/dashboard-report'
+import { ReportDetails } from './report-details'
 import './dashboard-reports.css'
-
-function DataTable({
-  points,
-  label,
-}: {
-  points: ReportPoint[]
-  label: string
-}) {
-  return (
-    <details className="dashboard-details">
-      <summary>Посмотреть данные</summary>
-      <table>
-        <caption>{label}</caption>
-        <thead>
-          <tr>
-            <th scope="col">Наименование</th>
-            <th scope="col">Сумма, ₽</th>
-          </tr>
-        </thead>
-        <tbody>
-          {points.map((point) => (
-            <tr key={point.label}>
-              <th scope="row">{point.label}</th>
-              <td>{formatMoney(point.amount)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </details>
-  )
-}
 
 export function DashboardReports({ report }: { report: DashboardReport }) {
   const reducedMotion = useReducedMotion()
@@ -74,7 +41,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <p>По месяцам · ₽</p>
         </header>
         <RevenueChart points={report.revenue} />
-        <DataTable points={report.revenue} label="Выручка по месяцам" />
+        <ReportDetails points={report.revenue} label="Выручка по месяцам" />
       </article>
       <article className="dashboard-report">
         <header>
@@ -82,7 +49,10 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <p>Задолженность на {report.debtAsOf} · ₽</p>
         </header>
         <DebtorsChart points={report.debtors} />
-        <DataTable points={report.debtors} label="Задолженность контрагентов" />
+        <ReportDetails
+          points={report.debtors}
+          label="Задолженность контрагентов"
+        />
       </article>
     </motion.div>
   )

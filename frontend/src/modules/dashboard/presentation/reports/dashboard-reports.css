@@ -54,11 +54,6 @@
   font-size: 12px;
 }
 
-.dashboard-details summary {
-  cursor: pointer;
-  color: var(--app-accent);
-}
-
 .dashboard-details table {
   width: 100%;
   border-collapse: collapse;

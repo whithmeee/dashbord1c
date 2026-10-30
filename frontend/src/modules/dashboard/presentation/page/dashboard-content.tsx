@@ -1,3 +1,4 @@
+import { DashboardSkeleton } from './dashboard-loading'
 import { DashboardReports } from '../reports/dashboard-reports'
 import type { DashboardState } from './dashboard-state'
 
@@ -10,11 +11,7 @@ export function DashboardContent({
 }) {
   switch (state.status) {
     case 'loading':
-      return (
-        <div className="dashboard-state" role="status">
-          Загружаем статистику…
-        </div>
-      )
+      return <DashboardSkeleton />
     case 'empty':
       return (
         <div className="dashboard-state">

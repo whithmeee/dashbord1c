@@ -1,0 +1,22 @@
+button {
+  transition:
+    background-color 140ms ease-out,
+    color 140ms ease-out,
+    border-color 140ms ease-out,
+    scale 100ms ease-out;
+  touch-action: manipulation;
+}
+
+button:enabled:active {
+  scale: 0.98;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+
+  button:enabled:active {
+    scale: 1;
+  }
+}
