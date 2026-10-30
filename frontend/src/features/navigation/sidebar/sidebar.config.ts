@@ -17,3 +17,8 @@ export const sidebarSections = [
 ] as const
 
 export type SidebarSectionId = (typeof sidebarSections)[number]['id']
+
+export const demoSidebarConnection = {
+  name: '1С:Бухгалтерия',
+  connected: true,
+}

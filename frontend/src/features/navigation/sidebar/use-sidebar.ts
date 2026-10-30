@@ -6,7 +6,6 @@ export function useSidebar() {
   const toggleSidebar = useCallback(() => setSidebarOpen((open) => !open), [])
   const [activeSectionId, setActiveSectionId] =
     useState<SidebarSectionId>('cabinet')
-  const [isWorkspaceMenuOpen, setWorkspaceMenuOpen] = useState(false)
 
   const activeSectionLabel = useMemo(
     () =>
@@ -19,10 +18,6 @@ export function useSidebar() {
     setActiveSectionId(sectionId)
   }, [])
 
-  const toggleWorkspaceMenu = useCallback(() => {
-    setWorkspaceMenuOpen((isOpen) => !isOpen)
-  }, [])
-
   const isSectionActive = useCallback(
     (sectionId: SidebarSectionId) => activeSectionId === sectionId,
     [activeSectionId],
@@ -33,9 +28,7 @@ export function useSidebar() {
     toggleSidebar,
     activeSectionLabel,
     isSectionActive,
-    isWorkspaceMenuOpen,
     selectSection,
-    toggleWorkspaceMenu,
   }
 }
 

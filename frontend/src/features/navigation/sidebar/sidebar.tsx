@@ -1,8 +1,9 @@
 import { LayoutGroup, motion } from 'motion/react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
-import { ChevronDown, Layers3, MoreHorizontal } from 'lucide-react'
 import osminogLogo from '../../../assets/osminog-company-logo.svg'
-import { sidebarSections } from './sidebar.config'
+import { SidebarToggle } from './sidebar-toggle'
+import { SidebarConnection } from './sidebar-connection'
+import { demoSidebarConnection, sidebarSections } from './sidebar.config'
 import type { SidebarController } from './use-sidebar'
 import './sidebar.css'
 import './sidebar-motion.css'
@@ -20,38 +21,8 @@ export function Sidebar({ controller }: SidebarProps) {
         <span className="sidebar-logo">
           <img src={osminogLogo} alt="Osminog" />
         </span>
-      </div>
-
-      <button className="sidebar-profile" type="button">
-        <span className="sidebar-avatar">АК</span>
-        <span className="sidebar-profile-copy">
-          <strong>Алексей Ковалёв</strong>
-          <small>Личный кабинет</small>
-        </span>
-        <MoreHorizontal size={18} />
-      </button>
-
-      <div className="workspace-control">
-        <button
-          className="workspace-trigger"
-          type="button"
-          aria-expanded={controller.isWorkspaceMenuOpen}
-          onClick={controller.toggleWorkspaceMenu}
-        >
-          <span className="workspace-icon">
-            <Layers3 size={18} />
-          </span>
-          <span className="workspace-copy">
-            <strong>Основное пространство</strong>
-            <small>OSMINOG PROJECT</small>
-          </span>
-          <ChevronDown className="workspace-chevron" size={18} />
-        </button>
-
-        {controller.isWorkspaceMenuOpen && (
-          <div className="workspace-menu">
-            <button type="button">Основное пространство</button>
-          </div>
+        {controller.isSidebarOpen && (
+          <SidebarToggle open onToggle={controller.toggleSidebar} />
         )}
       </div>
 
@@ -85,6 +56,9 @@ export function Sidebar({ controller }: SidebarProps) {
           ))}
         </nav>
       </LayoutGroup>
+      {demoSidebarConnection.connected && (
+        <SidebarConnection name={demoSidebarConnection.name} />
+      )}
     </aside>
   )
 }

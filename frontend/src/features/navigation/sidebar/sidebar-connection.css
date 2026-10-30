@@ -1,0 +1,55 @@
+.sidebar-connection {
+  margin-top: auto;
+  padding-top: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-connection-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  background: linear-gradient(120deg, #f4f6ff, #f2faf8);
+  box-shadow: 0 2px 6px rgb(30 50 80 / 3%);
+}
+
+.sidebar-connection-logo {
+  flex-shrink: 0;
+  color: #e52330;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -3px;
+}
+
+.sidebar-connection-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-connection-copy strong {
+  color: var(--app-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sidebar-connection-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #20845d;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sidebar-connection-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #29bd83;
+  box-shadow: 0 0 0 3px rgb(41 189 131 / 10%);
+}

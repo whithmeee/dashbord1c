@@ -1,7 +1,5 @@
-import {
-  SidebarLayout,
-  SidebarToggle,
-} from './features/navigation/sidebar/sidebar-layout'
+import { SidebarLayout } from './features/navigation/sidebar/sidebar-layout'
+import { SidebarToggle } from './features/navigation/sidebar/sidebar-toggle'
 import { Sidebar } from './features/navigation/sidebar/sidebar'
 import { useSidebar } from './features/navigation/sidebar/use-sidebar'
 import { Chat } from './modules/chat/components/chat'
@@ -19,11 +17,12 @@ function App() {
 
   return (
     <div className="application-shell">
-      <SidebarToggle
-        open={sidebar.isSidebarOpen}
-        onToggle={sidebar.toggleSidebar}
-        section={sidebar.activeSectionLabel}
-      />
+      <header className="application-toolbar">
+        {!sidebar.isSidebarOpen && (
+          <SidebarToggle open={false} onToggle={sidebar.toggleSidebar} />
+        )}
+        <span>{sidebar.activeSectionLabel}</span>
+      </header>
       <div className="application-body">
         <SidebarLayout open={sidebar.isSidebarOpen}>
           <Sidebar controller={sidebar} />

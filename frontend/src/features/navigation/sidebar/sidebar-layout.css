@@ -11,6 +11,7 @@
 .sidebar-toggle {
   display: grid;
   place-items: center;
+  flex-shrink: 0;
   width: 36px;
   height: 36px;
   border: 1px solid var(--app-border);
@@ -73,14 +74,27 @@
   .sidebar-frame > .sidebar {
     min-height: 0;
     padding: 8px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
   }
 
-  .sidebar-frame .sidebar > :not(.sidebar-navigation) {
+  .sidebar-frame .sidebar > :not(.sidebar-navigation):not(.sidebar-brand) {
+    display: none;
+  }
+
+  .sidebar-frame .sidebar-brand {
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  .sidebar-frame .sidebar-logo {
     display: none;
   }
 
   .sidebar-frame .sidebar-navigation {
     display: flex;
+    min-width: 0;
     overflow-x: auto;
   }
 

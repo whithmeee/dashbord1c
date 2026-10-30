@@ -1,6 +1,5 @@
 import { useSyncExternalStore, type ReactNode } from 'react'
 import { motion } from 'motion/react'
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
 import './sidebar-layout.css'
 
@@ -10,35 +9,6 @@ function subscribeToViewport(callback: () => void) {
   const query = window.matchMedia(mobileQuery)
   query.addEventListener('change', callback)
   return () => query.removeEventListener('change', callback)
-}
-
-export function SidebarToggle({
-  open,
-  onToggle,
-  section,
-}: {
-  open: boolean
-  onToggle: () => void
-  section: string
-}) {
-  const label = open ? 'Скрыть боковую панель' : 'Показать боковую панель'
-  return (
-    <header className="application-toolbar">
-      <button
-        className="sidebar-toggle"
-        type="button"
-        onClick={onToggle}
-        aria-label={label}
-        title={label}
-        aria-expanded={open}
-        aria-controls="application-sidebar"
-        data-testid="sidebar-toggle"
-      >
-        {open ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
-      </button>
-      <span>{section}</span>
-    </header>
-  )
 }
 
 export function SidebarLayout({
