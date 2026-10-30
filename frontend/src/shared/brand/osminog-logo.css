@@ -1,0 +1,11 @@
+.osminog-logo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.osminog-logo-part {
+  transform-box: fill-box;
+  transform-origin: center;
+}

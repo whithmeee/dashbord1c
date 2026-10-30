@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { ChevronRight } from 'lucide-react'
 import { AuthField } from './auth-field'
-import authMark from '../../shared/brand/osminog-dark-blue.svg'
+import { OsminogLogo } from '../../shared/brand/osminog-logo'
 import { useInterfaceMotion } from '../../shared/motion/use-interface-motion'
 import { useAuthForm } from './use-auth-form'
 import './auth.css'
@@ -31,10 +31,7 @@ export function Auth() {
         transition={{ staggerChildren: reducedMotion ? 0 : 0.03 }}
       >
         <div className="auth-brand">
-          <span className="auth-brand-mark">
-            <img className="auth-logo" src={authMark} alt="" />
-          </span>
-          <span className="auth-brand-name">Osminog Project</span>
+          <OsminogLogo size={224} />
         </div>
         <motion.header
           className="auth-heading"

@@ -17,31 +17,6 @@
   right: 0;
 }
 
-.sidebar-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding-top: 8px;
-  color: #18223b;
-  min-height: 48px;
-  min-width: 0;
-}
-
-.sidebar-logo img {
-  flex-shrink: 0;
-  width: 80px;
-  height: auto;
-}
-
-.sidebar-logo strong {
-  font-size: 22px;
-  text-align: center;
-  line-height: 1.15;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-}
-
 .sidebar-section-label {
   @apply px-2 pb-2 pt-1 text-xs font-bold uppercase;
   color: var(--app-muted);

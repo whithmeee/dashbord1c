@@ -39,24 +39,6 @@ body:has(.auth-page) {
   color: #18223b;
 }
 
-.auth-brand-mark {
-  display: block;
-}
-
-.auth-logo {
-  display: block;
-  width: 6.5rem;
-  height: auto;
-}
-
-.auth-brand-name {
-  font-size: 1.5rem;
-  line-height: 1.2;
-  text-align: center;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-}
-
 .auth-heading {
   margin-bottom: 1.75rem;
   text-align: center;
