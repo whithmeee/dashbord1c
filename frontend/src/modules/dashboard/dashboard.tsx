@@ -11,8 +11,15 @@ import {
 import { DemoControls, DemoNotice } from './adapters/demo/demo-controls'
 import { DashboardPage } from './presentation/page/dashboard-page'
 
-export function Dashboard({ onBack }: { onBack: () => void }) {
-  const [expanded, setExpanded] = useState(false)
+export function Dashboard({
+  onBack,
+  expanded,
+  onToggleExpanded,
+}: {
+  onBack: () => void
+  expanded: boolean
+  onToggleExpanded: () => void
+}) {
   const [view, setView] = useState<'overview' | 'catalog'>('overview')
   const workspaceRef = useRef<HTMLDivElement>(null)
   const selectView = (next: 'overview' | 'catalog') => {
@@ -34,7 +41,7 @@ export function Dashboard({ onBack }: { onBack: () => void }) {
     >
       <DashboardNavigation
         expanded={expanded}
-        onToggleExpanded={() => setExpanded((current) => !current)}
+        onToggleExpanded={onToggleExpanded}
         active={view}
         onSelect={selectView}
         onBack={onBack}

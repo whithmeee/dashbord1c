@@ -1,8 +1,7 @@
 @reference "./index.css";
 
 .application-shell {
-  @apply grid min-h-screen gap-4 overflow-hidden p-3;
-  grid-template-columns: 286px minmax(0, 1fr);
+  @apply flex min-h-screen flex-col gap-2 overflow-hidden p-3;
   height: 100dvh;
   background:
     radial-gradient(circle at 85% 0%, rgb(98 126 234 / 16%), transparent 34%),
@@ -58,19 +57,7 @@
 
 @media (max-width: 760px) {
   .application-shell {
-    grid-template-columns: minmax(0, 1fr);
     padding: 10px;
-  }
-
-  .application-shell:has(.application-content-chat) .sidebar,
-  .application-shell:has(.application-content-dashboard) .sidebar {
-    display: none;
-  }
-
-  .application-content:not(.application-content-chat):not(
-      .application-content-dashboard
-    ):not(.application-content-cabinet) {
-    display: none;
   }
 }
 
@@ -78,40 +65,4 @@
   .application-heading {
     animation-duration: 1ms;
   }
-}
-
-@media (max-width: 760px) {
-  .application-shell:has(.application-content-cabinet) {
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-
-  .application-shell:has(.application-content-cabinet) .sidebar {
-    min-height: 0;
-    padding: 8px;
-  }
-
-  .application-shell:has(.application-content-cabinet)
-    .sidebar
-    > :not(.sidebar-navigation) {
-    display: none;
-  }
-
-  .application-shell:has(.application-content-cabinet) .sidebar-navigation {
-    display: flex;
-    overflow-x: auto;
-  }
-
-  .application-shell:has(.application-content-cabinet)
-    .sidebar-navigation-item {
-    flex-shrink: 0;
-    font-size: 12px;
-  }
-}
-
-.application-shell:has(.dashboard-workspace[data-expanded='true']) {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.application-shell:has(.dashboard-workspace[data-expanded='true']) > .sidebar {
-  display: none;
 }

@@ -1,3 +1,7 @@
+import {
+  SidebarLayout,
+  SidebarToggle,
+} from './features/navigation/sidebar/sidebar-layout'
 import { Sidebar } from './features/navigation/sidebar/sidebar'
 import { useSidebar } from './features/navigation/sidebar/use-sidebar'
 import { Chat } from './modules/chat/components/chat'
@@ -15,23 +19,36 @@ function App() {
 
   return (
     <div className="application-shell">
-      <Sidebar controller={sidebar} />
-      <main
-        className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}`}
-      >
-        {isChatActive ? (
-          <Chat controller={chat} />
-        ) : isDashboardActive ? (
-          <Dashboard onBack={() => sidebar.selectSection('cabinet')} />
-        ) : isCabinetActive ? (
-          <Cabinet onOpenChat={() => sidebar.selectSection('chat')} />
-        ) : (
-          <div className="application-heading">
-            <span className="application-eyebrow">Раздел</span>
-            <h1>{sidebar.activeSectionLabel}</h1>
-          </div>
-        )}
-      </main>
+      <SidebarToggle
+        open={sidebar.isSidebarOpen}
+        onToggle={sidebar.toggleSidebar}
+        section={sidebar.activeSectionLabel}
+      />
+      <div className="application-body">
+        <SidebarLayout open={sidebar.isSidebarOpen}>
+          <Sidebar controller={sidebar} />
+        </SidebarLayout>
+        <main
+          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}`}
+        >
+          {isChatActive ? (
+            <Chat controller={chat} />
+          ) : isDashboardActive ? (
+            <Dashboard
+              onBack={() => sidebar.selectSection('cabinet')}
+              expanded={!sidebar.isSidebarOpen}
+              onToggleExpanded={sidebar.toggleSidebar}
+            />
+          ) : isCabinetActive ? (
+            <Cabinet onOpenChat={() => sidebar.selectSection('chat')} />
+          ) : (
+            <div className="application-heading">
+              <span className="application-eyebrow">Раздел</span>
+              <h1>{sidebar.activeSectionLabel}</h1>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   )
 }

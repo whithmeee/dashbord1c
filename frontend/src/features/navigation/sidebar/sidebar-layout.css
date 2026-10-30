@@ -1,0 +1,91 @@
+.application-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  height: 40px;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.sidebar-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  background: var(--app-panel);
+  color: var(--app-text);
+  cursor: pointer;
+}
+
+.sidebar-toggle:hover {
+  background: var(--app-accent-soft);
+  color: var(--app-accent);
+}
+
+.sidebar-toggle:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 2px;
+}
+
+.application-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.sidebar-slot {
+  overflow: clip;
+  flex-shrink: 0;
+  min-height: 0;
+}
+
+.sidebar-frame {
+  box-sizing: border-box;
+  width: 302px;
+  height: 100%;
+  padding-right: 16px;
+}
+
+.sidebar-frame > .sidebar {
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.application-body > .application-content {
+  flex: 1;
+}
+
+@media (max-width: 760px) {
+  .application-body {
+    flex-direction: column;
+  }
+
+  .sidebar-frame {
+    width: 100%;
+    height: 76px;
+    padding: 0 0 12px;
+  }
+
+  .sidebar-frame > .sidebar {
+    min-height: 0;
+    padding: 8px;
+  }
+
+  .sidebar-frame .sidebar > :not(.sidebar-navigation) {
+    display: none;
+  }
+
+  .sidebar-frame .sidebar-navigation {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .sidebar-frame .sidebar-navigation-item {
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+}

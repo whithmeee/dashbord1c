@@ -1,18 +1,17 @@
 import { useCallback, useMemo, useState } from 'react'
-import {
-  sidebarSections,
-  type SidebarSectionId,
-} from './sidebar.config'
+import { sidebarSections, type SidebarSectionId } from './sidebar.config'
 
 export function useSidebar() {
+  const [isSidebarOpen, setSidebarOpen] = useState(true)
+  const toggleSidebar = useCallback(() => setSidebarOpen((open) => !open), [])
   const [activeSectionId, setActiveSectionId] =
     useState<SidebarSectionId>('cabinet')
   const [isWorkspaceMenuOpen, setWorkspaceMenuOpen] = useState(false)
 
   const activeSectionLabel = useMemo(
     () =>
-      sidebarSections.find((section) => section.id === activeSectionId)?.label ??
-      sidebarSections[0].label,
+      sidebarSections.find((section) => section.id === activeSectionId)
+        ?.label ?? sidebarSections[0].label,
     [activeSectionId],
   )
 
@@ -30,6 +29,8 @@ export function useSidebar() {
   )
 
   return {
+    isSidebarOpen,
+    toggleSidebar,
     activeSectionLabel,
     isSectionActive,
     isWorkspaceMenuOpen,
