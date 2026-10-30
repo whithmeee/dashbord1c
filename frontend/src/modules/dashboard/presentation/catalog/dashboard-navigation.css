@@ -3,9 +3,9 @@
   align-items: center;
   gap: 16px;
   box-sizing: border-box;
-  max-width: 1440px;
+  max-width: none;
   margin: 0 auto;
-  padding: 24px clamp(20px, 3vw, 44px) 0;
+  padding: 20px clamp(18px, 2vw, 32px) 0;
 }
 
 .dashboard-navigation {
@@ -73,4 +73,29 @@
     display: inline-flex;
     padding-left: 0;
   }
+}
+
+.dashboard-expand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 10px 14px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  background: white;
+  color: var(--app-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .dashboard-expand {
+    display: none;
+  }
+}
+
+.dashboard-workspace {
+  width: 100%;
+  min-width: 0;
 }

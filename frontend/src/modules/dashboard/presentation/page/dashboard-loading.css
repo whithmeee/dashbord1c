@@ -44,7 +44,23 @@
 }
 
 .dashboard-skeleton-chart div {
-  height: 280px;
+  height: clamp(360px, 46vh, 560px);
   width: 100%;
   margin-top: 40px;
+}
+
+@media (min-width: 1900px) {
+  .dashboard-skeleton-metric {
+    grid-column: span 3;
+  }
+
+  .dashboard-skeleton-chart {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-skeleton-chart div {
+    height: 320px;
+  }
 }

@@ -107,3 +107,11 @@
     font-size: 12px;
   }
 }
+
+.application-shell:has(.dashboard-workspace[data-expanded='true']) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.application-shell:has(.dashboard-workspace[data-expanded='true']) > .sidebar {
+  display: none;
+}

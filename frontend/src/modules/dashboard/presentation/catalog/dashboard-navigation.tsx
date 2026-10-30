@@ -1,15 +1,25 @@
 import { LayoutGroup, motion } from 'motion/react'
-import { ArrowLeft, ChartNoAxesCombined, Library } from 'lucide-react'
+import {
+  ArrowLeft,
+  ChartNoAxesCombined,
+  Library,
+  Maximize2,
+  Minimize2,
+} from 'lucide-react'
 import { useInterfaceMotion } from '../../../../shared/motion/use-interface-motion'
 import './dashboard-navigation.css'
 
 type DashboardView = 'overview' | 'catalog'
 
 export function DashboardNavigation({
+  expanded,
+  onToggleExpanded,
   active,
   onSelect,
   onBack,
 }: {
+  expanded: boolean
+  onToggleExpanded: () => void
   active: DashboardView
   onSelect: (view: DashboardView) => void
   onBack: () => void
@@ -53,6 +63,16 @@ export function DashboardNavigation({
           ))}
         </nav>
       </LayoutGroup>
+      <button
+        className="dashboard-expand"
+        type="button"
+        onClick={onToggleExpanded}
+        aria-pressed={expanded}
+        data-testid="dashboard-expand"
+      >
+        {expanded ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
+        {expanded ? 'Свернуть' : 'На всю ширину'}
+      </button>
     </div>
   )
 }

@@ -33,7 +33,7 @@ export function DashboardSkeleton() {
             <span />
           </div>
         ))}
-        {[0, 1].map((key) => (
+        {[0, 1, 2, 3, 4, 5].map((key) => (
           <div className="dashboard-skeleton-chart" key={key}>
             <span />
             <div />

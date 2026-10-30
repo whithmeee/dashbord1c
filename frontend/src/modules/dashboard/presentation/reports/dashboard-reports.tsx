@@ -1,3 +1,4 @@
+import { FinanceReports } from './finance-reports'
 import { motion, useReducedMotion } from 'motion/react'
 import { TrendingUp, Wallet } from 'lucide-react'
 import { RevenueChart, DebtorsChart } from '../charts/report-charts'
@@ -54,6 +55,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           label="Задолженность контрагентов"
         />
       </article>
+      <FinanceReports report={report} />
     </motion.div>
   )
 }

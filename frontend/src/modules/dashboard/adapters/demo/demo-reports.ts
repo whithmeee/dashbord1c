@@ -1,3 +1,4 @@
+import { createDemoFinance } from './demo-finance'
 import type {
   DashboardReport,
   ReportPoint,
@@ -22,6 +23,7 @@ const debtors: ReportPoint[] = [
 
 export const demoReports: Record<'quarter' | 'half-year', DashboardReport> = {
   quarter: {
+    ...createDemoFinance(revenue, 3),
     revenue: revenue.slice(3),
     debtors,
     revenueTotal: 9610000,
@@ -29,6 +31,7 @@ export const demoReports: Record<'quarter' | 'half-year', DashboardReport> = {
     debtAsOf: '31 октября 2026',
   },
   'half-year': {
+    ...createDemoFinance(revenue, 0),
     revenue,
     debtors,
     revenueTotal: 16860000,

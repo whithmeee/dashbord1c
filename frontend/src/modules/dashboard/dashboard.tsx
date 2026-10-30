@@ -12,6 +12,7 @@ import { DemoControls, DemoNotice } from './adapters/demo/demo-controls'
 import { DashboardPage } from './presentation/page/dashboard-page'
 
 export function Dashboard({ onBack }: { onBack: () => void }) {
+  const [expanded, setExpanded] = useState(false)
   const [view, setView] = useState<'overview' | 'catalog'>('overview')
   const workspaceRef = useRef<HTMLDivElement>(null)
   const selectView = (next: 'overview' | 'catalog') => {
@@ -26,8 +27,14 @@ export function Dashboard({ onBack }: { onBack: () => void }) {
   )
 
   return (
-    <div className="dashboard-workspace" ref={workspaceRef}>
+    <div
+      className="dashboard-workspace"
+      data-expanded={expanded}
+      ref={workspaceRef}
+    >
       <DashboardNavigation
+        expanded={expanded}
+        onToggleExpanded={() => setExpanded((current) => !current)}
         active={view}
         onSelect={selectView}
         onBack={onBack}
