@@ -1,0 +1,75 @@
+import type { PlannedReport } from './report-catalog'
+
+export const operatingReports: PlannedReport[] = [
+  {
+    id: 'stock',
+    title: 'Остатки товаров и материалов',
+    description: 'Количество и учётная стоимость запасов на дату.',
+    group: 'inventory',
+    format: 'table',
+  },
+  {
+    id: 'stock-movement',
+    title: 'Движение товаров и материалов',
+    description: 'Начальные остатки, поступление, выбытие и конечные остатки.',
+    group: 'inventory',
+    format: 'table',
+  },
+  {
+    id: 'asset-value',
+    title: 'Основные средства',
+    description: 'Первоначальная и остаточная стоимость объектов.',
+    group: 'assets',
+    format: 'table',
+    keywords: 'ОС',
+  },
+  {
+    id: 'depreciation',
+    title: 'Амортизация',
+    description: 'Начисленная амортизация по объектам и периодам.',
+    group: 'assets',
+    format: 'chart',
+  },
+  {
+    id: 'payroll-accrual',
+    title: 'Начисления и выплаты зарплаты',
+    description: 'Сопоставление начислений и выплат за период.',
+    group: 'payroll',
+    format: 'chart',
+  },
+  {
+    id: 'payroll-debt',
+    title: 'Задолженность по зарплате',
+    description: 'Остатки расчётов с сотрудниками на дату.',
+    group: 'payroll',
+    format: 'table',
+  },
+  {
+    id: 'vat',
+    title: 'Анализ НДС',
+    description: 'Аналитическая сводка показателей НДС с детализацией.',
+    group: 'taxes',
+    format: 'chart',
+  },
+  {
+    id: 'purchase-book',
+    title: 'Книга покупок',
+    description: 'Табличное представление записей книги покупок.',
+    group: 'taxes',
+    format: 'table',
+  },
+  {
+    id: 'sales-book',
+    title: 'Книга продаж',
+    description: 'Табличное представление записей книги продаж.',
+    group: 'taxes',
+    format: 'table',
+  },
+  {
+    id: 'tax-summary',
+    title: 'Расчёты по налогам',
+    description: 'Сводка по применимым налогам организации.',
+    group: 'taxes',
+    format: 'table',
+  },
+]

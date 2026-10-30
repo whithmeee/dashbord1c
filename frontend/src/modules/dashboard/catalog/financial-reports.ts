@@ -1,0 +1,83 @@
+import type { PlannedReport } from './report-catalog'
+
+export const financialReports: PlannedReport[] = [
+  {
+    id: 'financial-result',
+    title: 'Финансовый результат',
+    description: 'Доходы, расходы и результат за период.',
+    group: 'finance',
+    format: 'chart',
+  },
+  {
+    id: 'expense-structure',
+    title: 'Структура расходов',
+    description: 'Расходы по статьям и их изменение.',
+    group: 'finance',
+    format: 'chart',
+  },
+  {
+    id: 'customer-sales',
+    title: 'Продажи по покупателям',
+    description: 'Покупатели и объём продаж за период.',
+    group: 'finance',
+    format: 'chart',
+  },
+  {
+    id: 'product-sales',
+    title: 'Продажи по номенклатуре',
+    description: 'Товары и услуги в структуре продаж.',
+    group: 'finance',
+    format: 'table',
+  },
+  {
+    id: 'cash-balances',
+    title: 'Остатки денежных средств',
+    description: 'Деньги на банковских счетах и в кассах на дату.',
+    group: 'cash',
+    format: 'chart',
+  },
+  {
+    id: 'cash-flow',
+    title: 'Движение денежных средств',
+    description: 'Поступления и списания по периодам.',
+    group: 'cash',
+    format: 'chart',
+    keywords: 'ДДС',
+  },
+  {
+    id: 'cash-articles',
+    title: 'Деньги по статьям движения',
+    description: 'Детализация поступлений и списаний по статьям.',
+    group: 'cash',
+    format: 'table',
+  },
+  {
+    id: 'receivables',
+    title: 'Дебиторская задолженность',
+    description: 'Долги покупателей по контрагентам и договорам.',
+    group: 'settlements',
+    format: 'table',
+  },
+  {
+    id: 'payables',
+    title: 'Кредиторская задолженность',
+    description: 'Долги перед поставщиками на дату.',
+    group: 'settlements',
+    format: 'table',
+  },
+  {
+    id: 'overdue',
+    title: 'Просроченная задолженность',
+    description: 'Задолженность по срокам просрочки.',
+    group: 'settlements',
+    format: 'chart',
+  },
+  {
+    id: 'reconciliation',
+    title: 'Сверка взаиморасчётов',
+    description: 'Операции и остатки расчётов с контрагентом.',
+    group: 'settlements',
+    format: 'table',
+    keywords: 'акт сверки',
+  },
+]
