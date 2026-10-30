@@ -5,9 +5,10 @@
   padding: 4px 0;
   border: 0;
   background: transparent;
-  color: var(--app-accent);
+  color: var(--app-accent-text);
   font-size: inherit;
   cursor: pointer;
+  min-height: 44px;
 }
 
 .report-details-toggle span {

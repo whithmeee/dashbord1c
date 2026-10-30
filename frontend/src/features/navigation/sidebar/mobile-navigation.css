@@ -1,0 +1,48 @@
+.mobile-navigation {
+  display: none;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mobile-navigation-brand {
+  font-size: 20px;
+  line-height: 1.15;
+  font-weight: 600;
+  color: var(--app-text);
+  letter-spacing: -0.025em;
+}
+
+.mobile-navigation-select {
+  position: relative;
+  min-width: 0;
+  max-width: 72%;
+}
+
+.mobile-navigation-select select {
+  appearance: none;
+  min-height: 44px;
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-control-radius);
+  background: var(--app-panel-solid);
+  color: var(--app-text);
+  font: inherit;
+  font-size: 16px;
+  text-overflow: ellipsis;
+}
+
+.mobile-navigation-select svg {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .mobile-navigation {
+    display: flex;
+  }
+}

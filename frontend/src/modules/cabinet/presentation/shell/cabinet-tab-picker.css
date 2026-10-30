@@ -1,0 +1,27 @@
+.cabinet-tab-picker {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .cabinet-tabs {
+    display: none;
+  }
+
+  .cabinet-tab-picker {
+    display: grid;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--app-muted);
+  }
+
+  .cabinet-tab-picker select {
+    min-height: 44px;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-control-radius);
+    background: var(--app-panel-solid);
+    color: var(--app-text);
+    font-size: 16px;
+  }
+}

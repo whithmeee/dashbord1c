@@ -1,7 +1,7 @@
 @media (max-width: 760px) {
   .application-content-chat {
     display: block;
-    min-height: calc(100vh - 20px);
+    min-height: 0;
   }
 
   .chat-header {

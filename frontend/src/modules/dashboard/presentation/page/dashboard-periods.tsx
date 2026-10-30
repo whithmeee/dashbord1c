@@ -1,20 +1,16 @@
 import type { DashboardPeriod } from '../../domain/dashboard-report'
 
-const periods: Record<
-  DashboardPeriod,
-  { id: DashboardPeriod; label: string; description: string }
-> = {
-  quarter: {
-    id: 'quarter',
-    label: '3 месяца',
-    description: 'Август — октябрь 2026',
-  },
-  'half-year': {
-    id: 'half-year',
-    label: '6 месяцев',
-    description: 'Май — октябрь 2026',
-  },
-}
+const periods: Record<DashboardPeriod, { id: DashboardPeriod; label: string }> =
+  {
+    quarter: {
+      id: 'quarter',
+      label: '3 месяца',
+    },
+    'half-year': {
+      id: 'half-year',
+      label: '6 месяцев',
+    },
+  }
 
 export function DashboardPeriods({
   period,
@@ -27,7 +23,6 @@ export function DashboardPeriods({
     <div className="dashboard-toolbar">
       <div>
         <strong>Период выручки</strong>
-        <p>{periods[period].description}</p>
       </div>
       <div
         className="dashboard-periods"

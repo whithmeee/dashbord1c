@@ -23,12 +23,20 @@ ChartJS.register(
   Tooltip,
 )
 
+ChartJS.defaults.font.family =
+  '-apple-system, BlinkMacSystemFont, "Inter Variable", "Segoe UI", sans-serif'
+ChartJS.defaults.color = '#62626a'
+
 export function useReportChart(points: ReportPoint[]) {
   const reducedMotion = useReducedMotion()
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    animation: reducedMotion ? false : { duration: 650 },
+    animation: reducedMotion ? false : { duration: 180 },
+    transitions: {
+      resize: { animation: { duration: 0 } },
+      active: { animation: { duration: 0 } },
+    },
     plugins: {
       legend: { display: false },
       tooltip: {

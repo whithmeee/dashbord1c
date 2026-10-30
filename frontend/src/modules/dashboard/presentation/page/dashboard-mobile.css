@@ -1,0 +1,74 @@
+@media (max-width: 760px) {
+  .dashboard-navigation-wrap {
+    padding: 12px 16px 0;
+  }
+
+  .dashboard-navigation-back,
+  .dashboard-header .application-eyebrow,
+  .dashboard-header > div > p {
+    display: none;
+  }
+
+  .dashboard {
+    padding: 16px;
+  }
+
+  .dashboard-header h1 {
+    margin: 0;
+    font-size: 26px;
+  }
+
+  .dashboard-demo {
+    margin: 16px 0;
+    padding: 10px 12px;
+  }
+
+  .dashboard-toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .dashboard-toolbar strong {
+    font-size: 13px;
+  }
+
+  .dashboard-periods button {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  .dashboard-reports {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .dashboard-metric {
+    padding: 12px;
+    gap: 8px;
+    align-content: start;
+  }
+
+  .dashboard-metric > span:not(.dashboard-metric-icon) {
+    padding-right: 0;
+    min-height: 3em;
+    line-height: 1.5;
+  }
+
+  .dashboard-metric strong {
+    font-size: clamp(16px, 4.8vw, 20px);
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+  }
+
+  .dashboard-metric-icon {
+    display: none;
+  }
+
+  .dashboard-report {
+    grid-column: 1 / -1;
+    padding: 16px;
+  }
+}

@@ -15,7 +15,7 @@
 
 .cabinet .cabinet-breadcrumb {
   margin: 0 0 32px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .cabinet-breadcrumb span {
@@ -32,12 +32,12 @@
 
 .cabinet-header {
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 .cabinet-header h1 {
   margin: 0;
-  font-size: clamp(26px, 3vw, 34px);
+  font-size: clamp(26px, 2.5vw, 32px);
   font-weight: 650;
   letter-spacing: -0.045em;
 }
@@ -49,7 +49,7 @@
   width: 58px;
   height: 58px;
   border-radius: 18px;
-  background: linear-gradient(135deg, #198ee9, #4867dd);
+  background: var(--app-accent);
   box-shadow: 0 6px 18px rgb(0 113 227 / 15%);
   color: white;
   font-size: 21px;
@@ -64,7 +64,7 @@
   border-radius: 7px;
   background: #e5f5ef;
   color: #22785a;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -84,7 +84,7 @@
 
 .cabinet-tabs {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   overflow-x: auto;
   border-bottom: 1px solid var(--app-border);
 }
@@ -95,17 +95,18 @@
   align-items: center;
   gap: 7px;
   flex-shrink: 0;
-  padding: 0 0 16px;
+  min-height: 44px;
+  padding: 8px 0 16px;
   border: 0;
   border-bottom: 2px solid transparent;
   background: transparent;
   color: var(--app-muted);
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
 }
 
 .cabinet-tabs button[aria-current='page'] {
-  color: var(--app-accent);
+  color: var(--app-accent-text);
 }
 
 .cabinet button:focus-visible {
@@ -119,7 +120,7 @@
   gap: 8px;
   margin: 20px 0;
   color: var(--app-muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -134,15 +135,15 @@
   gap: 8px;
   padding: 10px 14px;
   border: 1px solid var(--app-border);
-  border-radius: 10px;
+  border-radius: var(--app-control-radius);
   background: white;
   color: var(--app-text);
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
 }
 
 .cabinet-button-primary {
-  border-color: var(--app-accent);
+  border-color: var(--app-accent-text);
   background: var(--app-accent);
   color: white;
 }
@@ -154,7 +155,7 @@
   min-height: 320px;
   padding: 24px;
   border: 1px dashed var(--app-border);
-  border-radius: 20px;
+  border-radius: var(--app-card-radius);
   color: var(--app-muted);
   text-align: center;
 }
@@ -166,7 +167,7 @@
 }
 
 .cabinet-placeholder button {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .cabinet-tab-indicator {

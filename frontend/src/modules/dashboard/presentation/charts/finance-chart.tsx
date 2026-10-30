@@ -45,11 +45,29 @@ export function FinanceChart({
   }
 
   return (
-    <div className="dashboard-chart">
+    <div
+      className={
+        variant === 'bar'
+          ? 'dashboard-chart dashboard-chart-bars'
+          : 'dashboard-chart'
+      }
+    >
       {variant === 'line' ? (
-        <Line role="img" aria-label={label} options={options} data={data} />
+        <Line
+          updateMode="none"
+          role="img"
+          aria-label={label}
+          options={options}
+          data={data}
+        />
       ) : (
-        <Bar role="img" aria-label={label} options={options} data={data} />
+        <Bar
+          updateMode="none"
+          role="img"
+          aria-label={label}
+          options={options}
+          data={data}
+        />
       )}
     </div>
   )

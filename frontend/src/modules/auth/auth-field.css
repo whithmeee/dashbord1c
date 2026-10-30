@@ -1,0 +1,101 @@
+.auth-floating-field {
+  position: relative;
+}
+
+.auth-floating-field input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 3.625rem;
+  padding: 24px 48px 8px 14px;
+  border: 1px solid #d2d2d7;
+  border-radius: 0;
+  background: var(--app-panel-solid);
+  color: var(--app-text);
+  font: inherit;
+  font-size: 1rem;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.auth-floating-field:first-child input {
+  border-radius: 12px 12px 0 0;
+}
+
+.auth-floating-field:last-child input {
+  border-radius: 0 0 12px 12px;
+}
+
+.auth-floating-field + .auth-floating-field {
+  margin-top: -1px;
+}
+
+.auth-floating-field:focus-within {
+  z-index: 1;
+}
+
+.auth-floating-field label {
+  position: absolute;
+  top: 19px;
+  left: 14px;
+  color: var(--app-muted);
+  font-size: 1rem;
+  line-height: 20px;
+  transform-origin: left top;
+  pointer-events: none;
+  transition:
+    transform 160ms var(--ease-out),
+    color 180ms ease;
+}
+
+.auth-floating-field input:focus + label,
+.auth-floating-field input:not(:placeholder-shown) + label,
+.auth-floating-field input:autofill + label {
+  transform: translateY(-12px) scale(0.71);
+}
+
+.auth-floating-field input:focus {
+  outline: none;
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 1px var(--app-accent);
+}
+
+.auth-floating-field input:focus + label {
+  color: var(--app-muted);
+}
+
+.auth-password-toggle {
+  position: absolute;
+  top: 7px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--app-muted);
+  cursor: pointer;
+}
+
+.auth-password-toggle span {
+  display: grid;
+  place-items: center;
+}
+
+.auth-password-toggle:focus-visible {
+  outline: 2px solid var(--app-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-floating-field input,
+  .auth-floating-field label {
+    transition: none;
+  }
+}
+
+.auth-floating-field input:focus-visible + label {
+  transition: none;
+}

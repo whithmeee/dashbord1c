@@ -18,6 +18,7 @@ export function RevenueChart({ points }: ReportChartProps) {
   return (
     <div className="dashboard-chart" data-testid="revenue-chart">
       <Line
+        updateMode="none"
         role="img"
         aria-label="Выручка по месяцам в рублях"
         options={{
@@ -51,8 +52,12 @@ export function RevenueChart({ points }: ReportChartProps) {
 export function DebtorsChart({ points }: ReportChartProps) {
   const chart = useReportChart(points)
   return (
-    <div className="dashboard-chart" data-testid="debtors-chart">
+    <div
+      className="dashboard-chart dashboard-chart-debtors"
+      data-testid="debtors-chart"
+    >
       <Bar
+        updateMode="none"
         role="img"
         aria-label="Пять крупнейших должников, долг в рублях"
         options={{
@@ -70,11 +75,11 @@ export function DebtorsChart({ points }: ReportChartProps) {
               label: 'Задолженность',
               data: chart.values,
               backgroundColor: [
-                '#0071e3',
-                '#338dea',
-                '#66a9ef',
-                '#8cbbf3',
-                '#b3d4f8',
+                '#005bb5',
+                '#1267bd',
+                '#2875c5',
+                '#3d82cd',
+                '#528fd5',
               ],
               borderRadius: 6,
               barThickness: 24,

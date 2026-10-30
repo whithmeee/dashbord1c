@@ -21,6 +21,8 @@ export function ChatComposer({
       <form className="chat-composer" onSubmit={onSubmit}>
         <textarea
           aria-label="Сообщение"
+          data-testid="chat-input"
+          enterKeyHint="send"
           placeholder="Напишите сообщение..."
           rows={2}
           value={draft}

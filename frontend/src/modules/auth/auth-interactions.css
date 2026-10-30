@@ -1,0 +1,50 @@
+.auth-page button {
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms var(--ease-out);
+}
+
+.auth-page button:enabled:active {
+  scale: 1;
+}
+
+.auth-page button:enabled:active:not(:focus-visible) {
+  transform: scale(0.98);
+}
+
+.auth-forgot-password:focus-visible,
+.auth-submit:focus-visible {
+  outline: 2px solid #0071e3;
+}
+
+.auth-submit:active {
+  background: #0068d1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .auth-submit:hover {
+    background: #0077ed;
+  }
+
+  .auth-forgot-password:hover {
+    background: rgb(0 113 227 / 5%);
+  }
+
+  .auth-password-toggle:hover {
+    color: #0066cc;
+    background: rgb(0 113 227 / 6%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-page button {
+    transition:
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .auth-page button:enabled:active:not(:focus-visible) {
+    transform: none;
+  }
+}

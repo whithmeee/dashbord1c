@@ -8,6 +8,7 @@ import { isDashboardLoading } from './dashboard-state'
 import { DashboardUpdateStatus } from './dashboard-loading'
 import './dashboard.css'
 import './dashboard-responsive.css'
+import './dashboard-mobile.css'
 
 type DashboardPageProps = {
   loadDashboard: LoadDashboard

@@ -1,15 +1,7 @@
-import { useSyncExternalStore, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { motion } from 'motion/react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
 import './sidebar-layout.css'
-
-const mobileQuery = '(max-width: 760px)'
-
-function subscribeToViewport(callback: () => void) {
-  const query = window.matchMedia(mobileQuery)
-  query.addEventListener('change', callback)
-  return () => query.removeEventListener('change', callback)
-}
 
 export function SidebarLayout({
   open,
@@ -18,26 +10,13 @@ export function SidebarLayout({
   open: boolean
   children: ReactNode
 }) {
-  const mobile = useSyncExternalStore(
-    subscribeToViewport,
-    () => window.matchMedia(mobileQuery).matches,
-    () => false,
-  )
-  const { reducedMotion } = useInterfaceMotion()
-  const transition = reducedMotion
-    ? { duration: 0 }
-    : { type: 'spring' as const, bounce: 0, duration: 0.32 }
+  const { reducedMotion, appearance } = useInterfaceMotion()
 
   return (
-    <motion.div
+    <div
       id="application-sidebar"
       className="sidebar-slot"
-      initial={false}
-      animate={{
-        width: mobile ? '100%' : open ? 302 : 0,
-        height: mobile ? (open ? 76 : 0) : '100%',
-      }}
-      transition={transition}
+      data-open={open}
       aria-hidden={!open}
       {...(!open ? { inert: '' } : {})}
       data-testid="sidebar-slot"
@@ -46,13 +25,14 @@ export function SidebarLayout({
         className="sidebar-frame"
         initial={false}
         animate={{
-          x: reducedMotion || mobile ? 0 : open ? 0 : -32,
+          transform:
+            reducedMotion || open ? 'translateX(0)' : 'translateX(-12px)',
           opacity: open ? 1 : 0,
         }}
-        transition={transition}
+        transition={appearance}
       >
         {children}
       </motion.div>
-    </motion.div>
+    </div>
   )
 }

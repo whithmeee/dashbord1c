@@ -3,27 +3,28 @@
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  height: 40px;
+  min-height: 44px;
   color: var(--app-muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .sidebar-toggle {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--app-border);
-  border-radius: 10px;
+  border-radius: var(--app-control-radius);
   background: var(--app-panel);
   color: var(--app-text);
   cursor: pointer;
 }
-
-.sidebar-toggle:hover {
-  background: var(--app-accent-soft);
-  color: var(--app-accent);
+@media (hover: hover) and (pointer: fine) {
+  .sidebar-toggle:hover {
+    background: var(--app-accent-soft);
+    color: var(--app-accent-text);
+  }
 }
 
 .sidebar-toggle:focus-visible {
@@ -39,6 +40,7 @@
 }
 
 .sidebar-slot {
+  width: 302px;
   overflow: clip;
   flex-shrink: 0;
   min-height: 0;
@@ -60,46 +62,19 @@
   flex: 1;
 }
 
+.sidebar-slot[data-open='false'] {
+  width: 0;
+}
+
+.application-toolbar-desktop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 @media (max-width: 760px) {
-  .application-body {
-    flex-direction: column;
-  }
-
-  .sidebar-frame {
-    width: 100%;
-    height: 76px;
-    padding: 0 0 12px;
-  }
-
-  .sidebar-frame > .sidebar {
-    min-height: 0;
-    padding: 8px;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .sidebar-frame .sidebar > :not(.sidebar-navigation):not(.sidebar-brand) {
+  .sidebar-slot,
+  .application-toolbar-desktop {
     display: none;
-  }
-
-  .sidebar-frame .sidebar-brand {
-    flex-shrink: 0;
-    padding: 0;
-  }
-
-  .sidebar-frame .sidebar-logo {
-    display: none;
-  }
-
-  .sidebar-frame .sidebar-navigation {
-    display: flex;
-    min-width: 0;
-    overflow-x: auto;
-  }
-
-  .sidebar-frame .sidebar-navigation-item {
-    flex-shrink: 0;
-    font-size: 12px;
   }
 }

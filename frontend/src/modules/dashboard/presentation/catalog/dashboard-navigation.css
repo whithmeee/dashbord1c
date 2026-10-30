@@ -23,9 +23,10 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 14px;
+  min-height: 44px;
+  padding: 8px 12px;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--app-control-radius);
   background: transparent;
   color: var(--app-muted);
   font-size: 13px;
@@ -38,7 +39,7 @@
 }
 
 .dashboard-navigation button[aria-current='page'] {
-  color: var(--app-accent);
+  color: var(--app-accent-text);
 }
 
 .dashboard-navigation-selection {
@@ -70,8 +71,7 @@
   }
 
   .dashboard-navigation-back {
-    display: inline-flex;
-    padding-left: 0;
+    display: none;
   }
 }
 
@@ -80,12 +80,13 @@
   align-items: center;
   gap: 8px;
   margin-left: auto;
-  padding: 10px 14px;
+  min-height: 44px;
+  padding: 8px 12px;
   border: 1px solid var(--app-border);
-  border-radius: 10px;
+  border-radius: var(--app-control-radius);
   background: white;
   color: var(--app-text);
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
 }
 

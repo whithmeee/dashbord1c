@@ -5,28 +5,47 @@
   color: var(--app-text);
   border-color: var(--app-border);
   background: var(--app-panel);
-  backdrop-filter: blur(28px) saturate(150%);
 }
 
 .sidebar-brand {
-  @apply flex items-center justify-between px-2 pb-4;
+  @apply relative flex justify-center px-2 pb-4;
+}
+
+.sidebar-brand > button {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .sidebar-logo {
-  @apply grid h-11 place-items-center;
-  width: 133px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 8px;
+  color: #18223b;
+  min-height: 48px;
+  min-width: 0;
 }
 
 .sidebar-logo img {
-  width: 119px;
-  height: 37px;
-  filter: brightness(0);
+  flex-shrink: 0;
+  width: 80px;
+  height: auto;
+}
+
+.sidebar-logo strong {
+  font-size: 22px;
+  text-align: center;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 .sidebar-section-label {
   @apply px-2 pb-2 pt-1 text-xs font-bold uppercase;
   color: var(--app-muted);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.1em;
 }
 
@@ -43,14 +62,15 @@
   position: relative;
   isolation: isolate;
 }
-
-.sidebar-navigation-item:hover {
-  color: var(--app-text);
-  background: var(--app-soft);
+@media (hover: hover) and (pointer: fine) {
+  .sidebar-navigation-item:hover {
+    color: var(--app-text);
+    background: var(--app-soft);
+  }
 }
 
 .sidebar-navigation-item[aria-current='page'] {
-  color: var(--app-accent);
+  color: var(--app-accent-text);
 }
 
 .sidebar-navigation-icon {
@@ -63,10 +83,4 @@
 
 .sidebar-navigation-item[aria-current='page'] .sidebar-active-dot {
   background: var(--app-accent);
-}
-
-@media (max-width: 760px) {
-  .sidebar {
-    min-height: calc(100vh - 20px);
-  }
 }

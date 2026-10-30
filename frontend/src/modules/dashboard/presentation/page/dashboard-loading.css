@@ -1,7 +1,7 @@
 .dashboard-update-status {
   min-height: 36px;
   color: var(--app-muted);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -16,13 +16,13 @@
 .dashboard-skeleton-chart {
   padding: 24px;
   border: 1px solid var(--app-border);
-  border-radius: 20px;
+  border-radius: var(--app-card-radius);
   background: var(--app-panel-solid);
 }
 
 .dashboard-skeleton-metric {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   min-height: 160px;
   box-sizing: border-box;
 }
@@ -44,7 +44,7 @@
 }
 
 .dashboard-skeleton-chart div {
-  height: clamp(360px, 46vh, 560px);
+  height: clamp(260px, 32vh, 360px);
   width: 100%;
   margin-top: 40px;
 }
@@ -61,6 +61,12 @@
 
 @media (max-width: 760px) {
   .dashboard-skeleton-chart div {
-    height: 320px;
+    height: 240px;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-skeleton-chart {
+    grid-column: 1 / -1;
   }
 }

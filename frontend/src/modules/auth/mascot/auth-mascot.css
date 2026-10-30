@@ -1,0 +1,17 @@
+.auth-mascot {
+  position: absolute;
+  top: -114px;
+  left: 50%;
+  width: 164px;
+  height: 180px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.auth-mascot-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

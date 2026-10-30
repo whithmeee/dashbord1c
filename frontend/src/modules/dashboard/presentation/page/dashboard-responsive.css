@@ -6,7 +6,7 @@
   padding: 24px;
   text-align: center;
   border: 1px dashed var(--app-border);
-  border-radius: 20px;
+  border-radius: var(--app-card-radius);
   background: var(--app-panel);
 }
 
@@ -16,18 +16,19 @@
 }
 
 .dashboard-state button {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .dashboard-demo-controls {
   margin-top: 24px;
   color: var(--app-muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .dashboard-demo-controls button {
-  font-size: 11px;
-  padding: 7px 10px;
+  font-size: 12px;
+  min-height: 44px;
+  padding: 8px 12px;
 }
 
 .dashboard-back {
@@ -37,7 +38,7 @@
 @media (max-width: 760px) {
   .dashboard-back {
     display: inline-flex;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
   }
 
   .dashboard-toolbar,

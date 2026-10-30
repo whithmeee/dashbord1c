@@ -12,6 +12,7 @@ import { cabinetTabs } from './cabinet-tabs.config'
 import { Overview } from '../overview/overview'
 import './cabinet.css'
 import './cabinet-responsive.css'
+import './cabinet-tab-picker.css'
 
 export function CabinetPage({
   overview,

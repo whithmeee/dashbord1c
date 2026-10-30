@@ -1,25 +1,26 @@
 .cabinet-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 22px;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .cabinet-summary-card {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 22px;
+  gap: 16px;
+  padding: 24px;
   border: 1px solid var(--app-border);
   border-radius: 16px;
   background: white;
-  color: var(--app-accent);
+  color: var(--app-accent-text);
   text-align: left;
   cursor: pointer;
 }
-
-.cabinet-summary-card:hover {
-  background: #f2f7ff;
+@media (hover: hover) and (pointer: fine) {
+  .cabinet-summary-card:hover {
+    background: #f2f7ff;
+  }
 }
 
 .cabinet-summary-card span {
@@ -36,7 +37,7 @@
 
 .cabinet-summary-card small {
   color: var(--app-muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .cabinet-chat-link {
@@ -48,13 +49,13 @@
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
   align-items: start;
-  gap: 22px;
+  gap: 24px;
 }
 
 .cabinet-panel {
   padding: 24px;
   border: 1px solid var(--app-border);
-  border-radius: 20px;
+  border-radius: var(--app-card-radius);
   background: white;
   box-shadow: 0 4px 18px rgb(20 20 24 / 2%);
 }
@@ -83,7 +84,7 @@
   align-items: center;
   gap: 12px;
   padding: 24px 0;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   border-bottom: 1px solid var(--app-border);
 }
 
@@ -97,7 +98,7 @@
 }
 
 .cabinet-integration p {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .cabinet-integration-icon {
@@ -113,12 +114,12 @@
 
 .cabinet-access {
   display: grid;
-  gap: 18px;
+  gap: 16px;
 }
 
 .cabinet-access-row {
   margin-top: 24px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .cabinet-access-row > span:first-child {
@@ -136,8 +137,8 @@
   padding: 5px 9px;
   border-radius: 7px;
   background: var(--app-accent-soft);
-  color: var(--app-accent);
-  font-size: 11px;
+  color: var(--app-accent-text);
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -146,10 +147,11 @@
   align-items: center;
   gap: 8px;
   margin-top: 24px;
-  padding: 0;
+  min-height: 44px;
+  padding: 8px 0;
   border: 0;
   background: transparent;
-  color: var(--app-accent);
-  font-size: 12px;
+  color: var(--app-accent-text);
+  font-size: 13px;
   cursor: pointer;
 }

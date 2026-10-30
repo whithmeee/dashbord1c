@@ -9,16 +9,13 @@
 .chat-workspace {
   @apply relative grid h-full min-h-0 min-w-0 overflow-hidden;
   grid-template-rows: 68px minmax(0, 1fr) auto;
-  background:
-    radial-gradient(circle at 50% 0%, var(--app-accent-soft), transparent 38%),
-    var(--app-panel-solid);
+  background: var(--app-panel-solid);
 }
 
 .chat-header {
   @apply z-10 flex items-center justify-between border-b px-8;
   border-color: var(--app-border);
-  background: color-mix(in srgb, var(--app-panel-solid) 82%, transparent);
-  backdrop-filter: blur(24px) saturate(140%);
+  background: var(--app-panel-solid);
 }
 
 .chat-heading {
@@ -28,11 +25,11 @@
 .chat-heading-icon,
 .chat-assistant-avatar {
   @apply grid place-items-center text-white;
-  background: linear-gradient(145deg, var(--app-accent), #7c5cff);
+  background: var(--app-accent);
 }
 
 .chat-heading-icon {
-  @apply size-10 rounded-xl;
+  @apply size-11 rounded-xl;
 }
 
 .chat-heading > span:last-child,
@@ -50,14 +47,15 @@
 }
 
 .chat-icon-button {
-  @apply grid size-10 cursor-pointer place-items-center rounded-xl border bg-transparent;
+  @apply grid size-11 cursor-pointer place-items-center rounded-xl border bg-transparent;
   color: var(--app-muted);
   border-color: var(--app-border);
 }
-
-.chat-icon-button:hover {
-  color: var(--app-text);
-  background: var(--app-soft);
+@media (hover: hover) and (pointer: fine) {
+  .chat-icon-button:hover {
+    color: var(--app-text);
+    background: var(--app-soft);
+  }
 }
 
 .chat-conversation {
@@ -141,22 +139,24 @@
 }
 
 .chat-attachment-button {
-  @apply flex min-h-10 cursor-pointer items-center gap-2 rounded-xl border-0 bg-transparent px-3 text-xs;
+  @apply flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border-0 bg-transparent px-3 text-xs;
   color: var(--app-muted);
 }
-
-.chat-attachment-button:hover {
-  color: var(--app-text);
-  background: var(--app-soft);
+@media (hover: hover) and (pointer: fine) {
+  .chat-attachment-button:hover {
+    color: var(--app-text);
+    background: var(--app-soft);
+  }
 }
 
 .chat-send-button {
-  @apply grid size-10 cursor-pointer place-items-center rounded-xl border-0 text-white;
+  @apply grid size-11 cursor-pointer place-items-center rounded-xl border-0 text-white;
   background: var(--app-accent);
 }
-
-.chat-send-button:hover:not(:disabled) {
-  transform: translateY(-1px) scale(1.02);
+@media (hover: hover) and (pointer: fine) {
+  .chat-send-button:hover:not(:disabled) {
+    transform: translateY(-1px) scale(1.02);
+  }
 }
 
 .chat-send-button:disabled {
@@ -167,6 +167,5 @@
   @apply mx-auto mb-0 mt-2 text-center;
   max-width: 960px;
   color: var(--app-muted);
-  font-size: 10px;
+  font-size: 12px;
 }
-

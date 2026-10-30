@@ -1,6 +1,6 @@
 import { LayoutGroup, motion } from 'motion/react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
-import osminogLogo from '../../../assets/osminog-company-logo.svg'
+import osminogLogo from '../../../shared/brand/osminog-dark-blue.svg'
 import { SidebarToggle } from './sidebar-toggle'
 import { SidebarConnection } from './sidebar-connection'
 import { demoSidebarConnection, sidebarSections } from './sidebar.config'
@@ -19,7 +19,8 @@ export function Sidebar({ controller }: SidebarProps) {
     <aside className="sidebar">
       <div className="sidebar-brand">
         <span className="sidebar-logo">
-          <img src={osminogLogo} alt="Osminog" />
+          <img src={osminogLogo} alt="" />
+          <strong>Osminog Project</strong>
         </span>
         {controller.isSidebarOpen && (
           <SidebarToggle open onToggle={controller.toggleSidebar} />

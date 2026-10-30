@@ -1,0 +1,148 @@
+body:has(.auth-page) {
+  min-width: 0;
+}
+
+.auth-page {
+  display: grid;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  place-items: center;
+  padding: 2.5rem 1.25rem;
+  background: #fff;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Inter Variable', 'Segoe UI', sans-serif;
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  color: #1d1d1f;
+}
+
+.auth-card {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  max-width: 27rem;
+  padding: 2.5rem 2.5rem 1.25rem;
+  border: 1px solid rgb(29 29 31 / 7%);
+  border-radius: 1.75rem;
+  background: #fff;
+  box-shadow:
+    0 2px 6px rgb(29 29 31 / 2%),
+    0 16px 48px rgb(29 29 31 / 4%);
+}
+
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
+  color: #18223b;
+}
+
+.auth-brand-mark {
+  display: block;
+}
+
+.auth-logo {
+  display: block;
+  width: 6.5rem;
+  height: auto;
+}
+
+.auth-brand-name {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.auth-heading {
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.auth-heading h1 {
+  margin: 0;
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.auth-heading p {
+  margin: 0.625rem 0 0;
+  color: #6e6e73;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-fields {
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.auth-forgot-password {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 0.125rem;
+  min-height: 2.75rem;
+  margin: -0.25rem 0;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #0066cc;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.auth-submit {
+  min-height: auto;
+  padding: 0.75rem 1.375rem;
+  border: 1px solid rgb(0 0 0 / 4%);
+  border-radius: 0.75rem;
+  background: #0071e3;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    0 1px 2px rgb(0 60 130 / 12%);
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-message {
+  min-block-size: 3em;
+  margin: -0.75rem 0 0;
+  color: #6e6e73;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+@media (max-width: 480px) {
+  .auth-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .auth-card {
+    padding: 2rem 1.5rem 0.75rem;
+    border-radius: 1.5rem;
+  }
+
+  .auth-heading h1 {
+    font-size: 1.75rem;
+  }
+}

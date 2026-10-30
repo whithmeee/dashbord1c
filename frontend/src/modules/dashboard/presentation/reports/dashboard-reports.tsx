@@ -12,9 +12,9 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
   return (
     <motion.div
       className="dashboard-reports"
-      initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: reducedMotion ? 0 : 0.35 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: reducedMotion ? 0 : 0.16 }}
     >
       <article className="dashboard-metric">
         <span className="dashboard-metric-icon">

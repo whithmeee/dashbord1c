@@ -12,8 +12,7 @@ export function DemoNotice() {
     <div className="dashboard-demo">
       <FlaskConical size={18} />
       <span>
-        <strong>Демонстрационные данные</strong> · Вымышленные компании и суммы,
-        без подключения к 1С.
+        <strong>Демоданные</strong> · Без подключения к 1С
       </span>
     </div>
   )

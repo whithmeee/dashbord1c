@@ -17,7 +17,7 @@
 
 .dashboard-header h1 {
   margin: 10px 0 8px;
-  font-size: clamp(28px, 3vw, 38px);
+  font-size: clamp(26px, 2.5vw, 32px);
   letter-spacing: -0.045em;
   font-weight: 650;
 }
@@ -36,9 +36,10 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 14px;
+  min-height: 44px;
+  padding: 8px 12px;
   border: 1px solid var(--app-border);
-  border-radius: 10px;
+  border-radius: var(--app-control-radius);
   background: white;
   color: var(--app-text);
   cursor: pointer;
@@ -48,7 +49,7 @@
 .dashboard button:focus-visible,
 .dashboard summary:focus-visible {
   outline: 3px solid var(--app-accent);
-  outline-offset: 3px;
+  outline-offset: 0;
 }
 
 .dashboard button:disabled {
@@ -66,7 +67,7 @@
   border-radius: 12px;
   background: var(--app-accent-soft);
   color: #21578c;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
@@ -75,7 +76,7 @@
 }
 
 .dashboard-toolbar {
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 
 .dashboard-toolbar strong {
@@ -91,5 +92,5 @@
 .dashboard button[aria-pressed='true'] {
   background: var(--app-accent);
   color: white;
-  border-color: var(--app-accent);
+  border-color: var(--app-accent-text);
 }

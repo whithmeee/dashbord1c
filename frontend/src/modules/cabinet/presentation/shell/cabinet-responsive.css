@@ -12,20 +12,20 @@
   .cabinet-header {
     align-items: flex-start;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
   }
 
   .cabinet .cabinet-breadcrumb {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .cabinet-summary {
     grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
+    gap: 8px;
   }
 
   .cabinet-summary-card {
-    padding: 16px;
+    padding: 12px 16px;
   }
 
   .cabinet-access {
@@ -33,7 +33,7 @@
   }
 
   .cabinet-panel {
-    padding: 18px;
+    padding: 12px 16px;
   }
 
   .cabinet-integration {

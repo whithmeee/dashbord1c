@@ -3,10 +3,7 @@
 .application-shell {
   @apply flex min-h-screen flex-col gap-2 overflow-hidden p-3;
   height: 100dvh;
-  background:
-    radial-gradient(circle at 85% 0%, rgb(98 126 234 / 16%), transparent 34%),
-    radial-gradient(circle at 58% 100%, rgb(41 151 255 / 11%), transparent 31%),
-    var(--app-background);
+  background: var(--app-background);
 }
 
 .application-content {
@@ -24,12 +21,12 @@
 .application-content-cabinet {
   display: block;
   overflow-y: auto;
-  background: rgb(250 251 253 / 85%);
+  background: var(--app-background);
 }
 
 .application-heading {
   @apply text-center;
-  animation: content-enter 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: content-enter 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .application-eyebrow {
@@ -57,7 +54,9 @@
 
 @media (max-width: 760px) {
   .application-shell {
-    padding: 10px;
+    padding: max(8px, env(safe-area-inset-top))
+      max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom))
+      max(8px, env(safe-area-inset-left));
   }
 }
 

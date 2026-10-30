@@ -1,5 +1,6 @@
 import { SidebarLayout } from './features/navigation/sidebar/sidebar-layout'
 import { SidebarToggle } from './features/navigation/sidebar/sidebar-toggle'
+import { MobileNavigation } from './features/navigation/sidebar/mobile-navigation'
 import { Sidebar } from './features/navigation/sidebar/sidebar'
 import { useSidebar } from './features/navigation/sidebar/use-sidebar'
 import { Chat } from './modules/chat/components/chat'
@@ -18,10 +19,13 @@ function App() {
   return (
     <div className="application-shell">
       <header className="application-toolbar">
-        {!sidebar.isSidebarOpen && (
-          <SidebarToggle open={false} onToggle={sidebar.toggleSidebar} />
-        )}
-        <span>{sidebar.activeSectionLabel}</span>
+        <div className="application-toolbar-desktop">
+          {!sidebar.isSidebarOpen && (
+            <SidebarToggle open={false} onToggle={sidebar.toggleSidebar} />
+          )}
+          <span>{sidebar.activeSectionLabel}</span>
+        </div>
+        <MobileNavigation controller={sidebar} />
       </header>
       <div className="application-body">
         <SidebarLayout open={sidebar.isSidebarOpen}>
