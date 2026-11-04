@@ -11,7 +11,7 @@ export function OverviewIntegrations({
   return (
     <section className="cabinet-panel cabinet-integrations">
       <div className="cabinet-panel-heading">
-        <h2>Интеграции</h2>
+        <h2>Синхронизация с 1С</h2>
         <Database size={18} />
       </div>
       <p>

@@ -1,13 +1,3 @@
-@media (max-width: 1150px) {
-  .cabinet-overview-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .cabinet-access {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 760px) {
   .cabinet-header {
     align-items: flex-start;
@@ -26,10 +16,6 @@
 
   .cabinet-summary-card {
     padding: 12px 16px;
-  }
-
-  .cabinet-access {
-    grid-template-columns: minmax(0, 1fr);
   }
 
   .cabinet-panel {

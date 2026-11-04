@@ -1,5 +1,4 @@
-export type CabinetTab =
-  'overview' | 'integrations' | 'telegram' | 'team' | 'subscription' | 'plan'
+export type CabinetTab = 'overview' | 'integrations' | 'team'
 
 export type CabinetOverview = {
   name: string
@@ -10,9 +9,8 @@ export type CabinetOverview = {
     configuration: string
     connected: boolean
   }[]
+  subscription: { status: 'active' | 'expired'; validUntil: string }
   telegramBots: number
-  subscription: { label: string; daysRemaining: number; validUntil: string }
-  plan: { name: string; availableFeatures: number; totalFeatures: number }
 }
 
 export function describeCabinet(overview: CabinetOverview) {

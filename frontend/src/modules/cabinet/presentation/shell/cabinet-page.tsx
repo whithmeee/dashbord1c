@@ -43,7 +43,6 @@ export function CabinetPage({
             <p>{describeCabinet(overview)}</p>
           </div>
         </div>
-        <span className="cabinet-badge">{overview.subscription.label}</span>
       </header>
       <CabinetTabs active={activeTab} onSelect={selectTab} />
       <div className="cabinet-demo">

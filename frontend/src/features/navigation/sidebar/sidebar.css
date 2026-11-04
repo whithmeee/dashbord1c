@@ -17,13 +17,6 @@
   right: 0;
 }
 
-.sidebar-section-label {
-  @apply px-2 pb-2 pt-1 text-xs font-bold uppercase;
-  color: var(--app-muted);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-}
-
 .sidebar-navigation {
   @apply grid gap-1;
   min-height: 0;

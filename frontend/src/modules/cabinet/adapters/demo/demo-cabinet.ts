@@ -13,11 +13,6 @@ export function getDemoCabinet(): CabinetOverview {
       },
     ],
     telegramBots: 0,
-    subscription: {
-      label: 'Пробный период',
-      daysRemaining: 14,
-      validUntil: '11 ноября 2026, 23:42',
-    },
-    plan: { name: 'Индивидуальный', availableFeatures: 17, totalFeatures: 17 },
+    subscription: { status: 'active', validUntil: '2026-11-30' },
   }
 }

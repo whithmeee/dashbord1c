@@ -1,16 +1,6 @@
-import {
-  LayoutDashboard,
-  Database,
-  Bot,
-  Users,
-  CalendarDays,
-  Gem,
-} from 'lucide-react'
+import { LayoutDashboard, Database, Users } from 'lucide-react'
 export const cabinetTabs = [
-  { id: 'overview', label: 'Обзор', icon: LayoutDashboard },
-  { id: 'integrations', label: 'Интеграции', icon: Database },
-  { id: 'telegram', label: 'Telegram-бот', icon: Bot },
-  { id: 'team', label: 'Команда и права', icon: Users },
-  { id: 'subscription', label: 'Подписка', icon: CalendarDays },
-  { id: 'plan', label: 'Тариф', icon: Gem },
+  { id: 'overview', label: 'Главная', icon: LayoutDashboard },
+  { id: 'integrations', label: 'Синхронизация с 1С', icon: Database },
+  { id: 'team', label: 'Пользователи и Права', icon: Users },
 ] as const

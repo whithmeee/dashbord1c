@@ -18,16 +18,12 @@ function App() {
 
   return (
     <div className="application-shell">
-      <header className="application-toolbar">
-        <div className="application-toolbar-desktop">
-          {!sidebar.isSidebarOpen && (
-            <SidebarToggle open={false} onToggle={sidebar.toggleSidebar} />
-          )}
-          <span>{sidebar.activeSectionLabel}</span>
-        </div>
-        <MobileNavigation controller={sidebar} />
-      </header>
       <div className="application-body">
+        {!sidebar.isSidebarOpen && (
+          <div className="sidebar-reopen">
+            <SidebarToggle open={false} onToggle={sidebar.toggleSidebar} />
+          </div>
+        )}
         <SidebarLayout open={sidebar.isSidebarOpen}>
           <Sidebar controller={sidebar} />
         </SidebarLayout>
@@ -52,6 +48,7 @@ function App() {
           )}
         </main>
       </div>
+      <MobileNavigation controller={sidebar} />
     </div>
   )
 }

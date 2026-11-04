@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from 'motion/react'
-import { MessageSquare, Database, CalendarDays } from 'lucide-react'
+import { MessageSquare, Database } from 'lucide-react'
 import type { CabinetOverview, CabinetTab } from '../../domain/cabinet'
 import { OverviewIntegrations } from './overview-integrations'
-import { OverviewAccess } from './overview-access'
+import { OverviewSubscription } from './overview-subscription'
 import './overview.css'
 
 type OverviewProps = {
@@ -59,17 +59,6 @@ export function Overview({
             <small>Интеграций</small>
           </span>
         </button>
-        <button
-          className="cabinet-summary-card"
-          type="button"
-          onClick={() => onSelectTab('subscription')}
-        >
-          <CalendarDays size={22} />
-          <span>
-            <strong>{overview.subscription.daysRemaining}</strong>
-            <small>Дней доступа</small>
-          </span>
-        </button>
       </motion.div>
       <div className="cabinet-overview-grid">
         <motion.div variants={entrance}>
@@ -78,12 +67,8 @@ export function Overview({
             onOpenChat={onOpenChat}
           />
         </motion.div>
-        <motion.div className="cabinet-access" variants={entrance}>
-          <OverviewAccess
-            subscription={overview.subscription}
-            plan={overview.plan}
-            onSelectTab={onSelectTab}
-          />
+        <motion.div variants={entrance}>
+          <OverviewSubscription subscription={overview.subscription} />
         </motion.div>
       </div>
     </motion.div>

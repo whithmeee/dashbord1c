@@ -2,8 +2,8 @@ import { LayoutGroup, motion } from 'motion/react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
 import { OsminogLogo } from '../../../shared/brand/osminog-logo'
 import { SidebarToggle } from './sidebar-toggle'
-import { SidebarConnection } from './sidebar-connection'
 import { demoSidebarConnection, sidebarSections } from './sidebar.config'
+import { SidebarConnection } from './sidebar-connection'
 import type { SidebarController } from './use-sidebar'
 import './sidebar.css'
 import './sidebar-motion.css'
@@ -23,8 +23,6 @@ export function Sidebar({ controller }: SidebarProps) {
           <SidebarToggle open onToggle={controller.toggleSidebar} />
         )}
       </div>
-
-      <span className="sidebar-section-label">Рабочее пространство</span>
 
       <LayoutGroup id="sidebar">
         <nav className="sidebar-navigation" aria-label="Основная навигация">

@@ -6,7 +6,7 @@ export function SidebarConnection({ name }: { name: string }) {
   const { reducedMotion, appearance } = useInterfaceMotion()
 
   return (
-    <footer className="sidebar-connection" data-testid="sidebar-connection">
+    <div className="sidebar-connection" data-testid="sidebar-connection">
       <motion.div
         className="sidebar-connection-card"
         initial={{ opacity: 0, y: reducedMotion ? 0 : 6 }}
@@ -24,6 +24,6 @@ export function SidebarConnection({ name }: { name: string }) {
           </span>
         </div>
       </motion.div>
-    </footer>
+    </div>
   )
 }
