@@ -187,7 +187,9 @@ class AdminPanelTest extends TestCase
         Integration::factory()->for($romashka)->create();
 
         $this->getJson('/admin-panel/companies')->assertOk()->assertJsonCount(2, 'data');
-        $this->getJson('/admin-panel/companies?search=Ромашка')->assertOk()->assertJsonCount(1, 'data');
+        $this->getJson('/admin-panel/companies?search=%D0%A0%D0%BE%D0%BC%D0%B0%D1%88%D0%BA%D0%B0')
+            ->assertOk()
+            ->assertJsonCount(1, 'data');
         $this->getJson("/admin-panel/companies/{$romashka->id}")
             ->assertOk()
             ->assertJsonPath('employees_count', 2)
