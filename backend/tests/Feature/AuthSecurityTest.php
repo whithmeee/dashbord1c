@@ -16,7 +16,6 @@ class AuthSecurityTest extends TestCase
         parent::setUp();
 
         $this->seed(RoleSeeder::class);
-        $this->markTestSkipped('Awaiting login rate limiter correction');
     }
 
     public function test_login_rate_limit_is_scoped_by_login_and_ip(): void
