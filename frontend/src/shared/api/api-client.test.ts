@@ -73,7 +73,7 @@ describe('API client transport', () => {
     expect(fetcher).toHaveBeenCalledTimes(1)
   })
 
-  it.skip('preserves the browser receiver for native fetch', async () => {
+  it('preserves the browser receiver for native fetch', async () => {
     const nativeFetch = vi.fn(function (this: unknown) {
       if (this !== globalThis) {
         return Promise.reject(new TypeError('Illegal invocation'))
