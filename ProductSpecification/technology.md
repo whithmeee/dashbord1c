@@ -1,25 +1,23 @@
 # Technology Profile
 
 tech-profile:
-  backend: java-spring
+  backend: php-laravel
   frontend: react-ts
   css: tailwind
-  browser-testing: selenium
+  browser-testing: not-configured
 
 ## Backend
 
 | Concern | Technology |
 |---------|-----------|
-| Language | Java 17+ |
-| Framework | Spring Boot 3.2 |
-| Build tool | Gradle (multi-module) |
-| DI | Spring (@Service, @RequiredArgsConstructor) |
-| Web | Spring Web (controllers, ResponseEntity) |
-| Persistence | JPA / Hibernate |
-| Database | H2 (dev), PostgreSQL (prod) |
-| Migrations | Liquibase |
-| Mail | Spring Mail |
-| Code generation | Lombok (@Data, @Builder, @Value, @RequiredArgsConstructor) |
+| Language | PHP 8.3+ |
+| Framework | Laravel 13 |
+| Build tool | Composer |
+| Authentication | Laravel Sanctum SPA sessions |
+| Web | Laravel routing and controllers |
+| Persistence | Eloquent ORM |
+| Database | SQLite (dev), configurable in production |
+| Migrations | Laravel migrations |
 
 ## Frontend
 
@@ -29,7 +27,7 @@ tech-profile:
 | Framework | React 18 |
 | Build tool | Vite |
 | Test runner | Vitest |
-| HTTP mocking | MSW (Mock Service Worker) |
+| HTTP testing | Native fetch test doubles |
 
 ## CSS
 
@@ -42,25 +40,21 @@ tech-profile:
 
 | Concern | Technology |
 |---------|-----------|
-| Framework | Selenium WebDriver |
-| Async assertions | Awaitility |
+| Framework | Not configured |
 
-## Testing (Backend)
+## Testing
 
 | Concern | Technology |
 |---------|-----------|
-| Unit/integration | JUnit 5 |
-| Assertions | AssertJ |
-| Mocking | Mockito |
-| Coverage | JaCoCo |
-| Frontend tests | Vitest |
+| Backend | PHPUnit 12 |
+| Frontend | Vitest 4, Node environment |
 
 ## Infrastructure
 
 | Concern | Technology |
 |---------|-----------|
 | Containerization | Docker / docker-compose |
-| Mail server (dev) | MailHog |
+| Local addresses | Dynamic ports from `infrastructure/.env` |
 
 ## Conventions
 
@@ -68,14 +62,10 @@ tech-profile:
 
 | Concern | Convention |
 |---------|-----------|
-| Test disable marker | @Disabled |
-| Not-implemented marker | throw UnsupportedOperationException() |
-| Run command | ./gradlew :backend:application:bootRun |
-| Test command | ./gradlew :backend:{module}:test |
-| Acceptance test command | ./gradlew backendTest |
-| Coverage report | JaCoCo XML in build/reports/jacoco/ |
-| Health endpoint | /actuator/health |
-| Spring config syntax | ${VAR:fallback} |
+| Test disable marker | `->markTestSkipped()` |
+| Run command | `infrastructure/scripts/run-backend.sh` |
+| Test command | `php artisan test` |
+| Configuration | Laravel environment variables |
 | Docker config syntax | ${VAR:-fallback} |
 
 ### Frontend
@@ -84,11 +74,12 @@ tech-profile:
 |---------|-----------|
 | Test skip marker | .skip |
 | Dev command | npm run dev |
-| Test command | npx vitest run |
-| Node config syntax | process.env.VAR \|\| 'fallback' |
+| Test command | `npm test` |
+| API base URL | `VITE_API_BASE_URL`, empty for same-origin |
+| Local API URL | Exported by `infrastructure/scripts/run-frontend.sh` |
 
 ### Browser Testing
 
 | Concern | Convention |
 |---------|-----------|
-| Acceptance test command | ./gradlew frontendTest |
+| Acceptance test command | Not configured |
