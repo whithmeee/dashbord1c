@@ -52,3 +52,25 @@
 .sidebar-navigation-item[aria-current='page'] .sidebar-active-dot {
   background: var(--app-accent);
 }
+
+.sidebar-logout {
+  @apply mt-2 flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border-0 bg-transparent px-3;
+  color: var(--app-muted);
+}
+
+.sidebar-logout:hover {
+  color: var(--app-text);
+  background: var(--app-soft);
+}
+
+.sidebar-logout:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.sidebar-logout-error {
+  margin: 0.5rem 0 0;
+  color: #b42318;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}

@@ -15,7 +15,7 @@ export function AuthField({ name, label }: AuthFieldProps) {
     <div className="auth-floating-field">
       <input
         id={`auth-${name}`}
-        name={isPassword ? 'password' : 'username'}
+        name={name}
         type={isPassword && !visible ? 'password' : 'text'}
         autoComplete={isPassword ? 'current-password' : 'username'}
         autoCapitalize="none"

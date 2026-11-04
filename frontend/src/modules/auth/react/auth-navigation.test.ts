@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { companySession } from '../application/auth-session-store.test-data'
 import { getRequiredAuthPath } from './auth-navigation'
 
-describe.skip('auth navigation', () => {
+describe('auth navigation', () => {
   it('keeps guest and signing-in states on auth route', () => {
     expect(getRequiredAuthPath({ status: 'guest' })).toBe('/auth')
     expect(getRequiredAuthPath({ status: 'signing-in' })).toBe('/auth')

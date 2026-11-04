@@ -11,7 +11,7 @@ export const credentials: LoginCredentials = {
   password: 'secret-pass1',
 }
 
-export const companySession: AuthSession = {
+export const companySession: Extract<AuthSession, { type: 'company' }> = {
   type: 'company',
   account: {
     id: 1,
@@ -25,17 +25,17 @@ export const companySession: AuthSession = {
   },
 }
 
-export const inactiveCompanySession: AuthSession = {
+export const inactiveCompanySession: Extract<AuthSession, { type: 'company' }> = {
   type: 'company',
   account: { ...companySession.account, subscriptionStatus: 'inactive' },
 }
 
-export const unverifiedCompanySession: AuthSession = {
+export const unverifiedCompanySession: Extract<AuthSession, { type: 'company' }> = {
   type: 'company',
   account: { ...companySession.account, emailVerified: false },
 }
 
-export const employeeSession: AuthSession = {
+export const employeeSession: Extract<AuthSession, { type: 'employee' }> = {
   type: 'employee',
   account: {
     id: 2,
@@ -47,7 +47,7 @@ export const employeeSession: AuthSession = {
   },
 }
 
-export const adminSession: AuthSession = {
+export const adminSession: Extract<AuthSession, { type: 'admin' }> = {
   type: 'admin',
   account: {
     id: 3,

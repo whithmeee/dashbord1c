@@ -8,7 +8,8 @@ import {
   employeeSession,
   unverifiedCompanySession,
 } from '../application/auth-session-store.test-data'
-import { AuthStateView, ensureSessionRestore } from './auth-application'
+import { AuthStateView } from './auth-application'
+import { ensureSessionRestore } from './auth-runtime'
 
 function createStore(state: AuthSessionState): AuthSessionStore {
   return {
@@ -33,7 +34,7 @@ function renderState(state: AuthSessionState): string {
   )
 }
 
-describe.skip('auth application guard', () => {
+describe('auth application guard', () => {
   it('does not render protected content while restoring a session', () => {
     const markup = renderState({ status: 'checking' })
 

@@ -4,12 +4,22 @@ import { AuthField } from './auth-field'
 import { OsminogLogo } from '../../shared/brand/osminog-logo'
 import { useInterfaceMotion } from '../../shared/motion/use-interface-motion'
 import { useAuthForm } from './use-auth-form'
+import type { AuthSessionState } from './application/auth-session-state'
+import type { AuthSessionStore } from './application/auth-session-store'
 import './auth.css'
 import './auth-interactions.css'
 
-export function Auth() {
+type AuthProps = {
+  store: AuthSessionStore
+  state: Extract<AuthSessionState, { status: 'guest' | 'signing-in' }>
+}
+
+export function Auth({ store, state }: AuthProps) {
   const { reducedMotion, movement } = useInterfaceMotion()
-  const { message, submit, requestPasswordReset } = useAuthForm()
+  const { message, submitting, submit, requestPasswordReset } = useAuthForm(
+    store,
+    state,
+  )
   const reveal = {
     hidden: {
       opacity: 0,
@@ -55,9 +65,10 @@ export function Auth() {
           <button
             className="auth-submit"
             type="submit"
+            disabled={submitting}
             data-testid="auth-submit"
           >
-            Войти
+            {submitting ? 'Входим…' : 'Войти'}
           </button>
           <button
             className="auth-forgot-password"
