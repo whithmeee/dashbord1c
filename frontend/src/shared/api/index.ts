@@ -1,4 +1,5 @@
 export { createApiClient } from './api-client'
+export { api } from './api'
 export type {
   ApiClient,
   ApiClientOptions,

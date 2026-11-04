@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { parseAuthSession } from './auth-session'
 
-describe.skip('auth session', () => {
+describe('auth session', () => {
   it('maps a company response', () => {
     expect(parseAuthSession({
       type: 'company',

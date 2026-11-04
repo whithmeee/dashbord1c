@@ -28,7 +28,7 @@ function createClient(): ApiClient {
   }
 }
 
-describe.skip('HTTP auth gateway', () => {
+describe('HTTP auth gateway', () => {
   it('uses exact auth endpoints and payloads', async () => {
     const client = createClient()
     vi.mocked(client.post)
@@ -69,6 +69,18 @@ describe.skip('HTTP auth gateway', () => {
 
     await expect(gateway.login({ login: 'wrong', password: 'wrong' }))
       .rejects.toBe(error)
+  })
+
+  it.each([401, 403, 429])('preserves HTTP %s errors', async (status) => {
+    const client = createClient()
+    const error = new ApiError('Request rejected', {
+      kind: 'http',
+      status,
+    })
+    vi.mocked(client.get).mockRejectedValueOnce(error)
+    const gateway = createHttpAuthGateway(client)
+
+    await expect(gateway.getSession()).rejects.toBe(error)
   })
 
   it('classifies employee email access without exposing cabinet data', async () => {
