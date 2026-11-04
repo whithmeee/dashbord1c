@@ -1,4 +1,3 @@
-import { ApiError } from '../../../shared/api'
 import type { AuthSession } from '../domain/auth-session'
 import type { AuthGateway, LoginCredentials } from './auth-gateway'
 import { type AuthSessionState, withStateError } from './auth-session-state'
@@ -64,7 +63,7 @@ export function createAuthSessionStore(gateway: AuthGateway): AuthSessionStore {
       if (!current(operationRevision)) {
         return
       }
-      if (error instanceof ApiError && error.status === 401) {
+      if (isUnauthorized(error)) {
         publish({ status: 'guest' })
         return
       }
@@ -127,7 +126,7 @@ export function createAuthSessionStore(gateway: AuthGateway): AuthSessionStore {
       if (!current(operationRevision)) {
         return
       }
-      if (error instanceof ApiError && error.status === 401) {
+      if (isUnauthorized(error)) {
         publish({ status: 'guest' })
         return
       }
@@ -161,4 +160,12 @@ export function createAuthSessionStore(gateway: AuthGateway): AuthSessionStore {
       publish({ status: 'guest' })
     },
   }
+}
+
+function isUnauthorized(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    'status' in error &&
+    error.status === 401
+  )
 }
