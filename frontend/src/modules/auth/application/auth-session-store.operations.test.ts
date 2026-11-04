@@ -10,7 +10,7 @@ import {
   unverifiedCompanySession,
 } from './auth-session-store.test-data'
 
-describe.skip('auth session store operations', () => {
+describe('auth session store operations', () => {
   it('logs in a verified company even with an inactive subscription', async () => {
     const gateway = createGateway()
     vi.mocked(gateway.login).mockResolvedValue(inactiveCompanySession)

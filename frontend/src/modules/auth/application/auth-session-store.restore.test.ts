@@ -9,7 +9,7 @@ import {
   employeeSession,
 } from './auth-session-store.test-data'
 
-describe.skip('auth session store restoration', () => {
+describe('auth session store restoration', () => {
   it('starts in checking state', () => {
     const store = createAuthSessionStore(createGateway())
 

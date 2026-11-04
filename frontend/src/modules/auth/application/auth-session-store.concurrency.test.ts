@@ -8,7 +8,7 @@ import {
   unverifiedCompanySession,
 } from './auth-session-store.test-data'
 
-describe.skip('auth session store concurrency and subscriptions', () => {
+describe('auth session store concurrency and subscriptions', () => {
   it('does not let stale restore replace a newer login', async () => {
     const gateway = createGateway()
     const restore = deferred<typeof unverifiedCompanySession>()
