@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { LayoutGroup, motion } from 'motion/react'
+import { LogOut } from 'lucide-react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
 import { OsminogLogo } from '../../../shared/brand/osminog-logo'
 import { SidebarToggle } from './sidebar-toggle'
@@ -10,10 +12,22 @@ import './sidebar-motion.css'
 
 type SidebarProps = {
   controller: SidebarController
+  onLogout: () => Promise<void>
+  logoutError?: string
 }
 
-export function Sidebar({ controller }: SidebarProps) {
+export function Sidebar({ controller, onLogout, logoutError }: SidebarProps) {
   const { movement } = useInterfaceMotion()
+  const [loggingOut, setLoggingOut] = useState(false)
+
+  async function logout() {
+    if (loggingOut) {
+      return
+    }
+    setLoggingOut(true)
+    await onLogout().catch(() => undefined)
+    setLoggingOut(false)
+  }
 
   return (
     <aside className="sidebar">
@@ -55,6 +69,17 @@ export function Sidebar({ controller }: SidebarProps) {
       {demoSidebarConnection.connected && (
         <SidebarConnection name={demoSidebarConnection.name} />
       )}
+      <button
+        className="sidebar-logout"
+        type="button"
+        disabled={loggingOut}
+        onClick={logout}
+        data-testid="logout"
+      >
+        <LogOut size={18} aria-hidden="true" />
+        <span>{loggingOut ? 'Выходим…' : 'Выйти'}</span>
+      </button>
+      {logoutError && <p className="sidebar-logout-error">{logoutError}</p>}
     </aside>
   )
 }

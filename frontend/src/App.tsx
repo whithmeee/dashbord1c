@@ -9,7 +9,12 @@ import { Dashboard } from './modules/dashboard/dashboard'
 import { Cabinet } from './modules/cabinet/cabinet'
 import './App.css'
 
-function App() {
+type AppProps = {
+  onLogout: () => Promise<void>
+  logoutError?: string
+}
+
+function App({ onLogout, logoutError }: AppProps) {
   const sidebar = useSidebar()
   const chat = useChat()
   const isCabinetActive = sidebar.isSectionActive('cabinet')
@@ -25,7 +30,11 @@ function App() {
           </div>
         )}
         <SidebarLayout open={sidebar.isSidebarOpen}>
-          <Sidebar controller={sidebar} />
+          <Sidebar
+            controller={sidebar}
+            onLogout={onLogout}
+            logoutError={logoutError}
+          />
         </SidebarLayout>
         <main
           className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}`}

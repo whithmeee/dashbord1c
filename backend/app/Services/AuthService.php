@@ -28,7 +28,9 @@ class AuthService
             ?? Company::where('email', $login)->first()
             ?? Employee::where('login', $login)->first();
 
-        if (! $account || ! Hash::check($password, $account->getAuthPassword())) {
+        if (($account instanceof User && ! $account->isAdmin())
+            || ! $account
+            || ! Hash::check($password, $account->getAuthPassword())) {
             return null;
         }
 
