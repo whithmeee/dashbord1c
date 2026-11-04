@@ -21,8 +21,19 @@
   --app-space-6: 24px;
   --app-space-8: 32px;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Inter Variable', 'Segoe UI', sans-serif;
+  --brand-ivory: #f8f5ef;
+  --brand-white: #ffffff;
+  --brand-navy: #101d3b;
+  --brand-navy-hover: #1b2d52;
+  --brand-navy-pressed: #0b142b;
+  --brand-warm-gray: #e9e7e2;
+  --brand-slate: #77839b;
+  --brand-silver: #d9dfe9;
+  --brand-focus: #aab8d0;
+  --brand-error: #c65b55;
+  --brand-success: #54856a;
+  font-family: var(--font-medeo-sans);
+  font-optical-sizing: auto;
   color: var(--app-text);
   background: var(--app-background);
   font-synthesis: none;

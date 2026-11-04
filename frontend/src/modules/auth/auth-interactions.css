@@ -15,25 +15,25 @@
 
 .auth-forgot-password:focus-visible,
 .auth-submit:focus-visible {
-  outline: 2px solid #0071e3;
+  outline: 2px solid var(--brand-focus);
 }
 
 .auth-submit:active {
-  background: #0068d1;
+  background: var(--brand-navy-pressed);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .auth-submit:hover {
-    background: #0077ed;
+    background: var(--brand-navy-hover);
   }
 
   .auth-forgot-password:hover {
-    background: rgb(0 113 227 / 5%);
+    background: rgb(16 29 59 / 5%);
   }
 
   .auth-password-toggle:hover {
-    color: #0066cc;
-    background: rgb(0 113 227 / 6%);
+    color: var(--brand-navy-hover);
+    background: rgb(16 29 59 / 6%);
   }
 }
 

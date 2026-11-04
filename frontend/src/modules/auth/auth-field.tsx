@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, LockKeyhole, UserRound } from 'lucide-react'
 import './auth-field.css'
 
 type AuthFieldProps = {
@@ -10,9 +10,16 @@ type AuthFieldProps = {
 export function AuthField({ name, label }: AuthFieldProps) {
   const [visible, setVisible] = useState(false)
   const isPassword = name === 'password'
+  const FieldIcon = isPassword ? LockKeyhole : UserRound
 
   return (
     <div className="auth-floating-field">
+      <FieldIcon
+        className="auth-field-icon"
+        size={18}
+        strokeWidth={1.8}
+        aria-hidden="true"
+      />
       <input
         id={`auth-${name}`}
         name={name}

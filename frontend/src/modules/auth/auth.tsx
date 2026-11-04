@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { ChevronRight } from 'lucide-react'
+import { ArrowRight, ChevronRight, ShieldCheck } from 'lucide-react'
 import { AuthField } from './auth-field'
 import { OsminogLogo } from '../../shared/brand/osminog-logo'
 import { useInterfaceMotion } from '../../shared/motion/use-interface-motion'
@@ -8,6 +8,7 @@ import type { AuthSessionState } from './application/auth-session-state'
 import type { AuthSessionStore } from './application/auth-session-store'
 import './auth.css'
 import './auth-interactions.css'
+import './auth-security.css'
 
 type AuthProps = {
   store: AuthSessionStore
@@ -68,8 +69,12 @@ export function Auth({ store, state }: AuthProps) {
             disabled={submitting}
             data-testid="auth-submit"
           >
-            {submitting ? 'Входим…' : 'Войти'}
+            <span>{submitting ? 'Входим…' : 'Войти'}</span>
+            {!submitting && <ArrowRight size={17} aria-hidden="true" />}
           </button>
+          <div className="auth-divider" aria-hidden="true">
+            <span>или</span>
+          </div>
           <button
             className="auth-forgot-password"
             type="button"
@@ -88,6 +93,17 @@ export function Auth({ store, state }: AuthProps) {
             {message}
           </p>
         </motion.form>
+        <motion.footer
+          className="auth-security"
+          variants={reveal}
+          transition={movement}
+        >
+          <ShieldCheck size={21} strokeWidth={1.8} aria-hidden="true" />
+          <span>
+            <strong>Ваши данные в безопасности</strong>
+            Мы используем современные методы защиты
+          </span>
+        </motion.footer>
       </motion.section>
     </main>
   )
