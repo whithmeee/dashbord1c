@@ -56,7 +56,6 @@ class AuthSecurityTest extends TestCase
 
     public function test_ordinary_staff_user_cannot_log_in_as_admin(): void
     {
-        $this->markTestSkipped('Awaiting administrator classification correction');
         $user = User::factory()->create(['password' => 'secret-pass1']);
 
         $this->postJson('/auth/login', [
@@ -69,7 +68,6 @@ class AuthSecurityTest extends TestCase
 
     public function test_real_administrator_still_logs_in(): void
     {
-        $this->markTestSkipped('Awaiting administrator classification correction');
         $admin = User::factory()->admin()->create(['password' => 'secret-pass1']);
 
         $this->postJson('/auth/login', [
