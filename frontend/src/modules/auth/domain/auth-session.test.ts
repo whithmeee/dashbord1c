@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseAuthSession } from './auth-session'
+import { parseAuthSession } from './auth-session-mapper'
 
 describe('auth session', () => {
   it('maps a company response', () => {

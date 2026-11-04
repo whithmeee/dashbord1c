@@ -4,7 +4,8 @@ import type {
   EmployeeAccess,
   LoginCredentials,
 } from '../application/auth-gateway'
-import { parseAuthSession, type AuthSession } from '../domain/auth-session'
+import { parseAuthSession } from '../domain/auth-session-mapper'
+import type { AuthSession } from '../domain/auth-session'
 
 type MessageResponse = {
   message: string
