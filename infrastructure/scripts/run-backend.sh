@@ -13,4 +13,5 @@ export APP_URL FRONTEND_URL SANCTUM_STATEFUL_DOMAINS
 set +a
 
 cd "$project_root/backend"
-exec php artisan serve --host 127.0.0.1 --port "$BACKEND_PORT"
+php artisan config:clear --no-interaction >/dev/null
+exec php artisan serve --no-reload --host 127.0.0.1 --port "$BACKEND_PORT"
