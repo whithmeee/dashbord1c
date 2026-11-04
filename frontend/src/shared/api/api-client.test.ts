@@ -1,8 +1,10 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createApiClient } from './api-client'
 import { ApiError } from './api-error'
 
 describe('API client transport', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
   it('sends GET requests with cookies and parses JSON', async () => {
     const fetcher = vi.fn().mockResolvedValue(Response.json({ id: 7 }))
     const client = createApiClient({ fetcher })
@@ -69,6 +71,22 @@ describe('API client transport', () => {
 
     await expect(client.get('/api/chats')).rejects.toBeInstanceOf(ApiError)
     expect(fetcher).toHaveBeenCalledTimes(1)
+  })
+
+  it.skip('preserves the browser receiver for native fetch', async () => {
+    const nativeFetch = vi.fn(function (this: unknown) {
+      if (this !== globalThis) {
+        return Promise.reject(new TypeError('Illegal invocation'))
+      }
+
+      return Promise.resolve(new Response(null, { status: 204 }))
+    })
+    vi.stubGlobal('fetch', nativeFetch)
+    const client = createApiClient({ readCookie: () => 'csrf-token' })
+
+    await expect(client.post('/auth/login', {})).resolves.toBeUndefined()
+
+    expect(nativeFetch).toHaveBeenCalledTimes(2)
   })
 
   it('throws a typed HTTP error without retrying', async () => {
