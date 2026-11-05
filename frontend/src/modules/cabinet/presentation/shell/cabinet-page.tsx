@@ -10,6 +10,7 @@ import {
 import { CabinetTabs } from './cabinet-tabs'
 import { Overview } from '../overview/overview'
 import { IntegrationsPage } from '../../../integrations/presentation/integrations-page'
+import { UsersPage } from '../../../employees/presentation/users-page'
 import './cabinet.css'
 import './cabinet-responsive.css'
 import './cabinet-tab-picker.css'
@@ -17,9 +18,11 @@ import './cabinet-tab-picker.css'
 export function CabinetPage({
   dashboard,
   onOpenChat,
+  canManageEmployees,
 }: {
   dashboard: CabinetDashboard
   onOpenChat: () => void
+  canManageEmployees: boolean
 }) {
   const [activeTab, setActiveTab] = useState<CabinetTab>('overview')
   const { appearance } = useInterfaceMotion()
@@ -42,7 +45,7 @@ export function CabinetPage({
           </div>
         </div>
       </header>
-      <CabinetTabs active={activeTab} onSelect={selectTab} />
+      <CabinetTabs active={activeTab} onSelect={selectTab} canManageEmployees={canManageEmployees} />
 
       <motion.div
         key={activeTab}
@@ -60,13 +63,7 @@ export function CabinetPage({
         ) : activeTab === 'integrations' ? (
           <IntegrationsPage />
         ) : (
-          <div className="cabinet-placeholder" data-testid="cabinet-placeholder">
-            <h2>Пользователи и Права</h2>
-            <p>Эту вкладку добавим на следующем этапе.</p>
-            <button className="cabinet-button" type="button" onClick={() => selectTab('overview')}>
-              Вернуться к обзору
-            </button>
-          </div>
+          <UsersPage canManage={canManageEmployees} />
         )}
       </motion.div>
     </section>

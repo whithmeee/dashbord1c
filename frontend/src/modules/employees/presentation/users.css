@@ -1,0 +1,93 @@
+.employees-page {
+  padding: 24px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-card-radius);
+  background: white;
+  box-shadow: 0 4px 18px rgb(20 20 24 / 2%);
+}
+
+.employees-heading,
+.employees-card-title,
+.employees-modal-header,
+.employees-modal-actions {
+  display: flex;
+  align-items: center;
+}
+
+.employees-heading,
+.employees-modal-header,
+.employees-card-title {
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.employees-heading { margin-bottom: 20px; }
+.employees-heading h2,
+.employees-heading p,
+.employees-card h3,
+.employees-card p,
+.employees-modal h3,
+.employees-modal p,
+.employees-empty h2,
+.employees-state h2,
+.employees-forbidden h2 { margin: 0; }
+.employees-heading h2 { font-size: 20px; font-weight: 600; }
+.employees-heading p,
+.employees-card p,
+.employees-card time,
+.employees-modal p,
+.employees-empty p,
+.employees-state p,
+.employees-forbidden p { margin-top: 6px; color: var(--app-muted); font-size: 13px; }
+.employees-list { display: grid; gap: 12px; }
+.employees-card { display: flex; align-items: center; gap: 14px; padding: 18px; border: 1px solid var(--app-border); border-radius: 16px; background: var(--app-panel); }
+.employees-status-dot { flex-shrink: 0; width: 9px; height: 9px; border-radius: 50%; background: #b7bdc7; }
+.employees-card-main { flex: 1; min-width: 0; }
+.employees-card h3 { color: var(--app-text); font-size: 15px; font-weight: 600; }
+.employees-card p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.employees-card time { display: block; }
+.employees-status { flex-shrink: 0; color: var(--app-muted); font-size: 12px; font-weight: 600; }
+.employees-status-online { background: #e9f7ef; color: #23764b; }
+.employees-status-dot.employees-status-online { background: #23764b; }
+.employees-card-actions { display: flex; gap: 6px; }
+.employees-icon-button { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--app-border); border-radius: 10px; background: white; color: var(--app-text); cursor: pointer; }
+.employees-danger-icon { color: #b42318; }
+.employees-empty,
+.employees-state,
+.employees-forbidden { display: grid; justify-items: center; padding: 52px 24px; color: var(--app-muted); text-align: center; }
+.employees-empty h2,
+.employees-state h2,
+.employees-forbidden h2 { margin-top: 14px; color: var(--app-text); font-size: 18px; }
+.employees-empty .cabinet-button,
+.employees-state .cabinet-button { margin-top: 18px; }
+.employees-spinner { animation: employees-spin 1s linear infinite; }
+.employees-operation-error,
+.employees-field-error { color: #b42318 !important; }
+.employees-operation-error { margin: 16px 0 0; font-size: 13px; }
+.employees-overlay { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: rgb(16 29 59 / 18%); }
+.employees-modal { width: min(100%, 480px); padding: 24px; border: 1px solid var(--app-border); border-radius: 20px; background: white; box-shadow: 0 24px 80px rgb(16 29 59 / 18%); }
+.employees-modal-header { align-items: flex-start; margin-bottom: 20px; }
+.employees-modal h3 { color: var(--app-text); font-size: 19px; }
+.employees-field { display: grid; gap: 7px; margin-top: 14px; color: var(--app-text); font-size: 13px; font-weight: 600; }
+.employees-field input { box-sizing: border-box; width: 100%; padding: 11px 12px; border: 1px solid var(--app-border); border-radius: 10px; color: var(--app-text); font: inherit; font-weight: 400; }
+.employees-field input:focus { outline: 2px solid var(--app-accent); outline-offset: 1px; }
+.employees-field-error { margin: 0; font-size: 12px; font-weight: 400; }
+.employees-modal-actions { justify-content: flex-end; gap: 8px; margin-top: 22px; }
+.employees-confirm { text-align: center; }
+.employees-confirm > svg { color: #b42318; }
+.employees-confirm .employees-modal-actions { justify-content: center; }
+.employees-danger-button { border-color: #b42318; background: #b42318; color: white; }
+.employees-icon-button:disabled,
+.employees-modal button:disabled { cursor: not-allowed; opacity: .6; }
+
+@keyframes employees-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .employees-page { padding: 18px; }
+  .employees-heading { align-items: flex-start; flex-direction: column; }
+  .employees-heading .cabinet-button { width: 100%; }
+  .employees-card { align-items: flex-start; flex-wrap: wrap; }
+  .employees-card-main { width: calc(100% - 24px); }
+  .employees-card-title { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .employees-card-actions { width: 100%; justify-content: flex-end; }
+}

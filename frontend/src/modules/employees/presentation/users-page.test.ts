@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Employee } from '../domain/employee'
-import { buildEmployeeUpdateInput, canManageEmployees } from './users-page'
+import { buildEmployeeUpdateInput, canManageEmployees } from './users-page-helpers'
 
 const employee: Employee = {
   id: 1,

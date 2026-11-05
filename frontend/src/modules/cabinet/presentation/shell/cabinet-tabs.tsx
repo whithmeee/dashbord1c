@@ -6,11 +6,14 @@ import { cabinetTabs } from './cabinet-tabs.config'
 export function CabinetTabs({
   active,
   onSelect,
+  canManageEmployees,
 }: {
   active: CabinetTab
   onSelect: (tab: CabinetTab) => void
+  canManageEmployees: boolean
 }) {
   const { movement } = useInterfaceMotion()
+  const visibleTabs = cabinetTabs.filter(({ id }) => id !== 'team' || canManageEmployees)
 
   return (
     <>
@@ -33,7 +36,7 @@ export function CabinetTabs({
       </label>
       <LayoutGroup id="cabinet-tabs">
         <nav className="cabinet-tabs" aria-label="Разделы личного кабинета">
-          {cabinetTabs.map(({ id, label, icon: Icon }) => (
+          {visibleTabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               type="button"
