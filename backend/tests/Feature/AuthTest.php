@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\EmailVerificationCodeNotification;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -283,6 +284,7 @@ class AuthTest extends TestCase
 
         $this->getJson('/auth/me')->assertOk();
         $employee->forceFill(['password' => 'new-pass1'])->save();
+        Auth::forgetGuards();
 
         $this->getJson('/auth/me')->assertUnauthorized();
     }
@@ -294,6 +296,7 @@ class AuthTest extends TestCase
 
         $this->getJson('/auth/me')->assertOk();
         $employee->delete();
+        Auth::forgetGuards();
 
         $this->getJson('/auth/me')->assertUnauthorized();
     }
