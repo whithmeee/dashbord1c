@@ -19,7 +19,7 @@ describe('createHttpEmployeesGateway', () => {
     const gateway = createHttpEmployeesGateway({ get } as unknown as ApiClient)
 
     await expect(gateway.list()).resolves.toEqual([])
-    expect(get).toHaveBeenCalledWith('/cabinet/employees', {})
+    expect(get).toHaveBeenCalledWith('/cabinet/employees', undefined)
   })
 
   it('creates an employee with the Laravel payload', async () => {
@@ -36,7 +36,7 @@ describe('createHttpEmployeesGateway', () => {
       isOnline: false,
       lastSeenAt: null,
     })
-    expect(post).toHaveBeenCalledWith('/cabinet/employees', input, {})
+    expect(post).toHaveBeenCalledWith('/cabinet/employees', input, undefined)
   })
 
   it('updates only provided fields and forwards the signal', async () => {
@@ -53,7 +53,7 @@ describe('createHttpEmployeesGateway', () => {
     const gateway = createHttpEmployeesGateway({ delete: remove } as unknown as ApiClient)
 
     await expect(gateway.remove(4)).resolves.toBeUndefined()
-    expect(remove).toHaveBeenCalledWith('/cabinet/employees/4', {})
+    expect(remove).toHaveBeenCalledWith('/cabinet/employees/4', undefined)
   })
 
   it.each([403, 404, 422])('preserves ApiError status %s', async (status) => {
