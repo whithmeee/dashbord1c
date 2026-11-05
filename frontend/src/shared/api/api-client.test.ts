@@ -3,6 +3,23 @@ import { createApiClient } from './api-client'
 import { ApiError } from './api-error'
 
 describe('API client transport', () => {
+  it('invokes the default fetch with globalThis as its receiver', async () => {
+    const originalFetch = globalThis.fetch
+    const fetch = function (this: unknown) {
+      expect(this).toBe(globalThis)
+      return Promise.resolve(Response.json({ ok: true }))
+    }
+    globalThis.fetch = fetch as typeof globalThis.fetch
+
+    try {
+      const client = createApiClient({ baseUrl: 'http://127.0.0.1:56331' })
+
+      await expect(client.get('/health')).resolves.toEqual({ ok: true })
+    } finally {
+      globalThis.fetch = originalFetch
+    }
+  })
+
   it('sends GET requests with cookies and parses JSON', async () => {
     const fetcher = vi.fn().mockResolvedValue(Response.json({ id: 7 }))
     const client = createApiClient({ fetcher })
