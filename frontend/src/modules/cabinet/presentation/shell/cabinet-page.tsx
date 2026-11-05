@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import { useInterfaceMotion } from '../../../../shared/motion/use-interface-motion'
-import { Construction } from 'lucide-react'
 import {
   describeCabinetDashboard,
   getCabinetInitials,
@@ -9,8 +8,8 @@ import {
   type CabinetTab,
 } from '../../domain/cabinet'
 import { CabinetTabs } from './cabinet-tabs'
-import { cabinetTabs } from './cabinet-tabs.config'
 import { Overview } from '../overview/overview'
+import { IntegrationsPage } from '../../../integrations/presentation/integrations-page'
 import './cabinet.css'
 import './cabinet-responsive.css'
 import './cabinet-tab-picker.css'
@@ -29,8 +28,6 @@ export function CabinetPage({
     setAnimateOverview(false)
     setActiveTab(tab)
   }
-  const tab = cabinetTabs.find((item) => item.id === activeTab)
-
   return (
     <section className="cabinet" data-testid="cabinet">
       <p className="cabinet-breadcrumb">
@@ -60,19 +57,13 @@ export function CabinetPage({
             onSelectTab={selectTab}
             animateEntrance={animateOverview}
           />
+        ) : activeTab === 'integrations' ? (
+          <IntegrationsPage />
         ) : (
-          <div
-            className="cabinet-placeholder"
-            data-testid="cabinet-placeholder"
-          >
-            <Construction size={30} />
-            <h2>{tab?.label}</h2>
+          <div className="cabinet-placeholder" data-testid="cabinet-placeholder">
+            <h2>Пользователи и Права</h2>
             <p>Эту вкладку добавим на следующем этапе.</p>
-            <button
-              className="cabinet-button"
-              type="button"
-              onClick={() => selectTab('overview')}
-            >
+            <button className="cabinet-button" type="button" onClick={() => selectTab('overview')}>
               Вернуться к обзору
             </button>
           </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useSyncExternalStore } from 'react'
 import { AlertCircle, LoaderCircle, RotateCcw } from 'lucide-react'
 import { authSessionStore } from '../auth/react/auth-runtime'
 import { cabinetDashboardStore } from './cabinet-runtime'
+import { resetIntegrations } from '../integrations/integrations-runtime'
 import { CabinetPage } from './presentation/shell/cabinet-page'
 import './cabinet-state.css'
 
@@ -21,6 +22,7 @@ export function Cabinet({ onOpenChat }: { onOpenChat: () => void }) {
 
   useEffect(() => {
     if (!sessionKey) {
+      resetIntegrations()
       if (dashboardState.status !== 'idle') {
         cabinetDashboardStore.reset()
       }
@@ -29,6 +31,7 @@ export function Cabinet({ onOpenChat }: { onOpenChat: () => void }) {
 
     if (previousSessionKey.current !== sessionKey) {
       previousSessionKey.current = sessionKey
+      resetIntegrations()
       cabinetDashboardStore.reset()
       void cabinetDashboardStore.load()
     }
