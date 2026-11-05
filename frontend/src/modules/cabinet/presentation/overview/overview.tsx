@@ -1,19 +1,19 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { MessageSquare, Database } from 'lucide-react'
-import type { CabinetOverview, CabinetTab } from '../../domain/cabinet'
+import type { CabinetDashboard, CabinetTab } from '../../domain/cabinet'
 import { OverviewIntegrations } from './overview-integrations'
 import { OverviewSubscription } from './overview-subscription'
 import './overview.css'
 
 type OverviewProps = {
   animateEntrance: boolean
-  overview: CabinetOverview
+  dashboard: CabinetDashboard
   onOpenChat: () => void
   onSelectTab: (tab: CabinetTab) => void
 }
 
 export function Overview({
-  overview,
+  dashboard,
   onOpenChat,
   onSelectTab,
   animateEntrance,
@@ -55,7 +55,7 @@ export function Overview({
         >
           <Database size={22} />
           <span>
-            <strong>{overview.integrations.length}</strong>
+            <strong>{dashboard.integrations.count}</strong>
             <small>Интеграций</small>
           </span>
         </button>
@@ -63,12 +63,12 @@ export function Overview({
       <div className="cabinet-overview-grid">
         <motion.div variants={entrance}>
           <OverviewIntegrations
-            integrations={overview.integrations}
+            integrations={dashboard.integrations.items}
             onOpenChat={onOpenChat}
           />
         </motion.div>
         <motion.div variants={entrance}>
-          <OverviewSubscription subscription={overview.subscription} />
+          <OverviewSubscription status={dashboard.company.subscriptionStatus} />
         </motion.div>
       </div>
     </motion.div>

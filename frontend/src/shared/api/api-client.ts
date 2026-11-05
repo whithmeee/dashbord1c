@@ -25,7 +25,7 @@ export function createApiClient(options: ApiClientOptions = {}): ApiClient {
   const baseUrl = resolveApiBaseUrl(
     options.baseUrl ?? import.meta.env.VITE_API_BASE_URL,
   )
-  const fetcher = options.fetcher ?? fetch
+  const fetcher = (options.fetcher ?? globalThis.fetch).bind(globalThis)
   const csrf = new CsrfManager({
     baseUrl,
     fetcher,

@@ -4,8 +4,7 @@ import { LogOut } from 'lucide-react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
 import { OsminogLogo } from '../../../shared/brand/osminog-logo'
 import { SidebarToggle } from './sidebar-toggle'
-import { demoSidebarConnection, sidebarSections } from './sidebar.config'
-import { SidebarConnection } from './sidebar-connection'
+import { sidebarSections } from './sidebar.config'
 import type { SidebarController } from './use-sidebar'
 import './sidebar.css'
 import './sidebar-motion.css'
@@ -66,9 +65,6 @@ export function Sidebar({ controller, onLogout, logoutError }: SidebarProps) {
           ))}
         </nav>
       </LayoutGroup>
-      {demoSidebarConnection.connected && (
-        <SidebarConnection name={demoSidebarConnection.name} />
-      )}
       <button
         className="sidebar-logout"
         type="button"

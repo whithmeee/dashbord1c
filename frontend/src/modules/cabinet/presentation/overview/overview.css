@@ -111,6 +111,11 @@
   color: #a67808;
 }
 
+.cabinet-empty-state {
+  padding: 24px 0;
+  color: var(--app-muted);
+}
+
 @media (max-width: 1150px) {
   .cabinet-overview-grid {
     grid-template-columns: minmax(0, 1fr);

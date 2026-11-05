@@ -1,11 +1,11 @@
 import { Database, ArrowUpRight, MessageSquare } from 'lucide-react'
-import type { CabinetOverview } from '../../domain/cabinet'
+import type { CabinetIntegration } from '../../domain/cabinet'
 
 export function OverviewIntegrations({
   integrations,
   onOpenChat,
 }: {
-  integrations: CabinetOverview['integrations']
+  integrations: readonly CabinetIntegration[]
   onOpenChat: () => void
 }) {
   return (
@@ -17,23 +17,27 @@ export function OverviewIntegrations({
       <p>
         Системы, с которыми работает ваш чат. Подключает администратор Osminog.
       </p>
-      {integrations.map((integration) => (
+      {integrations.length === 0 ? (
+        <p className="cabinet-empty-state" data-testid="cabinet-integrations-empty">
+          Интеграции пока не подключены.
+        </p>
+      ) : integrations.map((integration) => (
         <div className="cabinet-integration" key={integration.id}>
           <span className="cabinet-integration-icon">
             <Database size={20} />
           </span>
           <div>
             <strong>{integration.name}</strong>
-            <p>{integration.configuration}</p>
+            <p>{integration.configName}</p>
           </div>
           <span
             className={
-              integration.connected
+              integration.status === 'active'
                 ? 'cabinet-badge'
                 : 'cabinet-badge cabinet-badge-offline'
             }
           >
-            {integration.connected ? 'На связи' : 'Нет связи'}
+            {integration.status === 'active' ? 'Активна' : 'Отключена'}
           </span>
         </div>
       ))}

@@ -1,0 +1,20 @@
+@media (max-width: 760px) {
+  .integrations-page {
+    padding: 16px;
+  }
+
+  .integration-card-content,
+  .integration-card-title-row {
+    align-items: flex-start;
+  }
+
+  .integration-card-title-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .integration-check-button {
+    width: 100%;
+    margin-left: 0;
+  }
+}

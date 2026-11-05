@@ -1,23 +1,16 @@
 import { CalendarDays } from 'lucide-react'
-import type { CabinetOverview } from '../../domain/cabinet'
+import type { CabinetSubscriptionStatus } from '../../domain/cabinet'
 import './overview-subscription.css'
 
 const subscriptionStatuses = {
   active: 'Активна',
-  expired: 'Истекла',
+  inactive: 'Неактивна',
 }
 
-const subscriptionDate = new Intl.DateTimeFormat('ru-RU', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-})
-
 export function OverviewSubscription({
-  subscription,
+  status,
 }: {
-  subscription: CabinetOverview['subscription']
+  status: CabinetSubscriptionStatus
 }) {
   return (
     <section className="cabinet-panel" data-testid="cabinet-subscription">
@@ -31,19 +24,15 @@ export function OverviewSubscription({
           <dd>
             <span
               className="cabinet-subscription-status"
-              data-status={subscription.status}
+              data-status={status}
             >
-              {subscriptionStatuses[subscription.status]}
+              {subscriptionStatuses[status]}
             </span>
           </dd>
         </div>
         <div>
-          <dt>Действует до</dt>
-          <dd>
-            <time dateTime={subscription.validUntil}>
-              {subscriptionDate.format(new Date(subscription.validUntil))}
-            </time>
-          </dd>
+          <dt>Доступ к кабинету</dt>
+          <dd>Доступен независимо от статуса подписки</dd>
         </div>
       </dl>
     </section>

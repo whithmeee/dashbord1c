@@ -30,7 +30,7 @@
   font-size: 13px;
 }
 
-.cabinet-subscription-status[data-status='expired'] {
+.cabinet-subscription-status[data-status='inactive'] {
   background: #fff1e5;
   color: #904b12;
 }

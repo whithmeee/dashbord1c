@@ -1,24 +1,24 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import { useInterfaceMotion } from '../../../../shared/motion/use-interface-motion'
-import { Construction, FlaskConical } from 'lucide-react'
 import {
-  describeCabinet,
-  type CabinetOverview,
+  describeCabinetDashboard,
+  getCabinetInitials,
+  type CabinetDashboard,
   type CabinetTab,
 } from '../../domain/cabinet'
 import { CabinetTabs } from './cabinet-tabs'
-import { cabinetTabs } from './cabinet-tabs.config'
 import { Overview } from '../overview/overview'
+import { IntegrationsPage } from '../../../integrations/presentation/integrations-page'
 import './cabinet.css'
 import './cabinet-responsive.css'
 import './cabinet-tab-picker.css'
 
 export function CabinetPage({
-  overview,
+  dashboard,
   onOpenChat,
 }: {
-  overview: CabinetOverview
+  dashboard: CabinetDashboard
   onOpenChat: () => void
 }) {
   const [activeTab, setActiveTab] = useState<CabinetTab>('overview')
@@ -28,8 +28,6 @@ export function CabinetPage({
     setAnimateOverview(false)
     setActiveTab(tab)
   }
-  const tab = cabinetTabs.find((item) => item.id === activeTab)
-
   return (
     <section className="cabinet" data-testid="cabinet">
       <p className="cabinet-breadcrumb">
@@ -37,20 +35,14 @@ export function CabinetPage({
       </p>
       <header className="cabinet-header">
         <div className="cabinet-identity">
-          <span className="cabinet-avatar">{overview.initials}</span>
+          <span className="cabinet-avatar">{getCabinetInitials(dashboard.company.name)}</span>
           <div>
-            <h1>{overview.name}</h1>
-            <p>{describeCabinet(overview)}</p>
+            <h1>{dashboard.company.name}</h1>
+            <p>{describeCabinetDashboard(dashboard)}</p>
           </div>
         </div>
       </header>
       <CabinetTabs active={activeTab} onSelect={selectTab} />
-      <div className="cabinet-demo">
-        <FlaskConical size={16} />
-        <span>
-          Демонстрационный кабинет · данные и статусы подключения вымышлены.
-        </span>
-      </div>
 
       <motion.div
         key={activeTab}
@@ -60,24 +52,18 @@ export function CabinetPage({
       >
         {activeTab === 'overview' ? (
           <Overview
-            overview={overview}
+            dashboard={dashboard}
             onOpenChat={onOpenChat}
             onSelectTab={selectTab}
             animateEntrance={animateOverview}
           />
+        ) : activeTab === 'integrations' ? (
+          <IntegrationsPage />
         ) : (
-          <div
-            className="cabinet-placeholder"
-            data-testid="cabinet-placeholder"
-          >
-            <Construction size={30} />
-            <h2>{tab?.label}</h2>
+          <div className="cabinet-placeholder" data-testid="cabinet-placeholder">
+            <h2>Пользователи и Права</h2>
             <p>Эту вкладку добавим на следующем этапе.</p>
-            <button
-              className="cabinet-button"
-              type="button"
-              onClick={() => selectTab('overview')}
-            >
+            <button className="cabinet-button" type="button" onClick={() => selectTab('overview')}>
               Вернуться к обзору
             </button>
           </div>
