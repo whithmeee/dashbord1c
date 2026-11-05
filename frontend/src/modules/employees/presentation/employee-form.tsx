@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { X } from 'lucide-react'
 import type { Employee } from '../domain/employee'
 
@@ -28,8 +28,6 @@ export function EmployeeForm({
     login: employee?.login ?? '',
     password: '',
   }))
-
-  useEffect(() => () => setValues({ name: '', position: '', login: '', password: '' }), [])
 
   function updateField(field: keyof EmployeeFormValues, value: string): void {
     setValues((current) => ({ ...current, [field]: value }))
