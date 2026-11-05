@@ -3,6 +3,7 @@ import {
   InvalidCabinetDashboardError,
   mapCabinetDashboard,
 } from './cabinet-dashboard-mapper'
+import { describeCabinetDashboard, getCabinetInitials } from './cabinet'
 
 const company = {
   id: 1,
@@ -95,5 +96,16 @@ describe('mapCabinetDashboard', () => {
     expect(() => mapCabinetDashboard({ company })).toThrow(
       InvalidCabinetDashboardError,
     )
+  })
+
+  it('derives compact company initials and a real dashboard description', () => {
+    const dashboard = mapCabinetDashboard({
+      company,
+      integrations: { count: 2, active_count: 1, items: [] },
+    })
+
+    expect(getCabinetInitials(dashboard.company.name)).toBe('ОС')
+    expect(getCabinetInitials('Мой Тай')).toBe('МТ')
+    expect(describeCabinetDashboard(dashboard)).toBe('Интеграций: 2')
   })
 })

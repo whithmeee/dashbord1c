@@ -7,6 +7,7 @@ import { Chat } from './modules/chat/components/chat'
 import { useChat } from './modules/chat/hooks/use-chat'
 import { Dashboard } from './modules/dashboard/dashboard'
 import { Cabinet } from './modules/cabinet/cabinet'
+import { resetCabinetDashboard } from './modules/cabinet/cabinet-runtime'
 import './App.css'
 
 type AppProps = {
@@ -32,7 +33,10 @@ function App({ onLogout, logoutError }: AppProps) {
         <SidebarLayout open={sidebar.isSidebarOpen}>
           <Sidebar
             controller={sidebar}
-            onLogout={onLogout}
+            onLogout={async () => {
+              resetCabinetDashboard()
+              await onLogout()
+            }}
             logoutError={logoutError}
           />
         </SidebarLayout>
