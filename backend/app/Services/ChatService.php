@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\Chat;
+use App\Models\ChatMessageRequest;
 use App\Models\Message;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 class ChatService
@@ -20,15 +22,18 @@ class ChatService
     /**
      * Store the user's question, run the AI + 1C pipeline and store the assistant's answer.
      */
-    public function ask(Chat $chat, string $question): Message
+    public function ask(Chat $chat, string $question, ?ChatMessageRequest $request = null): Message
     {
         $history = $this->history($chat);
 
-        $chat->messages()->create([
-            'integration_id' => $chat->integration_id,
-            'role' => Message::ROLE_USER,
-            'content' => $question,
-        ]);
+        $userMessage = $request?->userMessage;
+        if ($userMessage === null) {
+            $userMessage = $chat->messages()->create([
+                'integration_id' => $chat->integration_id,
+                'role' => Message::ROLE_USER,
+                'content' => $question,
+            ]);
+        }
 
         if ($chat->title === self::DEFAULT_TITLE) {
             $chat->update(['title' => mb_substr($question, 0, 60)]);
@@ -38,21 +43,31 @@ class ChatService
             ['role' => 'system', 'content' => $this->dispatcherPrompt($chat)],
             ...$history,
             ['role' => 'user', 'content' => $question],
-        ], $this->tools->definitions());
+        ], $this->tools->definitions(), $chat, $request, 1);
 
         $widget = null;
         $content = $decision['content'];
 
         if ($decision['tool_calls'] !== []) {
-            [$widget, $content] = $this->answerWithTool($chat, $question, $decision['tool_calls'][0]);
+            [$widget, $content] = $this->answerWithTool($chat, $question, $decision['tool_calls'][0], $request);
         }
 
-        return $chat->messages()->create([
-            'integration_id' => $chat->integration_id,
-            'role' => Message::ROLE_ASSISTANT,
-            'content' => $content,
-            'widget' => $widget,
-        ]);
+        return DB::transaction(function () use ($chat, $content, $widget, $request): Message {
+            $assistant = $chat->messages()->create([
+                'integration_id' => $chat->integration_id,
+                'role' => Message::ROLE_ASSISTANT,
+                'content' => $content,
+                'widget' => $widget,
+            ]);
+
+            $request?->update([
+                'assistant_message_id' => $assistant->id,
+                'status' => ChatMessageRequest::COMPLETED,
+                'completed_at' => now(),
+            ]);
+
+            return $assistant;
+        });
     }
 
     /**
@@ -61,7 +76,7 @@ class ChatService
      * @param  array<string, mixed>  $toolCall
      * @return array{0: ?array<string, mixed>, 1: string}
      */
-    private function answerWithTool(Chat $chat, string $question, array $toolCall): array
+    private function answerWithTool(Chat $chat, string $question, array $toolCall, ?ChatMessageRequest $request): array
     {
         $name = (string) ($toolCall['function']['name'] ?? '');
         $arguments = json_decode((string) ($toolCall['function']['arguments'] ?? '{}'), true);
@@ -76,7 +91,7 @@ class ChatService
             ['role' => 'system', 'content' => $this->analystPrompt()],
             ['role' => 'user', 'content' => "Вопрос директора: {$question}\n\nТочные данные из 1С (посчитаны программно):\n"
                 .json_encode($widget, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)],
-        ]);
+        ], [], $chat, $request, 2);
 
         return [$widget, (string) $summary['content']];
     }

@@ -1,0 +1,38 @@
+@reference "../../../index.css";
+
+.chat-widget {
+  @apply mt-3 overflow-hidden rounded-xl border;
+  border-color: color-mix(in srgb, var(--app-accent) 10%, var(--app-border));
+  background: color-mix(in srgb, var(--app-panel-solid) 72%, transparent);
+}
+
+.chat-widget > strong {
+  @apply block px-3.5 pb-2 pt-3;
+}
+
+.chat-widget-scroll {
+  @apply overflow-x-auto;
+}
+
+.chat-widget table {
+  @apply w-full;
+  min-width: 32rem;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.chat-widget th,
+.chat-widget td {
+  @apply border-t px-3.5 py-2 text-left;
+  border-color: color-mix(in srgb, var(--app-accent) 8%, var(--app-border));
+  white-space: nowrap;
+}
+
+.chat-widget th {
+  color: var(--app-muted);
+  font-weight: 600;
+}
+
+.chat-widget-total td {
+  font-weight: 600;
+}

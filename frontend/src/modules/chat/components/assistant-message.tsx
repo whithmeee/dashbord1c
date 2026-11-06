@@ -1,5 +1,6 @@
 import { Sparkles } from 'lucide-react'
 import type { ChatMessage } from '../model/chat-message'
+import { ChatWidgetTable } from './chat-widget-table'
 
 type AssistantMessageProps = {
   message: ChatMessage
@@ -14,6 +15,7 @@ export function AssistantMessage({ message }: AssistantMessageProps) {
       <div className="chat-message-content">
         <strong>Ассистент</strong>
         <p>{message.text}</p>
+        {message.widget && <ChatWidgetTable widget={message.widget} />}
       </div>
     </article>
   )

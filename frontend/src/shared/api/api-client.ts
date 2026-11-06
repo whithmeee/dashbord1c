@@ -4,6 +4,7 @@ import { CsrfManager, readBrowserCookie, type CookieReader } from './csrf'
 
 export type RequestOptions = {
   signal?: AbortSignal
+  headers?: Record<string, string>
 }
 
 export type ApiClient = {
@@ -64,7 +65,7 @@ export function createApiClient(options: ApiClientOptions = {}): ApiClient {
     requestOptions: RequestOptions,
     csrfToken?: string,
   ): Promise<Response> {
-    const headers: Record<string, string> = { Accept: 'application/json' }
+    const headers: Record<string, string> = { Accept: 'application/json', ...requestOptions.headers }
     const init: RequestInit = {
       credentials: 'include',
       headers,

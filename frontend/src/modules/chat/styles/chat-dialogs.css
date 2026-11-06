@@ -1,0 +1,87 @@
+@reference "../../../index.css";
+
+.chat-body {
+  @apply grid min-h-0 min-w-0;
+  grid-template-columns: 250px minmax(0, 1fr);
+}
+
+.chat-main {
+  @apply grid min-h-0 min-w-0;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.chat-dialogs-panel {
+  @apply min-h-0 overflow-y-auto border-r p-4;
+  border-color: var(--app-border);
+}
+
+.chat-dialogs-heading,
+.chat-dialog-item,
+.chat-dialog-item > div {
+  @apply flex items-center justify-between gap-2;
+}
+
+.chat-dialogs-heading {
+  @apply mb-3;
+}
+
+.chat-new-dialog {
+  @apply mb-4 grid gap-2;
+}
+
+.chat-new-dialog select,
+.chat-new-button {
+  @apply min-h-10 rounded-xl border px-3 text-xs;
+  border-color: var(--app-border);
+  background: var(--app-panel-solid);
+  color: var(--app-text);
+}
+
+.chat-new-button {
+  @apply flex cursor-pointer items-center justify-center gap-2;
+  background: var(--app-accent-soft);
+}
+
+.chat-new-button:disabled {
+  @apply cursor-default opacity-50;
+}
+
+.chat-new-dialog p,
+.chat-dialogs-empty,
+.chat-state-message {
+  color: var(--app-muted);
+  font-size: 0.8125rem;
+}
+
+.chat-dialog-item {
+  @apply mb-1 rounded-xl p-2;
+}
+
+.chat-dialog-item.is-selected {
+  background: var(--app-soft);
+}
+
+.chat-dialog-item > button:first-child {
+  @apply min-w-0 flex-1 cursor-pointer truncate border-0 bg-transparent p-1 text-left text-sm;
+  color: var(--app-text);
+}
+
+.chat-panel-icon {
+  @apply grid size-8 cursor-pointer place-items-center rounded-lg border-0 bg-transparent;
+  color: var(--app-muted);
+}
+
+.chat-panel-spinner {
+  color: var(--app-muted);
+}
+
+.chat-state-message {
+  @apply grid place-items-center gap-3 py-12 text-center;
+}
+
+.chat-refresh-button {
+  @apply cursor-pointer rounded-lg border px-3 py-2 text-xs;
+  border-color: var(--app-border);
+  color: var(--app-text);
+  background: var(--app-panel-solid);
+}
