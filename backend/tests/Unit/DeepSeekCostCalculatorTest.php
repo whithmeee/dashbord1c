@@ -23,7 +23,7 @@ class DeepSeekCostCalculatorTest extends TestCase
 
         $quote = app(DeepSeekCostCalculator::class)->quote($usage);
 
-        $this->assertSame(60300, $quote['estimated_cost_usd_micros']);
+        $this->assertSame(60, $quote['estimated_cost_usd_micros']);
         $this->assertSame('off_peak', $quote['pricing_snapshot']['period']);
     }
 

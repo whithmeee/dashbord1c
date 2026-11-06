@@ -376,7 +376,7 @@ class MessageApiTest extends TestCase
         $chat = $this->chatFor($this->company);
         Http::fake(['api.deepseek.com/*' => Http::response([
             'id' => 'completion-1',
-            'model' => 'deepseek-chat',
+            'model' => 'deepseek-flash',
             'choices' => [['message' => ['content' => 'Готово']]],
             'usage' => [
                 'prompt_tokens' => 12,
@@ -396,13 +396,14 @@ class MessageApiTest extends TestCase
             'chat_id' => $chat->id,
             'call_index' => 1,
             'provider_request_id' => 'completion-1',
-            'model' => 'deepseek-chat',
+            'model' => 'deepseek-flash',
             'prompt_tokens' => 12,
             'completion_tokens' => 7,
             'cached_tokens' => 3,
             'cache_miss_tokens' => 9,
             'total_tokens' => 19,
             'status' => DeepSeekUsage::RECORDED,
+            'estimated_cost_usd_micros' => 6,
         ]);
     }
 

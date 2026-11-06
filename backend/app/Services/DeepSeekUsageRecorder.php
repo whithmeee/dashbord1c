@@ -9,6 +9,8 @@ use Illuminate\Http\Client\Response;
 
 class DeepSeekUsageRecorder
 {
+    public function __construct(private readonly DeepSeekCostCalculator $calculator) {}
+
     public function begin(Chat $chat, ?ChatMessageRequest $request, int $callIndex): DeepSeekUsage
     {
         $chat->loadMissing('author');
@@ -51,6 +53,10 @@ class DeepSeekUsageRecorder
                 : DeepSeekUsage::UNKNOWN,
             'completed_at' => now(),
         ]);
+        $quote = $this->calculator->quote($usage->fresh());
+        if ($quote !== null) {
+            $usage->update($quote);
+        }
     }
 
     public function markUnknown(DeepSeekUsage $usage): void

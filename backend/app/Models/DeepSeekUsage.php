@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'cached_tokens',
     'cache_miss_tokens',
     'total_tokens',
+    'estimated_cost_usd_micros',
+    'pricing_snapshot',
     'status',
     'started_at',
     'completed_at',
@@ -37,6 +39,7 @@ class DeepSeekUsage extends Model
         return [
             'started_at' => 'immutable_datetime',
             'completed_at' => 'immutable_datetime',
+            'pricing_snapshot' => 'array',
         ];
     }
 
