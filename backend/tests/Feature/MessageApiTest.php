@@ -208,4 +208,74 @@ class MessageApiTest extends TestCase
 
         $this->getJson('/api/chats')->assertUnauthorized();
     }
+
+    public function test_idempotency_key_replays_completed_message_without_running_pipeline_again(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake(['api.deepseek.com/*' => Http::response(['choices' => [['message' => ['content' => 'Готово']]]])]);
+        $key = '11111111-1111-4111-8111-111111111111';
+
+        $first = $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Привет'])
+            ->assertCreated();
+        $second = $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Привет'])
+            ->assertOk();
+
+        $this->assertSame($first->json('id'), $second->json('id'));
+        $this->assertDatabaseCount('messages', 2);
+        Http::assertSentCount(1);
+    }
+
+    public function test_idempotency_key_conflict_is_rejected_for_different_content(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake(['api.deepseek.com/*' => Http::response(['choices' => [['message' => ['content' => 'Готово']]]])]);
+        $key = '22222222-2222-4222-8222-222222222222';
+
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Первый вопрос'])
+            ->assertCreated();
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Другой вопрос'])
+            ->assertConflict()
+            ->assertJsonPath('code', 'idempotency_key_conflict');
+
+        $this->assertDatabaseCount('messages', 2);
+        Http::assertSentCount(1);
+    }
+
+    public function test_unknown_operation_is_not_retried(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake(['api.deepseek.com/*' => Http::response([], 503)]);
+        $key = '33333333-3333-4333-8333-333333333333';
+
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])
+            ->assertStatus(502);
+        $this->assertDatabaseHas('chat_message_requests', ['request_id' => $key, 'status' => 'unknown']);
+
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])
+            ->assertConflict()
+            ->assertJsonPath('code', 'message_request_unknown');
+        Http::assertSentCount(1);
+    }
+
+    public function test_message_request_status_returns_completed_message_without_external_calls(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake(['api.deepseek.com/*' => Http::response(['choices' => [['message' => ['content' => 'Готово']]]])]);
+        $key = '44444444-4444-4444-8444-444444444444';
+
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])
+            ->assertCreated();
+        $this->getJson("/api/chats/{$chat->id}/message-requests/{$key}")
+            ->assertOk()
+            ->assertJsonPath('status', 'completed')
+            ->assertJsonPath('message.content', 'Готово');
+        Http::assertSentCount(1);
+    }
 }
