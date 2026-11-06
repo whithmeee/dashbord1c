@@ -1,6 +1,11 @@
-import { MessageCircleMore, MoreHorizontal } from 'lucide-react'
+import { MessageCircleMore } from 'lucide-react'
 
-export function ChatHeader() {
+type ChatHeaderProps = {
+  title: string
+  integrationName?: string
+}
+
+export function ChatHeader({ title, integrationName }: ChatHeaderProps) {
   return (
     <header className="chat-header">
       <div className="chat-heading">
@@ -8,13 +13,10 @@ export function ChatHeader() {
           <MessageCircleMore size={18} />
         </span>
         <span>
-          <strong>Новый диалог</strong>
-          <small>Ассистент готов помочь</small>
+          <strong>{title}</strong>
+          <small>{integrationName ?? 'Выберите диалог или создайте новый'}</small>
         </span>
       </div>
-      <button className="chat-icon-button" type="button" aria-label="Меню чата">
-        <MoreHorizontal size={20} />
-      </button>
     </header>
   )
 }

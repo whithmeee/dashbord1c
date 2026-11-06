@@ -8,6 +8,28 @@
     padding-inline: 16px;
   }
 
+  .chat-body {
+    display: block;
+  }
+
+  .chat-dialogs-panel {
+    max-height: 14rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--app-border);
+  }
+
+  .chat-new-dialog {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .chat-new-dialog p {
+    grid-column: 1 / -1;
+  }
+
+  .chat-main {
+    height: calc(100% - 14rem);
+  }
+
   .chat-conversation {
     padding: 28px 16px 18px;
   }

@@ -5,6 +5,7 @@ import { Sidebar } from './features/navigation/sidebar/sidebar'
 import { useSidebar } from './features/navigation/sidebar/use-sidebar'
 import { Chat } from './modules/chat/components/chat'
 import { useChat } from './modules/chat/hooks/use-chat'
+import { resetChat } from './modules/chat/chat-runtime'
 import { Dashboard } from './modules/dashboard/dashboard'
 import { Cabinet } from './modules/cabinet/cabinet'
 import { resetCabinetDashboard } from './modules/cabinet/cabinet-runtime'
@@ -17,10 +18,10 @@ type AppProps = {
 
 function App({ onLogout, logoutError }: AppProps) {
   const sidebar = useSidebar()
-  const chat = useChat()
   const isCabinetActive = sidebar.isSectionActive('cabinet')
   const isChatActive = sidebar.isSectionActive('chat')
   const isDashboardActive = sidebar.isSectionActive('dashboards')
+  const chat = useChat(isChatActive)
 
   return (
     <div className="application-shell">
@@ -35,6 +36,7 @@ function App({ onLogout, logoutError }: AppProps) {
             controller={sidebar}
             onLogout={async () => {
               resetCabinetDashboard()
+              resetChat()
               await onLogout()
             }}
             logoutError={logoutError}

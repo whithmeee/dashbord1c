@@ -1,9 +1,13 @@
 import type { FormEvent, KeyboardEvent } from 'react'
 import { ArrowUp, Paperclip } from 'lucide-react'
+import { getChatErrorMessage } from '../model/chat-view-model'
 
 type ChatComposerProps = {
   draft: string
   isSendDisabled: boolean
+  isSending: boolean
+  sendError?: Error
+  onRefresh: () => void
   onDraftChange: (draft: string) => void
   onKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
@@ -12,12 +16,16 @@ type ChatComposerProps = {
 export function ChatComposer({
   draft,
   isSendDisabled,
+  isSending,
+  sendError,
+  onRefresh,
   onDraftChange,
   onKeyDown,
   onSubmit,
 }: ChatComposerProps) {
   return (
     <footer className="chat-composer-area">
+      {sendError && <div className="chat-send-error" role="alert"><span>{getChatErrorMessage(sendError)}</span><button type="button" onClick={onRefresh}>Обновить историю</button></div>}
       <form className="chat-composer" onSubmit={onSubmit}>
         <textarea
           aria-label="Сообщение"
@@ -39,8 +47,9 @@ export function ChatComposer({
             type="submit"
             aria-label="Отправить сообщение"
             disabled={isSendDisabled}
+            aria-busy={isSending}
           >
-            <ArrowUp size={19} />
+            {isSending ? '…' : <ArrowUp size={19} />}
           </button>
         </div>
       </form>
