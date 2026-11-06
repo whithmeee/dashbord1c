@@ -29,7 +29,7 @@ RUN composer install \
     --no-progress \
     --optimize-autoloader
 
-RUN mkdir -p /var/www/storage /var/www/bootstrap/cache && \
+RUN mkdir -p /var/www/storage/logs /var/www/bootstrap/cache && \
     chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 RUN rm /etc/nginx/http.d/default.conf
