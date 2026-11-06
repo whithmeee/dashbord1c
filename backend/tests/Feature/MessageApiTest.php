@@ -4,12 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Chat;
 use App\Models\ChatMessageRequest;
+use App\Models\DeepSeekUsage;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Integration;
 use App\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 use Tests\TestCase;
 
 class MessageApiTest extends TestCase
@@ -366,5 +368,100 @@ class MessageApiTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonPath('code', 'invalid_idempotency_key');
         Http::assertNothingSent();
+    }
+
+    public function test_usage_is_recorded_for_a_plain_completion(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake(['api.deepseek.com/*' => Http::response([
+            'id' => 'completion-1',
+            'model' => 'deepseek-chat',
+            'choices' => [['message' => ['content' => 'Готово']]],
+            'usage' => [
+                'prompt_tokens' => 12,
+                'completion_tokens' => 7,
+                'total_tokens' => 19,
+                'prompt_cache_hit_tokens' => 3,
+                'prompt_cache_miss_tokens' => 9,
+            ],
+        ])]);
+
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])->assertCreated();
+
+        $this->assertDatabaseHas('deepseek_usages', [
+            'company_id' => $this->company->id,
+            'actor_type' => 'company',
+            'actor_id' => $this->company->id,
+            'chat_id' => $chat->id,
+            'call_index' => 1,
+            'provider_request_id' => 'completion-1',
+            'model' => 'deepseek-chat',
+            'prompt_tokens' => 12,
+            'completion_tokens' => 7,
+            'cached_tokens' => 3,
+            'cache_miss_tokens' => 9,
+            'total_tokens' => 19,
+            'status' => DeepSeekUsage::RECORDED,
+        ]);
+    }
+
+    public function test_tool_call_records_both_model_calls_separately(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake([
+            'api.deepseek.com/*' => Http::sequence()
+                ->push(['id' => 'completion-1', 'model' => 'deepseek-chat', 'choices' => [['message' => [
+                    'content' => null,
+                    'tool_calls' => [[
+                        'function' => ['name' => 'get_sales_summary', 'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}'],
+                    ]],
+                ]]], 'usage' => ['prompt_tokens' => 10, 'completion_tokens' => 4, 'total_tokens' => 14, 'prompt_cache_hit_tokens' => 0, 'prompt_cache_miss_tokens' => 10]])
+                ->push(['id' => 'completion-2', 'model' => 'deepseek-chat', 'choices' => [['message' => ['content' => 'Готово']]], 'usage' => ['prompt_tokens' => 20, 'completion_tokens' => 6, 'total_tokens' => 26, 'prompt_tokens_details' => ['cached_tokens' => 5]]]),
+            '*Catalog_*' => Http::response(['value' => []]),
+            '*Document_*' => Http::response(['value' => []]),
+        ]);
+
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])->assertCreated();
+
+        $this->assertDatabaseCount('deepseek_usages', 2);
+        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 1, 'provider_request_id' => 'completion-1', 'total_tokens' => 14]);
+        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 2, 'provider_request_id' => 'completion-2', 'cached_tokens' => 5, 'status' => DeepSeekUsage::RECORDED]);
+    }
+
+    public function test_timeout_keeps_usage_unknown_with_null_tokens(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake(fn () => throw new ConnectionException('timeout'));
+
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])->assertStatus(502);
+
+        $this->assertDatabaseHas('deepseek_usages', [
+            'chat_id' => $chat->id,
+            'status' => DeepSeekUsage::UNKNOWN,
+            'prompt_tokens' => null,
+            'completion_tokens' => null,
+            'total_tokens' => null,
+        ]);
+    }
+
+    public function test_employee_usage_is_linked_to_employee_and_company(): void
+    {
+        $employee = Employee::factory()->for($this->company)->create();
+        $chat = $this->chatFor($employee);
+        $this->app['auth']->forgetGuards();
+        $this->actingAs($employee, 'employee');
+        Http::fake(['api.deepseek.com/*' => Http::response([
+            'id' => 'employee-completion',
+            'choices' => [['message' => ['content' => 'Готово']]],
+            'usage' => ['prompt_tokens' => 1, 'completion_tokens' => 1, 'total_tokens' => 2],
+        ])]);
+
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])->assertCreated();
+
+        $this->assertDatabaseHas('deepseek_usages', [
+            'company_id' => $this->company->id,
+            'actor_type' => 'employee',
+            'actor_id' => $employee->id,
+        ]);
     }
 }
