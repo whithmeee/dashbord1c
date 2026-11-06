@@ -81,6 +81,12 @@ return [
         'password' => env('ADMIN_PASSWORD'),
     ],
 
+    'demo_company' => [
+        'name' => env('DEMO_COMPANY_NAME'),
+        'email' => env('DEMO_COMPANY_EMAIL'),
+        'password' => env('DEMO_COMPANY_PASSWORD'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
