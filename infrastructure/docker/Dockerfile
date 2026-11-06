@@ -35,7 +35,7 @@ RUN mkdir -p /var/www/storage/logs /var/www/bootstrap/cache && \
 RUN rm /etc/nginx/http.d/default.conf
 COPY infrastructure/docker/nginx/default.conf /etc/nginx/http.d/default.conf
 
-RUN echo -e "[supervisord]\nnodaemon=true\n\n[program:php-fpm]\ncommand=php-fpm\nautostart=true\nautorestart=true\n\n[program:nginx]\ncommand=nginx -g 'daemon off;'\nautostart=true\nautorestart=true\n\n[program:laravel-worker]\ncommand=php /var/www/artisan queue:work --tries=3 --timeout=90\nautostart=true\nautorestart=true\nuser=www-data\nnumprocs=1\nredirect_stderr=true\nstdout_logfile=/var/www/storage/logs/worker.log" > /etc/supervisord.conf
+RUN echo -e "[supervisord]\nnodaemon=true\n\n[program:php-fpm]\ncommand=php-fpm\nautostart=true\nautorestart=true\n\n[program:nginx]\ncommand=nginx -g 'daemon off;'\nautostart=true\nautorestart=true" > /etc/supervisord.conf
 
 COPY infrastructure/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
