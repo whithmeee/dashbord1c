@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Chat;
+use App\Models\ChatMessageRequest;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Integration;
@@ -277,5 +278,93 @@ class MessageApiTest extends TestCase
             ->assertJsonPath('status', 'completed')
             ->assertJsonPath('message.content', 'Готово');
         Http::assertSentCount(1);
+    }
+
+    public function test_processing_operation_does_not_start_a_second_pipeline(): void
+    {
+        $chat = $this->chatFor($this->company);
+        $key = '55555555-5555-4555-8555-555555555555';
+        $user = Message::factory()->for($chat)->create(['role' => Message::ROLE_USER, 'content' => 'Вопрос']);
+        ChatMessageRequest::create([
+            'chat_id' => $chat->id,
+            'request_id' => $key,
+            'content_hash' => hash('sha256', 'Вопрос'),
+            'integration_id' => $chat->integration_id,
+            'status' => ChatMessageRequest::PROCESSING,
+            'user_message_id' => $user->id,
+            'started_at' => now(),
+        ]);
+        Http::fake();
+
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])
+            ->assertConflict()
+            ->assertJsonPath('code', 'message_request_processing');
+        Http::assertNothingSent();
+    }
+
+    public function test_stale_processing_operation_becomes_unknown_without_retry(): void
+    {
+        $chat = $this->chatFor($this->company);
+        $key = '77777777-7777-4777-8777-777777777777';
+        $user = Message::factory()->for($chat)->create(['role' => Message::ROLE_USER, 'content' => 'Вопрос']);
+        ChatMessageRequest::create([
+            'chat_id' => $chat->id,
+            'request_id' => $key,
+            'content_hash' => hash('sha256', 'Вопрос'),
+            'integration_id' => $chat->integration_id,
+            'status' => ChatMessageRequest::PROCESSING,
+            'user_message_id' => $user->id,
+            'started_at' => now()->subMinutes(6),
+        ]);
+        Http::fake();
+
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])
+            ->assertConflict()
+            ->assertJsonPath('code', 'message_request_unknown');
+        $this->assertDatabaseHas('chat_message_requests', ['request_id' => $key, 'status' => 'unknown']);
+        Http::assertNothingSent();
+    }
+
+    public function test_idempotency_key_conflict_includes_selected_integration(): void
+    {
+        $first = Integration::factory()->for($this->company)->create();
+        $second = Integration::factory()->for($this->company)->create();
+        $chat = $this->chatFor($this->company);
+        $chat->update(['integration_id' => $first->id]);
+        Http::fake(['api.deepseek.com/*' => Http::response(['choices' => [['message' => ['content' => 'Готово']]]])]);
+        $key = '88888888-8888-4888-8888-888888888888';
+
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])
+            ->assertCreated();
+        $chat->update(['integration_id' => $second->id]);
+        $this->withHeader('Idempotency-Key', $key)
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])
+            ->assertConflict()
+            ->assertJsonPath('code', 'idempotency_key_conflict');
+        Http::assertSentCount(1);
+    }
+
+    public function test_status_of_foreign_chat_request_is_forbidden(): void
+    {
+        $other = Company::factory()->create();
+        $chat = $this->chatFor($other, $other);
+
+        $this->getJson("/api/chats/{$chat->id}/message-requests/66666666-6666-4666-8666-666666666666")
+            ->assertForbidden();
+    }
+
+    public function test_invalid_idempotency_key_is_rejected_without_pipeline(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake();
+
+        $this->withHeader('Idempotency-Key', 'not-a-uuid')
+            ->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])
+            ->assertUnprocessable()
+            ->assertJsonPath('code', 'invalid_idempotency_key');
+        Http::assertNothingSent();
     }
 }

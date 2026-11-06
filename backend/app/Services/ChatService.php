@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\Chat;
+use App\Models\ChatMessageRequest;
 use App\Models\Message;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 class ChatService
@@ -20,15 +22,18 @@ class ChatService
     /**
      * Store the user's question, run the AI + 1C pipeline and store the assistant's answer.
      */
-    public function ask(Chat $chat, string $question): Message
+    public function ask(Chat $chat, string $question, ?ChatMessageRequest $request = null): Message
     {
         $history = $this->history($chat);
 
-        $chat->messages()->create([
-            'integration_id' => $chat->integration_id,
-            'role' => Message::ROLE_USER,
-            'content' => $question,
-        ]);
+        $userMessage = $request?->userMessage;
+        if ($userMessage === null) {
+            $userMessage = $chat->messages()->create([
+                'integration_id' => $chat->integration_id,
+                'role' => Message::ROLE_USER,
+                'content' => $question,
+            ]);
+        }
 
         if ($chat->title === self::DEFAULT_TITLE) {
             $chat->update(['title' => mb_substr($question, 0, 60)]);
@@ -47,12 +52,22 @@ class ChatService
             [$widget, $content] = $this->answerWithTool($chat, $question, $decision['tool_calls'][0]);
         }
 
-        return $chat->messages()->create([
-            'integration_id' => $chat->integration_id,
-            'role' => Message::ROLE_ASSISTANT,
-            'content' => $content,
-            'widget' => $widget,
-        ]);
+        return DB::transaction(function () use ($chat, $content, $widget, $request): Message {
+            $assistant = $chat->messages()->create([
+                'integration_id' => $chat->integration_id,
+                'role' => Message::ROLE_ASSISTANT,
+                'content' => $content,
+                'widget' => $widget,
+            ]);
+
+            $request?->update([
+                'assistant_message_id' => $assistant->id,
+                'status' => ChatMessageRequest::COMPLETED,
+                'completed_at' => now(),
+            ]);
+
+            return $assistant;
+        });
     }
 
     /**

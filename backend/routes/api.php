@@ -17,4 +17,5 @@ Route::middleware(['auth:sanctum', 'last.seen', 'company.access:subscription'])-
 
     Route::get('/chats/{chat}/messages', [MessageController::class, 'index']);
     Route::post('/chats/{chat}/messages', [MessageController::class, 'store'])->middleware('throttle:20,1');
+    Route::get('/chats/{chat}/message-requests/{requestId}', [MessageController::class, 'status']);
 });
