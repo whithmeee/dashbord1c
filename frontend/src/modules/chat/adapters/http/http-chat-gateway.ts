@@ -1,6 +1,6 @@
 import { api, type ApiClient, type RequestOptions } from '../../../../shared/api'
-import { mapChat, mapChats, mapMessage, mapMessages } from '../../domain/chat-mapper'
-import type { Chat, ChatMessage, CreateChatInput, SendMessageInput, UpdateChatInput } from '../../domain/chat'
+import { mapChat, mapChats, mapMessage, mapMessageRequestStatus, mapMessages } from '../../domain/chat-mapper'
+import type { Chat, ChatMessage, ChatMessageRequestStatus, CreateChatInput, SendMessageInput, UpdateChatInput } from '../../domain/chat'
 
 export interface ChatGateway {
   listChats(options?: RequestOptions): Promise<readonly Chat[]>
@@ -9,6 +9,7 @@ export interface ChatGateway {
   deleteChat(id: number, options?: RequestOptions): Promise<void>
   listMessages(chatId: number, options?: RequestOptions): Promise<readonly ChatMessage[]>
   sendMessage(chatId: number, input: SendMessageInput, options?: RequestOptions): Promise<ChatMessage>
+  getMessageRequestStatus(chatId: number, requestId: string, options?: RequestOptions): Promise<ChatMessageRequestStatus>
 }
 
 export function createHttpChatGateway(client: ApiClient): ChatGateway {
@@ -35,6 +36,10 @@ export function createHttpChatGateway(client: ApiClient): ChatGateway {
 
     async sendMessage(chatId, input, options = {}): Promise<ChatMessage> {
       return mapMessage(await client.post<unknown>(`/api/chats/${chatId}/messages`, input, options))
+    },
+
+    async getMessageRequestStatus(chatId, requestId, options = {}): Promise<ChatMessageRequestStatus> {
+      return mapMessageRequestStatus(await client.get<unknown>(`/api/chats/${chatId}/message-requests/${requestId}`, options))
     },
   }
 }

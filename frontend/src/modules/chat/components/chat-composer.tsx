@@ -7,7 +7,9 @@ type ChatComposerProps = {
   isSendDisabled: boolean
   isSending: boolean
   sendError?: Error
+  operationStatus?: 'processing' | 'unknown'
   onRefresh: () => void
+  onCheckStatus: () => void
   onDraftChange: (draft: string) => void
   onKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
@@ -18,14 +20,20 @@ export function ChatComposer({
   isSendDisabled,
   isSending,
   sendError,
+  operationStatus,
   onRefresh,
+  onCheckStatus,
   onDraftChange,
   onKeyDown,
   onSubmit,
 }: ChatComposerProps) {
   return (
     <footer className="chat-composer-area">
-      {sendError && <div className="chat-send-error" role="alert"><span>{getChatErrorMessage(sendError)}</span><button type="button" onClick={onRefresh}>Обновить историю</button></div>}
+      {sendError && <div className="chat-send-error" role="alert">
+        <span>{getChatErrorMessage(sendError)}</span>
+        {operationStatus && <button type="button" onClick={onCheckStatus}>Проверить статус</button>}
+        <button type="button" onClick={onRefresh}>Обновить историю</button>
+      </div>}
       <form className="chat-composer" onSubmit={onSubmit}>
         <textarea
           aria-label="Сообщение"

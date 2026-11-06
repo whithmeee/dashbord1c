@@ -96,6 +96,7 @@ export function useChat(enabled = true) {
     renameChat: chatStore.updateChat,
     deleteChat: chatStore.deleteChat,
     refreshMessages: chatStore.refreshMessages,
+    checkMessageRequest: chatStore.checkMessageRequest,
     conversationEndRef,
     draft,
     setDraft,

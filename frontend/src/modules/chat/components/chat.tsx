@@ -50,6 +50,8 @@ export function Chat({ controller }: ChatProps) {
               isSending={controller.isSending}
               sendError={controller.chatState.sending.status === 'error' ? controller.chatState.sending.error : undefined}
               onRefresh={() => void controller.refreshMessages()}
+              onCheckStatus={() => void controller.checkMessageRequest()}
+              operationStatus={controller.chatState.sending.status === 'error' ? controller.chatState.sending.operationStatus : undefined}
               onDraftChange={controller.setDraft}
               onKeyDown={controller.submitMessageFromKeyboard}
               onSubmit={controller.submitMessage}

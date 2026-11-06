@@ -56,3 +56,11 @@ export type UpdateChatInput = {
 export type SendMessageInput = {
   readonly content: string
 }
+
+export type ChatMessageRequestStatusName = 'processing' | 'completed' | 'unknown'
+
+export type ChatMessageRequestStatus = {
+  readonly requestId: string
+  readonly status: ChatMessageRequestStatusName
+  readonly message?: ChatMessage
+}

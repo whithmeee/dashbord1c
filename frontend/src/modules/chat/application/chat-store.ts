@@ -20,6 +20,7 @@ export interface ChatStore {
   updateChat(id: number, input: UpdateChatInput): Promise<void>
   deleteChat(id: number): Promise<void>
   sendMessage(input: SendMessageInput): Promise<void>
+  checkMessageRequest(): Promise<void>
   refreshMessages(): Promise<void>
   reset(): void
 }
@@ -184,6 +185,7 @@ export function createChatStore(
     updateChat: mutations.updateChat,
     deleteChat: mutations.deleteChat,
     sendMessage: sending.sendMessage,
+    checkMessageRequest: sending.checkMessageRequest,
     refreshMessages,
     reset,
   }

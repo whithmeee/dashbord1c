@@ -80,6 +80,18 @@ describe('API client transport', () => {
     expect(fetcher.mock.calls[0][1].signal).toBe(controller.signal)
   })
 
+  it('merges custom headers into requests', async () => {
+    const fetcher = vi.fn().mockResolvedValue(Response.json({ ok: true }))
+    const client = createApiClient({ fetcher })
+
+    await client.get('/api/chats', { headers: { 'Idempotency-Key': 'request-id' } })
+
+    expect(fetcher.mock.calls[0][1].headers).toEqual({
+      Accept: 'application/json',
+      'Idempotency-Key': 'request-id',
+    })
+  })
+
   it('wraps network failures without retrying', async () => {
     const fetcher = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'))
     const client = createApiClient({ fetcher })

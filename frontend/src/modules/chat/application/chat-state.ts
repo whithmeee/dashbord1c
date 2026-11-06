@@ -15,8 +15,13 @@ export type ChatMessagesState =
 
 export type ChatSendingState =
   | { readonly status: 'idle' }
-  | { readonly status: 'sending' }
-  | { readonly status: 'error'; readonly error: Error }
+  | { readonly status: 'sending'; readonly requestId: string }
+  | {
+      readonly status: 'error'
+      readonly error: Error
+      readonly requestId?: string
+      readonly operationStatus?: 'processing' | 'unknown'
+    }
 
 export type ChatMutationState =
   | { readonly status: 'idle' }

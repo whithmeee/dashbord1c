@@ -136,15 +136,16 @@ describe('createChatStore', () => {
 
   it('creates one idempotency key and sends it with the question', async () => {
     const pending = deferred<ChatMessage>()
-    const api = gateway({ sendMessage: vi.fn().mockReturnValue(pending.promise) })
+    const sendMessage = vi.fn().mockReturnValue(pending.promise)
+    const api = gateway({ sendMessage })
     const store = createChatStore(api)
     await store.loadChats()
     await store.selectChat(1)
 
     const first = store.sendMessage({ content: 'Вопрос' })
     const second = store.sendMessage({ content: 'Другой вопрос' })
-    expect(api.sendMessage).toHaveBeenCalledOnce()
-    expect(api.sendMessage.mock.calls[0][2]).toMatchObject({ headers: { 'Idempotency-Key': expect.any(String) } })
+    expect(sendMessage).toHaveBeenCalledOnce()
+    expect(sendMessage.mock.calls[0][2]).toMatchObject({ headers: { 'Idempotency-Key': expect.any(String) } })
     pending.resolve(assistantMessage)
     await Promise.all([first, second])
   })

@@ -4,6 +4,8 @@ import type {
   ChatIntegrationStatus,
   ChatMessage,
   ChatMessageRole,
+  ChatMessageRequestStatus,
+  ChatMessageRequestStatusName,
   ChatWidget,
   ChatWidgetColumn,
 } from './chat'
@@ -62,6 +64,20 @@ export function mapMessage(value: unknown): ChatMessage {
     content: readNullableString(message.content, 'message.content'),
     widget: message.widget === null ? null : mapWidget(message.widget),
     createdAt: readString(message.created_at, 'message.created_at'),
+  }
+}
+
+export function mapMessageRequestStatus(value: unknown): ChatMessageRequestStatus {
+  const request = readRecord(value, 'message request')
+  const status = readString(request.status, 'message request.status')
+  if (!isMessageRequestStatus(status)) {
+    throw invalid('message request.status is invalid')
+  }
+
+  return {
+    requestId: readString(request.request_id, 'message request.request_id'),
+    status,
+    ...(request.message === undefined ? {} : { message: mapMessage(request.message) }),
   }
 }
 
@@ -155,6 +171,10 @@ function isIntegrationStatus(value: string): value is ChatIntegrationStatus {
 
 function isMessageRole(value: string): value is ChatMessageRole {
   return value === 'user' || value === 'assistant'
+}
+
+function isMessageRequestStatus(value: string): value is ChatMessageRequestStatusName {
+  return value === 'processing' || value === 'completed' || value === 'unknown'
 }
 
 function invalid(message: string): InvalidChatError {
