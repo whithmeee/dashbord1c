@@ -4,14 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Chat;
 use App\Models\ChatMessageRequest;
-use App\Models\DeepSeekUsage;
 use App\Models\Company;
+use App\Models\DeepSeekUsage;
 use App\Models\Employee;
 use App\Models\Integration;
 use App\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class MessageApiTest extends TestCase
@@ -227,6 +227,7 @@ class MessageApiTest extends TestCase
 
         $this->assertSame($first->json('id'), $second->json('id'));
         $this->assertDatabaseCount('messages', 2);
+        $this->assertDatabaseCount('deepseek_usages', 1);
         Http::assertSentCount(1);
     }
 
@@ -463,5 +464,46 @@ class MessageApiTest extends TestCase
             'actor_type' => 'employee',
             'actor_id' => $employee->id,
         ]);
+    }
+
+    public function test_success_without_usage_is_recorded_as_unknown(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake(['api.deepseek.com/*' => Http::response([
+            'id' => 'without-usage',
+            'choices' => [['message' => ['content' => 'Готово']]],
+        ])]);
+
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Вопрос'])->assertCreated();
+
+        $this->assertDatabaseHas('deepseek_usages', [
+            'provider_request_id' => 'without-usage',
+            'status' => DeepSeekUsage::UNKNOWN,
+            'prompt_tokens' => null,
+            'completion_tokens' => null,
+            'total_tokens' => null,
+        ]);
+    }
+
+    public function test_usage_from_first_call_survives_failure_of_second_call(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake([
+            'api.deepseek.com/*' => Http::sequence()
+                ->push(['id' => 'first-call', 'choices' => [['message' => [
+                    'content' => null,
+                    'tool_calls' => [[
+                        'function' => ['name' => 'get_sales_summary', 'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}'],
+                    ]],
+                ]]], 'usage' => ['prompt_tokens' => 4, 'completion_tokens' => 2, 'total_tokens' => 6]])
+                ->push([], 503),
+            '*Catalog_*' => Http::response(['value' => []]),
+            '*Document_*' => Http::response(['value' => []]),
+        ]);
+
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])->assertStatus(502);
+
+        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 1, 'status' => DeepSeekUsage::RECORDED, 'total_tokens' => 6]);
+        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 2, 'status' => DeepSeekUsage::UNKNOWN]);
     }
 }

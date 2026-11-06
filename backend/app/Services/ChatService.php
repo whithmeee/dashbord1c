@@ -43,13 +43,13 @@ class ChatService
             ['role' => 'system', 'content' => $this->dispatcherPrompt($chat)],
             ...$history,
             ['role' => 'user', 'content' => $question],
-        ], $this->tools->definitions());
+        ], $this->tools->definitions(), $chat, $request, 1);
 
         $widget = null;
         $content = $decision['content'];
 
         if ($decision['tool_calls'] !== []) {
-            [$widget, $content] = $this->answerWithTool($chat, $question, $decision['tool_calls'][0]);
+            [$widget, $content] = $this->answerWithTool($chat, $question, $decision['tool_calls'][0], $request);
         }
 
         return DB::transaction(function () use ($chat, $content, $widget, $request): Message {
@@ -76,7 +76,7 @@ class ChatService
      * @param  array<string, mixed>  $toolCall
      * @return array{0: ?array<string, mixed>, 1: string}
      */
-    private function answerWithTool(Chat $chat, string $question, array $toolCall): array
+    private function answerWithTool(Chat $chat, string $question, array $toolCall, ?ChatMessageRequest $request): array
     {
         $name = (string) ($toolCall['function']['name'] ?? '');
         $arguments = json_decode((string) ($toolCall['function']['arguments'] ?? '{}'), true);
@@ -91,7 +91,7 @@ class ChatService
             ['role' => 'system', 'content' => $this->analystPrompt()],
             ['role' => 'user', 'content' => "Вопрос директора: {$question}\n\nТочные данные из 1С (посчитаны программно):\n"
                 .json_encode($widget, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)],
-        ]);
+        ], [], $chat, $request, 2);
 
         return [$widget, (string) $summary['content']];
     }
