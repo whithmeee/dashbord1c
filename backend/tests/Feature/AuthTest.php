@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\EmailVerificationCodeNotification;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -274,6 +275,30 @@ class AuthTest extends TestCase
         $employee = Employee::factory()->create(['last_seen_at' => now()->subMinutes(6)]);
 
         $this->assertFalse($employee->isOnline());
+    }
+
+    public function test_employee_session_expires_after_password_changes(): void
+    {
+        $employee = Employee::factory()->create(['password' => 'old-pass1']);
+        $this->actingAs($employee, 'employee');
+
+        $this->getJson('/auth/me')->assertOk();
+        $employee->forceFill(['password' => 'new-pass1'])->save();
+        Auth::forgetGuards();
+
+        $this->getJson('/auth/me')->assertUnauthorized();
+    }
+
+    public function test_employee_session_expires_after_employee_is_deleted(): void
+    {
+        $employee = Employee::factory()->create();
+        $this->actingAs($employee, 'employee');
+
+        $this->getJson('/auth/me')->assertOk();
+        $employee->delete();
+        Auth::forgetGuards();
+
+        $this->getJson('/auth/me')->assertUnauthorized();
     }
 
     public function test_protected_routes_require_authentication(): void

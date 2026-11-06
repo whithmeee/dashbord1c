@@ -3,6 +3,7 @@ import { AlertCircle, LoaderCircle, RotateCcw } from 'lucide-react'
 import { authSessionStore } from '../auth/react/auth-runtime'
 import { cabinetDashboardStore } from './cabinet-runtime'
 import { resetIntegrations } from '../integrations/integrations-runtime'
+import { resetEmployees } from '../employees/employees-runtime'
 import { CabinetPage } from './presentation/shell/cabinet-page'
 import './cabinet-state.css'
 
@@ -23,6 +24,7 @@ export function Cabinet({ onOpenChat }: { onOpenChat: () => void }) {
   useEffect(() => {
     if (!sessionKey) {
       resetIntegrations()
+      resetEmployees()
       if (dashboardState.status !== 'idle') {
         cabinetDashboardStore.reset()
       }
@@ -32,6 +34,7 @@ export function Cabinet({ onOpenChat }: { onOpenChat: () => void }) {
     if (previousSessionKey.current !== sessionKey) {
       previousSessionKey.current = sessionKey
       resetIntegrations()
+      resetEmployees()
       cabinetDashboardStore.reset()
       void cabinetDashboardStore.load()
     }
@@ -51,7 +54,10 @@ export function Cabinet({ onOpenChat }: { onOpenChat: () => void }) {
     )
   }
 
-  return <CabinetPage dashboard={dashboardState.data} onOpenChat={onOpenChat} />
+  const canManageEmployees = authState.status === 'authenticated-client'
+    && authState.session.type === 'company'
+
+  return <CabinetPage dashboard={dashboardState.data} onOpenChat={onOpenChat} canManageEmployees={canManageEmployees} />
 }
 
 function getSessionKey(state: ReturnType<typeof authSessionStore.getSnapshot>): string | undefined {
