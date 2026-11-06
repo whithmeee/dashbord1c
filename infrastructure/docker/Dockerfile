@@ -16,7 +16,7 @@ RUN apk add --no-cache \
 RUN docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath
 RUN pecl install redis && docker-php-ext-enable redis
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
@@ -35,8 +35,12 @@ RUN mkdir -p /var/www/storage /var/www/bootstrap/cache && \
 RUN rm /etc/nginx/http.d/default.conf
 COPY infrastructure/docker/nginx/default.conf /etc/nginx/http.d/default.conf
 
-RUN echo -e "[supervisord]\nnodaemon=true\n\n[program:php-fpm]\ncommand=php-fpm\nautostart=true\nautorestart=true\n\n[program:nginx]\ncommand=nginx -g 'daemon off;'\nautostart=true\nautorestart=true" > /etc/supervisord.conf
+RUN echo -e "[supervisord]\nnodaemon=true\n\n[program:php-fpm]\ncommand=php-fpm\nautostart=true\nautorestart=true\n\n[program:nginx]\ncommand=nginx -g 'daemon off;'\nautostart=true\nautorestart=true\n\n[program:laravel-worker]\ncommand=php /var/www/artisan queue:work --tries=3 --timeout=90\nautostart=true\nautorestart=true\nuser=www-data\nnumprocs=1\nredirect_stderr=true\nstdout_logfile=/var/www/storage/logs/worker.log" > /etc/supervisord.conf
+
+COPY infrastructure/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 10000
 
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
