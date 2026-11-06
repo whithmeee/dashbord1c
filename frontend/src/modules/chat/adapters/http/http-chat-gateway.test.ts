@@ -54,6 +54,22 @@ describe('createHttpChatGateway', () => {
     expect(deleteRequest).toHaveBeenCalledWith('/api/chats/4', {})
   })
 
+  it('sends an idempotency key and reads message request status', async () => {
+    const post = vi.fn().mockResolvedValue(messageResponse)
+    const get = vi.fn().mockResolvedValue({ request_id: '11111111-1111-4111-8111-111111111111', status: 'processing' })
+    const gateway = createHttpChatGateway({ post, get } as unknown as ApiClient)
+    const headers = { 'Idempotency-Key': '11111111-1111-4111-8111-111111111111' }
+
+    await gateway.sendMessage(4, { content: 'Покажи продажи' }, { headers })
+    await expect(gateway.getMessageRequestStatus(4, headers['Idempotency-Key'])).resolves.toEqual({
+      requestId: headers['Idempotency-Key'],
+      status: 'processing',
+    })
+
+    expect(post).toHaveBeenCalledWith('/api/chats/4/messages', { content: 'Покажи продажи' }, { headers })
+    expect(get).toHaveBeenCalledWith(`/api/chats/4/message-requests/${headers['Idempotency-Key']}`, {})
+  })
+
   it.each([401, 403, 409, 422, 429, 502])('passes HTTP %s through without retrying mutations', async (status) => {
     const error = new ApiError('Request failed', { kind: 'http', status })
     const post = vi.fn().mockRejectedValue(error)

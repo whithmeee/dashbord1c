@@ -52,6 +52,7 @@ function gateway(overrides: Partial<ChatGateway> = {}): ChatGateway {
     deleteChat: vi.fn().mockResolvedValue(undefined),
     listMessages: vi.fn().mockResolvedValue([]),
     sendMessage: vi.fn().mockResolvedValue(assistantMessage),
+    getMessageRequestStatus: vi.fn().mockResolvedValue({ requestId: 'request-id', status: 'completed', message: assistantMessage }),
     ...overrides,
   }
 }
@@ -131,6 +132,35 @@ describe('createChatStore', () => {
     expect(api.sendMessage).toHaveBeenCalledOnce()
     pending.resolve(assistantMessage)
     await Promise.all([first, second])
+  })
+
+  it('creates one idempotency key and sends it with the question', async () => {
+    const pending = deferred<ChatMessage>()
+    const api = gateway({ sendMessage: vi.fn().mockReturnValue(pending.promise) })
+    const store = createChatStore(api)
+    await store.loadChats()
+    await store.selectChat(1)
+
+    const first = store.sendMessage({ content: 'Вопрос' })
+    const second = store.sendMessage({ content: 'Другой вопрос' })
+    expect(api.sendMessage).toHaveBeenCalledOnce()
+    expect(api.sendMessage.mock.calls[0][2]).toMatchObject({ headers: { 'Idempotency-Key': expect.any(String) } })
+    pending.resolve(assistantMessage)
+    await Promise.all([first, second])
+  })
+
+  it('checks an unknown operation with GET and never posts again', async () => {
+    const error = new ApiError('Unknown result', { kind: 'network' })
+    const api = gateway({ sendMessage: vi.fn().mockRejectedValue(error), getMessageRequestStatus: vi.fn().mockResolvedValue({ requestId: 'request-id', status: 'unknown' }) })
+    const store = createChatStore(api)
+    await store.loadChats()
+    await store.selectChat(1)
+    await store.sendMessage({ content: 'Вопрос' })
+    await store.checkMessageRequest()
+
+    expect(api.sendMessage).toHaveBeenCalledOnce()
+    expect(api.getMessageRequestStatus).toHaveBeenCalledOnce()
+    expect(store.getSnapshot().sending.status).toBe('error')
   })
 
   it.each([401, 403, 409, 422, 429, 502])('exposes HTTP %s without automatic retry', async (status) => {
