@@ -1,3 +1,18 @@
+FROM node:24-alpine AS frontend-build
+
+WORKDIR /frontend
+
+COPY frontend/package*.json ./
+
+RUN npm ci
+
+COPY frontend/ ./
+
+ARG VITE_API_BASE_URL=
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
+RUN npm run build
+
 FROM php:8.4-fpm-alpine
 
 RUN apk add --no-cache \
@@ -21,6 +36,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 COPY backend/ /var/www
+
+COPY --from=frontend-build /frontend/dist/ /var/www/public/
 
 RUN composer install \
     --no-dev \
