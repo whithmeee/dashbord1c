@@ -63,7 +63,7 @@
   padding: 5px 9px;
   border-radius: 7px;
   background: #e5f5ef;
-  color: #22785a;
+  color: var(--app-success);
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
@@ -85,6 +85,7 @@
 .cabinet-tabs {
   display: flex;
   gap: 24px;
+  margin-bottom: 20px;
   overflow-x: auto;
   border-bottom: 1px solid var(--app-border);
 }
@@ -136,7 +137,7 @@
   padding: 10px 14px;
   border: 1px solid var(--app-border);
   border-radius: var(--app-control-radius);
-  background: white;
+  background: var(--app-panel);
   color: var(--app-text);
   font-size: 13px;
   cursor: pointer;

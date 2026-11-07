@@ -12,14 +12,14 @@
   padding: 24px;
   border: 1px solid var(--app-border);
   border-radius: 16px;
-  background: white;
+  background: var(--app-panel);
   color: var(--app-accent-text);
   text-align: left;
   cursor: pointer;
 }
 @media (hover: hover) and (pointer: fine) {
   .cabinet-summary-card:hover {
-    background: #f2f7ff;
+    background: var(--app-soft);
   }
 }
 
@@ -41,22 +41,30 @@
 }
 
 .cabinet-chat-link {
-  border-color: rgb(0 113 227 / 30%);
-  background: #f2f7ff;
+  border-color: var(--brand-silver);
+  background: var(--app-soft);
 }
 
 .cabinet-overview-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
-  align-items: start;
+  align-items: stretch;
   gap: 24px;
+}
+
+.cabinet-overview-grid > div {
+  display: flex;
+}
+
+.cabinet-overview-grid > div > .cabinet-panel {
+  width: 100%;
 }
 
 .cabinet-panel {
   padding: 24px;
   border: 1px solid var(--app-border);
   border-radius: var(--app-card-radius);
-  background: white;
+  background: var(--app-panel);
   box-shadow: 0 4px 18px rgb(20 20 24 / 2%);
 }
 
@@ -107,8 +115,8 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: #fff5d9;
-  color: #a67808;
+  background: var(--brand-silver);
+  color: var(--app-text);
 }
 
 .cabinet-empty-state {

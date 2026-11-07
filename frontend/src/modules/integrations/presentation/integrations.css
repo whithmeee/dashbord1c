@@ -2,7 +2,7 @@
   padding: 24px;
   border: 1px solid var(--app-border);
   border-radius: var(--app-card-radius);
-  background: white;
+  background: var(--app-panel);
   box-shadow: 0 4px 18px rgb(20 20 24 / 2%);
 }
 
@@ -68,8 +68,8 @@
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: #fff5d9;
-  color: #a67808;
+  background: var(--brand-silver);
+  color: var(--app-text);
 }
 
 .integration-card-main {
@@ -108,7 +108,7 @@
   padding: 5px 9px;
   border-radius: 999px;
   background: #e9f7ef;
-  color: #23764b;
+  color: var(--app-success);
 }
 
 .integration-status-inactive,
@@ -122,12 +122,12 @@
 }
 
 .integration-live-online {
-  color: #23764b;
+  color: var(--app-success);
 }
 
 .integration-live-offline,
 .integration-live-error {
-  color: #b42318;
+  color: var(--app-error);
 }
 
 .integration-live-dot {
@@ -144,7 +144,7 @@
 }
 
 .integration-check-error {
-  color: #b42318;
+  color: var(--app-error);
 }
 
 .integration-check-button {

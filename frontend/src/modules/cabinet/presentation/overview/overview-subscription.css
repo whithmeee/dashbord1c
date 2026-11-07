@@ -26,11 +26,11 @@
   padding: 4px 10px;
   border-radius: 8px;
   background: #e5f5ef;
-  color: #17664b;
+  color: var(--app-success);
   font-size: 13px;
 }
 
 .cabinet-subscription-status[data-status='inactive'] {
-  background: #fff1e5;
-  color: #904b12;
+  background: var(--app-warning-soft);
+  color: var(--app-warning);
 }

@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #20845d;
+  color: var(--app-success);
   font-size: 13px;
   font-weight: 500;
 }

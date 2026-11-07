@@ -40,7 +40,7 @@
   padding: 8px 12px;
   border: 1px solid var(--app-border);
   border-radius: var(--app-control-radius);
-  background: white;
+  background: var(--app-panel);
   color: var(--app-text);
   cursor: pointer;
   font-size: 13px;
@@ -66,7 +66,7 @@
   border: 1px solid rgb(0 113 227 / 12%);
   border-radius: 12px;
   background: var(--app-accent-soft);
-  color: #21578c;
+  color: var(--app-text);
   font-size: 13px;
   line-height: 1.6;
 }

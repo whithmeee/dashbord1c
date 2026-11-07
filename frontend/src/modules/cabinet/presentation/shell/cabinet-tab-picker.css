@@ -1,5 +1,6 @@
 .cabinet-tab-picker {
   display: none;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 760px) {

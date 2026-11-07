@@ -2,7 +2,7 @@
   padding: 24px;
   border: 1px solid var(--app-border);
   border-radius: var(--app-card-radius);
-  background: white;
+  background: var(--app-panel);
   box-shadow: 0 4px 18px rgb(20 20 24 / 2%);
 }
 
@@ -47,11 +47,11 @@
 .employees-card p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .employees-card time { display: block; }
 .employees-status { flex-shrink: 0; color: var(--app-muted); font-size: 12px; font-weight: 600; }
-.employees-status-online { background: #e9f7ef; color: #23764b; }
-.employees-status-dot.employees-status-online { background: #23764b; }
+.employees-status-online { background: rgb(84 133 106 / 12%); color: var(--app-success); }
+.employees-status-dot.employees-status-online { background: var(--app-success); }
 .employees-card-actions { display: flex; gap: 6px; }
-.employees-icon-button { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--app-border); border-radius: 10px; background: white; color: var(--app-text); cursor: pointer; }
-.employees-danger-icon { color: #b42318; }
+.employees-icon-button { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--app-border); border-radius: 10px; background: var(--app-panel); color: var(--app-text); cursor: pointer; }
+.employees-danger-icon { color: var(--app-error); }
 .employees-empty,
 .employees-state,
 .employees-forbidden { display: grid; justify-items: center; padding: 52px 24px; color: var(--app-muted); text-align: center; }
@@ -62,10 +62,10 @@
 .employees-state .cabinet-button { margin-top: 18px; }
 .employees-spinner { animation: employees-spin 1s linear infinite; }
 .employees-operation-error,
-.employees-field-error { color: #b42318 !important; }
+.employees-field-error { color: var(--app-error) !important; }
 .employees-operation-error { margin: 16px 0 0; font-size: 13px; }
 .employees-overlay { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: rgb(16 29 59 / 18%); }
-.employees-modal { width: min(100%, 480px); padding: 24px; border: 1px solid var(--app-border); border-radius: 20px; background: white; box-shadow: 0 24px 80px rgb(16 29 59 / 18%); }
+.employees-modal { width: min(100%, 480px); padding: 24px; border: 1px solid var(--app-border); border-radius: 20px; background: var(--app-panel); box-shadow: 0 24px 80px rgb(16 29 59 / 18%); }
 .employees-modal-header { align-items: flex-start; margin-bottom: 20px; }
 .employees-modal h3 { color: var(--app-text); font-size: 19px; }
 .employees-field { display: grid; gap: 7px; margin-top: 14px; color: var(--app-text); font-size: 13px; font-weight: 600; }
@@ -74,9 +74,9 @@
 .employees-field-error { margin: 0; font-size: 12px; font-weight: 400; }
 .employees-modal-actions { justify-content: flex-end; gap: 8px; margin-top: 22px; }
 .employees-confirm { text-align: center; }
-.employees-confirm > svg { color: #b42318; }
+.employees-confirm > svg { color: var(--app-error); }
 .employees-confirm .employees-modal-actions { justify-content: center; }
-.employees-danger-button { border-color: #b42318; background: #b42318; color: white; }
+.employees-danger-button { border-color: var(--app-error); background: var(--app-error); color: var(--brand-white); }
 .employees-icon-button:disabled,
 .employees-modal button:disabled { cursor: not-allowed; opacity: .6; }
 

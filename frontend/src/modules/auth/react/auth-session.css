@@ -10,14 +10,14 @@
 
 .auth-session-card > p {
   margin: 0.75rem 0 1.5rem;
-  color: #6e6e73;
+  color: var(--app-muted);
   line-height: 1.5;
 }
 
 .auth-code-field {
   display: grid;
   gap: 0.5rem;
-  color: #6e6e73;
+  color: var(--app-muted);
   font-size: 0.8125rem;
   text-align: left;
 }
@@ -26,10 +26,10 @@
   width: 100%;
   box-sizing: border-box;
   padding: 0.875rem 1rem;
-  border: 1px solid rgb(29 29 31 / 14%);
+  border: 1px solid var(--app-border);
   border-radius: 0.75rem;
-  background: white;
-  color: #1d1d1f;
+  background: var(--app-panel);
+  color: var(--app-text);
   font-size: 1.25rem;
   letter-spacing: 0.3em;
   text-align: center;
