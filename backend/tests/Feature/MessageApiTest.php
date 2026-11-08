@@ -36,7 +36,7 @@ class MessageApiTest extends TestCase
             ->create();
     }
 
-    public function test_sales_question_returns_widget_calculated_in_php_and_ai_summary(): void
+    public function test_sales_question_returns_safe_state_when_currency_is_unconfirmed(): void
     {
         $chat = $this->chatFor($this->company);
 
@@ -66,16 +66,44 @@ class MessageApiTest extends TestCase
         $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Покажи выручку за октябрь'])
             ->assertCreated()
             ->assertJsonPath('role', 'assistant')
-            ->assertJsonPath('content', '- Выручка стабильна')
-            ->assertJsonPath('widget.rows.0.name', 'ООО "ИЛСЕРВИС"')
-            ->assertJsonPath('widget.rows.0.documents', 2)
-            ->assertJsonPath('widget.rows.0.revenue', 300000.3)
-            ->assertJsonPath('widget.rows.0.average', 150000.15)
-            ->assertJsonPath('widget.totals.revenue', 300000.3)
-            ->assertJsonPath('widget.rows_count', 1);
+            ->assertJsonPath('content', 'Денежные показатели недоступны: валюта документов 1С не подтверждена.')
+            ->assertJsonPath('widget.status', 'unavailable')
+            ->assertJsonPath('widget.code', 'currency_unconfirmed')
+            ->assertJsonMissingPath('widget.rows.0.revenue')
+            ->assertJsonMissingPath('widget.totals.revenue');
 
         $this->assertDatabaseCount('messages', 2);
         $this->assertSame('Покажи выручку за октябрь', $chat->fresh()->title);
+        Http::assertSentCount(1);
+    }
+
+    public function test_top_customers_does_not_expose_unconfirmed_money_to_deepseek(): void
+    {
+        $chat = $this->chatFor($this->company);
+
+        Http::fake([
+            'api.deepseek.com/*' => Http::response(['choices' => [['message' => [
+                'content' => null,
+                'tool_calls' => [[
+                    'function' => [
+                        'name' => 'get_top_customers',
+                        'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}',
+                    ],
+                ]],
+            ]]]]),
+            '*Document_*' => Http::response(['value' => [
+                ['Ref_Key' => 'd1', 'Контрагент_Key' => 'buyer-1', 'СуммаДокумента' => 100.10],
+            ]]),
+        ]);
+
+        $response = $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Покажи топ покупателей'])
+            ->assertCreated()
+            ->assertJsonPath('content', 'Денежные показатели недоступны: валюта документов 1С не подтверждена.')
+            ->assertJsonPath('widget.code', 'currency_unconfirmed');
+
+        $this->assertStringNotContainsString('₽', $response->getContent());
+        $this->assertStringNotContainsString('revenue', $response->getContent());
+        Http::assertSentCount(1);
     }
 
     public function test_question_without_tool_call_returns_plain_text(): void
