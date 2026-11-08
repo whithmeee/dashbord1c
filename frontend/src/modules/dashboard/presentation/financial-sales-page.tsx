@@ -33,9 +33,7 @@ export function FinancialSalesPage({ onBack }: { onBack: () => void }) {
   )
   const reducedMotion = useReducedMotion()
   const [selectedIntegrationId, setSelectedIntegrationId] = useState<number>()
-  const period: DashboardPeriod = sales.status === 'success'
-    ? periodFromRange(sales.period.from, sales.period.to)
-    : 'half-year'
+  const [period, setPeriod] = useState<DashboardPeriod>('half-year')
   const range = useMemo(() => periodToRange(period), [period])
 
   useEffect(() => {
@@ -110,6 +108,7 @@ export function FinancialSalesPage({ onBack }: { onBack: () => void }) {
               type="button"
               aria-pressed={item === period}
               onClick={() => {
+                setPeriod(item)
                 const next = periodToRange(item)
                 financialSalesStore.setPeriod(next.from, next.to)
                 void financialSalesStore.load()
@@ -179,11 +178,4 @@ function StateCard({ title, message, action }: { title: string; message?: string
 
 function formatAmount(amountMinor: number, scale: number): string {
   return (amountMinor / 10 ** scale).toLocaleString('ru-RU', { minimumFractionDigits: scale, maximumFractionDigits: scale })
-}
-
-function periodFromRange(from: string, to: string): DashboardPeriod {
-  const start = new Date(`${from}T00:00:00Z`)
-  const end = new Date(`${to}T00:00:00Z`)
-  const months = (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + end.getUTCMonth() - start.getUTCMonth() + 1
-  return months <= 3 ? 'quarter' : 'half-year'
 }
