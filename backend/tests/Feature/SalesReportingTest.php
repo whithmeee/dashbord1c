@@ -26,7 +26,7 @@ class SalesReportingTest extends TestCase
         $this->actingAs($this->company, 'company');
     }
 
-    public function test_sales_report_groups_realizations_by_month_and_uses_minor_units(): void
+    public function test_sales_report_with_unconfirmed_currency_returns_no_aggregates(): void
     {
         Http::fake([
             '*Document_*' => Http::response(['value' => [
@@ -45,18 +45,18 @@ class SalesReportingTest extends TestCase
             ->assertJsonPath('integration_id', $this->integration->id)
             ->assertJsonPath('period.from', '2026-10-01')
             ->assertJsonPath('period.to', '2026-11-30')
-            ->assertJsonPath('money.amount_scale', 2)
+            ->assertJsonPath('financial_status', 'unavailable')
+            ->assertJsonPath('financial_status_code', 'currency_unconfirmed')
+            ->assertJsonPath('money.amount_scale', null)
+            ->assertJsonPath('money.unit', null)
             ->assertJsonPath('money.currency', null)
-            ->assertJsonPath('monthly.0.period', '2026-10')
-            ->assertJsonPath('monthly.0.amount_minor', 30030)
-            ->assertJsonPath('total_amount_minor', 35035)
-            ->assertJsonPath('customers.0.name', 'Альфа')
-            ->assertJsonPath('customers.0.amount_minor', 30030)
-            ->assertJsonPath('customers.1.name', 'Бета')
-            ->assertJsonPath('customers_total_amount_minor', 35035);
+            ->assertJsonPath('monthly', [])
+            ->assertJsonPath('customers', [])
+            ->assertJsonPath('total_amount_minor', null)
+            ->assertJsonPath('customers_total_amount_minor', null);
     }
 
-    public function test_deleted_and_unposted_documents_are_not_counted(): void
+    public function test_deleted_and_unposted_documents_do_not_change_unavailable_contract(): void
     {
         Http::fake([
             '*Document_*' => Http::response(['value' => [
@@ -71,10 +71,11 @@ class SalesReportingTest extends TestCase
 
         $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
             ->assertOk()
-            ->assertJsonPath('total_amount_minor', 1001);
+            ->assertJsonPath('financial_status_code', 'currency_unconfirmed')
+            ->assertJsonPath('total_amount_minor', null);
     }
 
-    public function test_duplicate_documents_from_pages_are_counted_once(): void
+    public function test_duplicate_documents_from_pages_do_not_leak_aggregates(): void
     {
         config(['services.onec.page_size' => 2]);
 
@@ -102,7 +103,9 @@ class SalesReportingTest extends TestCase
 
         $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
             ->assertOk()
-            ->assertJsonPath('total_amount_minor', 6060);
+            ->assertJsonPath('financial_status', 'unavailable')
+            ->assertJsonPath('monthly', [])
+            ->assertJsonPath('total_amount_minor', null);
     }
 
     public function test_exhausted_one_c_pagination_returns_an_explicit_error(): void
@@ -150,7 +153,8 @@ class SalesReportingTest extends TestCase
 
         $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
             ->assertOk()
-            ->assertJsonPath('total_amount_minor', 0);
+            ->assertJsonPath('financial_status_code', 'currency_unconfirmed')
+            ->assertJsonPath('total_amount_minor', null);
     }
 
     public function test_invalid_period_and_one_c_failure_are_reported(): void
@@ -175,9 +179,10 @@ class SalesReportingTest extends TestCase
 
         $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
             ->assertOk()
+            ->assertJsonPath('financial_status', 'unavailable')
             ->assertJsonPath('monthly', [])
             ->assertJsonPath('customers', [])
-            ->assertJsonPath('total_amount_minor', 0)
-            ->assertJsonPath('customers_total_amount_minor', 0);
+            ->assertJsonPath('total_amount_minor', null)
+            ->assertJsonPath('customers_total_amount_minor', null);
     }
 }
