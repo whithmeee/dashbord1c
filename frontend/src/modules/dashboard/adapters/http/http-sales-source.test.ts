@@ -5,11 +5,13 @@ import { createHttpSalesSource } from './http-sales-source'
 const response = {
   integration_id: 7,
   period: { from: '2026-10-01', to: '2026-10-31' },
-  money: { currency: null, currency_status: 'not_provided_by_current_odata', amount_scale: 2, unit: 'minor_units' },
+  financial_status: 'unavailable',
+  financial_status_code: 'currency_unconfirmed',
+  money: { currency: null, currency_status: 'not_provided_by_current_odata', amount_scale: null, unit: null },
   monthly: [],
-  total_amount_minor: 0,
+  total_amount_minor: null,
   customers: [],
-  customers_total_amount_minor: 0,
+  customers_total_amount_minor: null,
 }
 
 describe('financial sales HTTP source', () => {

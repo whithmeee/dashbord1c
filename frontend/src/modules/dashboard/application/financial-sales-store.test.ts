@@ -7,7 +7,9 @@ import { createFinancialSalesStore } from './financial-sales-store'
 const report: SalesReport = {
   integrationId: 7,
   period: { from: '2026-10-01', to: '2026-10-31' },
-  money: { currency: null, currencyStatus: 'not_provided_by_current_odata', amountScale: 2, unit: 'minor_units' },
+  financialStatus: 'available',
+  financialStatusCode: null,
+  money: { currency: 'RUB', currencyStatus: 'confirmed', amountScale: 2, unit: 'minor_units' },
   monthly: [{ period: '2026-10', amountMinor: 35035 }],
   totalAmountMinor: 35035,
   customers: [],
