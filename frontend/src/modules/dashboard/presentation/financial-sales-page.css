@@ -1,0 +1,45 @@
+.financial-sales-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.financial-sales-toolbar label {
+  display: grid;
+  gap: 7px;
+  min-width: min(360px, 100%);
+  color: var(--app-muted);
+  font-size: 13px;
+}
+
+.financial-sales-toolbar select {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-control-radius);
+  background: var(--app-panel);
+  color: var(--app-text);
+  font: inherit;
+}
+
+.financial-sales-empty {
+  margin: 32px 0;
+  padding: 28px;
+  border: 1px dashed var(--app-border);
+  border-radius: var(--app-card-radius);
+  color: var(--app-muted);
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .financial-sales-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .financial-sales-toolbar label {
+    min-width: 0;
+  }
+}

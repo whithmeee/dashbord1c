@@ -12,7 +12,7 @@ use Throwable;
  */
 class OneCToolsService
 {
-    private const SALES_DOCUMENT = 'Document_РеализацияТоваровУслуг';
+    public function __construct(private readonly OneCSalesReader $salesReader) {}
 
     /**
      * Tool definitions in the OpenAI-compatible format DeepSeek expects.
@@ -166,19 +166,14 @@ class OneCToolsService
      */
     private function groupSales(OneCClient $client, CarbonImmutable $from, CarbonImmutable $to, string $keyField, array $names): array
     {
-        $documents = $client->fetchAll(self::SALES_DOCUMENT, [
-            '$select' => "Ref_Key,{$keyField},СуммаДокумента",
-            '$filter' => "Date ge datetime'{$from->startOfDay()->format('Y-m-d\TH:i:s')}'"
-                ." and Date le datetime'{$to->endOfDay()->format('Y-m-d\TH:i:s')}'"
-                .' and Posted eq true and DeletionMark eq false',
-        ]);
+        $documents = $this->salesReader->documents($client, $from, $to);
 
         $groups = [];
         foreach ($documents as $document) {
             $name = $client->resolveName($names, $document[$keyField] ?? null);
             $groups[$name] ??= ['documents' => 0, 'kopecks' => 0];
             $groups[$name]['documents']++;
-            $groups[$name]['kopecks'] += (int) round(((float) ($document['СуммаДокумента'] ?? 0)) * 100);
+            $groups[$name]['kopecks'] += $this->salesReader->amountMinor($document['СуммаДокумента'] ?? null);
         }
 
         return $groups;
