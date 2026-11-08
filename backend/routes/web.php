@@ -25,6 +25,7 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('cabinet')->middleware(['auth:company,employee', 'last.seen', 'company.access'])->group(function () {
     Route::get('/dashboard', Cabinet\DashboardController::class);
+    Route::get('/finance/sales', Cabinet\FinanceSalesController::class);
     Route::get('/integrations', [Cabinet\IntegrationController::class, 'index']);
     Route::get('/integrations/{integration}/check', [Cabinet\IntegrationController::class, 'check'])->middleware('throttle:30,1');
     Route::get('/statistics', Cabinet\StatisticsController::class);
