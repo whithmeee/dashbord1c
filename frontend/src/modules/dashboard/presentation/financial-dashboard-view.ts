@@ -21,7 +21,15 @@ export function periodToRange(period: DashboardPeriod, now = new Date()) {
 }
 
 export function buildFinancialSalesView(report: SalesReport): FinancialSalesView {
-  if (report.money.currency === null || report.money.currencyStatus !== 'confirmed') {
+  if (
+    report.financialStatus === 'unavailable' ||
+    report.money.currency === null ||
+    report.money.currencyStatus !== 'confirmed' ||
+    report.money.amountScale === null ||
+    report.money.unit === null ||
+    report.totalAmountMinor === null ||
+    report.customersTotalAmountMinor === null
+  ) {
     return {
       kind: 'currency-unavailable',
       message: 'Валюта документов не подтверждена. Денежные показатели временно недоступны',

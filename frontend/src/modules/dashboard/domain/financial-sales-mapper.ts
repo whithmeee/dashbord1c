@@ -21,11 +21,13 @@ export function mapSalesReport(value: unknown): SalesReport {
   return {
     integrationId: readSafeInteger(payload.integration_id, 'integration_id'),
     period,
+    financialStatus: readFinancialStatus(payload.financial_status),
+    financialStatusCode: readNullableString(payload.financial_status_code, 'financial_status_code'),
     money,
     monthly: readArray(payload.monthly, 'monthly').map(mapMonthly),
-    totalAmountMinor: readSafeInteger(payload.total_amount_minor, 'total_amount_minor'),
+    totalAmountMinor: readNullableSafeInteger(payload.total_amount_minor, 'total_amount_minor'),
     customers: readArray(payload.customers, 'customers').map(mapCustomer),
-    customersTotalAmountMinor: readSafeInteger(
+    customersTotalAmountMinor: readNullableSafeInteger(
       payload.customers_total_amount_minor,
       'customers_total_amount_minor',
     ),
@@ -43,8 +45,8 @@ function mapMoney(value: Record<string, unknown>): SalesReportMoney {
   return {
     currency: readNullableString(value.currency, 'money.currency'),
     currencyStatus: readString(value.currency_status, 'money.currency_status'),
-    amountScale: readSafeInteger(value.amount_scale, 'money.amount_scale'),
-    unit: readString(value.unit, 'money.unit'),
+    amountScale: readNullableSafeInteger(value.amount_scale, 'money.amount_scale'),
+    unit: value.unit === null ? null : readString(value.unit, 'money.unit'),
   }
 }
 
@@ -94,6 +96,15 @@ function readSafeInteger(value: unknown, path: string): number {
     throw invalid(`${path} must be a safe integer`)
   }
   return value
+}
+
+function readNullableSafeInteger(value: unknown, path: string): number | null {
+  return value === null ? null : readSafeInteger(value, path)
+}
+
+function readFinancialStatus(value: unknown): 'available' | 'unavailable' {
+  if (value === 'available' || value === 'unavailable') return value
+  throw invalid('financial_status must be available or unavailable')
 }
 
 function invalid(message: string): InvalidSalesReportError {

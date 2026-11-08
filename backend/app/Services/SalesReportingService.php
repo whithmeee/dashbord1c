@@ -15,8 +15,6 @@ class SalesReportingService
     public function report(Integration $integration, CarbonImmutable $from, CarbonImmutable $to): array
     {
         $client = new OneCClient($integration);
-        // Keep the reachability/error behaviour of the existing endpoint, but do not
-        // expose any aggregate until the OData currency contract is confirmed.
         $this->salesReader->documents($client, $from, $to);
 
         return [
