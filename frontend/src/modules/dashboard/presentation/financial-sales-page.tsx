@@ -143,6 +143,9 @@ function FinancialSalesReport({ report, reducedMotion }: { report: SalesReport; 
   const view = buildFinancialSalesView(report)
   if (view.kind === 'currency-unavailable') return <StateCard title={view.message} />
   if (view.kind === 'empty') return <StateCard title="За выбранный период нет данных для отображения." />
+  if (report.money.currency === null || report.money.amountScale === null || report.money.unit === null) {
+    return <StateCard title="Валюта документов не подтверждена. Денежные показатели временно недоступны" />
+  }
   const scale = report.money.amountScale
   const monthly = view.monthly.map((item) => ({ label: item.period, amount: item.amountMinor / 10 ** scale }))
   const customers = view.customers.map((item) => ({ label: item.name, amount: item.amountMinor / 10 ** scale }))

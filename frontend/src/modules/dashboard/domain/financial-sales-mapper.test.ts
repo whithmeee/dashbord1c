@@ -4,6 +4,8 @@ import { InvalidSalesReportError, mapSalesReport } from './financial-sales-mappe
 const payload = {
   integration_id: 7,
   period: { from: '2026-10-01', to: '2026-11-30' },
+  financial_status: 'available',
+  financial_status_code: null,
   money: {
     currency: null,
     currency_status: 'not_provided_by_current_odata',
@@ -21,6 +23,8 @@ describe('financial sales mapper', () => {
     expect(mapSalesReport(payload)).toEqual({
       integrationId: 7,
       period: { from: '2026-10-01', to: '2026-11-30' },
+      financialStatus: 'available',
+      financialStatusCode: null,
       money: {
         currency: null,
         currencyStatus: 'not_provided_by_current_odata',
@@ -34,11 +38,24 @@ describe('financial sales mapper', () => {
     })
   })
 
-  it('preserves unknown currency and empty collections', () => {
-    expect(mapSalesReport({ ...payload, monthly: [], customers: [] })).toMatchObject({
-      money: { currency: null, currencyStatus: 'not_provided_by_current_odata' },
+  it('maps unavailable financial data without turning null into zero', () => {
+    expect(mapSalesReport({
+      ...payload,
+      financial_status: 'unavailable',
+      financial_status_code: 'currency_unconfirmed',
+      money: { currency: null, currency_status: 'not_provided_by_current_odata', amount_scale: null, unit: null },
       monthly: [],
       customers: [],
+      total_amount_minor: null,
+      customers_total_amount_minor: null,
+    })).toMatchObject({
+      financialStatus: 'unavailable',
+      financialStatusCode: 'currency_unconfirmed',
+      money: { currency: null, amountScale: null, unit: null },
+      monthly: [],
+      customers: [],
+      totalAmountMinor: null,
+      customersTotalAmountMinor: null,
     })
   })
 

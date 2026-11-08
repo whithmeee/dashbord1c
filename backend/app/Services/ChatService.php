@@ -87,6 +87,10 @@ class ChatService
             return [null, 'Не получилось обработать запрос: '.$exception->getMessage().' Уточните, пожалуйста, вопрос.'];
         }
 
+        if (($widget['status'] ?? null) === 'unavailable') {
+            return [$widget, (string) ($widget['message'] ?? 'Денежный отчёт временно недоступен.')];
+        }
+
         $summary = $this->deepSeek->complete([
             ['role' => 'system', 'content' => $this->analystPrompt()],
             ['role' => 'user', 'content' => "Вопрос директора: {$question}\n\nТочные данные из 1С (посчитаны программно):\n"

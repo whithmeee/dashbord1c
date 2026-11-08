@@ -5,6 +5,8 @@ import type { SalesReport } from '../domain/financial-sales'
 const report: SalesReport = {
   integrationId: 7,
   period: { from: '2026-05-01', to: '2026-10-31' },
+  financialStatus: 'available',
+  financialStatusCode: null,
   money: {
     currency: 'RUB',
     currencyStatus: 'confirmed',

@@ -6,8 +6,8 @@ export type SalesReportPeriod = {
 export type SalesReportMoney = {
   currency: string | null
   currencyStatus: string
-  amountScale: number
-  unit: string
+  amountScale: number | null
+  unit: string | null
 }
 
 export type MonthlySales = {
@@ -23,9 +23,11 @@ export type CustomerSales = {
 export type SalesReport = {
   integrationId: number
   period: SalesReportPeriod
+  financialStatus: 'available' | 'unavailable'
+  financialStatusCode: string | null
   money: SalesReportMoney
   monthly: readonly MonthlySales[]
-  totalAmountMinor: number
+  totalAmountMinor: number | null
   customers: readonly CustomerSales[]
-  customersTotalAmountMinor: number
+  customersTotalAmountMinor: number | null
 }
