@@ -105,6 +105,28 @@ class SalesReportingTest extends TestCase
             ->assertJsonPath('total_amount_minor', 6060);
     }
 
+    public function test_exhausted_one_c_pagination_returns_an_explicit_error(): void
+    {
+        config(['services.onec.page_size' => 1]);
+        Http::fake(function ($request) {
+            if (! str_contains($request->url(), 'Document_')) {
+                return Http::response(['value' => []]);
+            }
+
+            parse_str((string) parse_url($request->url(), PHP_URL_QUERY), $query);
+
+            return Http::response(['value' => [[
+                'Ref_Key' => 'd'.((int) ($query['$skip'] ?? 0)),
+                'Date' => '2026-10-01T10:00:00',
+                'СуммаДокумента' => 1,
+            ]]]);
+        });
+
+        $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
+            ->assertStatus(502)
+            ->assertJsonPath('code', 'onec_unavailable');
+    }
+
     public function test_foreign_and_inactive_integrations_are_rejected(): void
     {
         $foreign = Integration::factory()->create();
