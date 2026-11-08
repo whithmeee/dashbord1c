@@ -23,6 +23,7 @@ class StatisticsRequest extends FormRequest
     {
         return [
             'period' => ['sometimes', 'in:'.implode(',', array_keys(self::PRESET_DAYS))],
+            'month' => ['sometimes', 'date_format:Y-m'],
             'from' => ['sometimes', 'date_format:Y-m-d'],
             'to' => ['sometimes', 'date_format:Y-m-d', 'after_or_equal:from'],
             'group' => ['sometimes', 'in:'.implode(',', self::GROUPS)],
@@ -51,12 +52,18 @@ class StatisticsRequest extends FormRequest
     }
 
     /**
-     * Explicit `from`/`to` win; otherwise the `period` preset (default month) counts back from `to` (default today).
+     * Explicit `from`/`to` win, then a calendar `month` (YYYY-MM); otherwise the `period` preset (default month) counts back from `to` (default today).
      *
      * @return array{0: CarbonImmutable, 1: CarbonImmutable}
      */
     public function range(): array
     {
+        if ($this->filled('month') && ! $this->filled('from') && ! $this->filled('to')) {
+            $month = CarbonImmutable::createFromFormat('!Y-m', $this->input('month'));
+
+            return [$month->startOfMonth(), $month->endOfMonth()->startOfDay()];
+        }
+
         $to = $this->filled('to')
             ? CarbonImmutable::createFromFormat('Y-m-d', $this->input('to'))->startOfDay()
             : CarbonImmutable::today();

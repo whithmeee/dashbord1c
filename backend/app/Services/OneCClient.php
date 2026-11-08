@@ -87,15 +87,18 @@ class OneCClient
         return $names[$key] ?? 'Неизвестно';
     }
 
+    public static function pingUrl(Integration $integration): string
+    {
+        return rtrim($integration->odata_url, '/').'/?$format=json';
+    }
+
     /**
      * Cheap reachability check: the OData service document answers without scanning any catalog.
      */
     public function isReachable(): bool
     {
         try {
-            return $this->request()
-                ->get(rtrim($this->integration->odata_url, '/').'/?$format=json')
-                ->successful();
+            return $this->request()->get(self::pingUrl($this->integration))->successful();
         } catch (ConnectionException) {
             return false;
         }

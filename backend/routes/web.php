@@ -10,6 +10,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::view('/security', 'security')->name('security');
+
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
@@ -29,12 +31,15 @@ Route::prefix('cabinet')->middleware(['auth:company,employee', 'last.seen', 'com
     Route::get('/integrations', [Cabinet\IntegrationController::class, 'index']);
     Route::get('/integrations/{integration}/check', [Cabinet\IntegrationController::class, 'check'])->middleware('throttle:30,1');
     Route::get('/statistics', Cabinet\StatisticsController::class);
+    Route::get('/subscription', Cabinet\SubscriptionController::class);
+    Route::get('/system-status', Cabinet\SystemStatusController::class);
     Route::middleware('company.access:owner')->group(function () {
         Route::get('/settings', [Cabinet\SettingsController::class, 'show']);
         Route::patch('/settings', [Cabinet\SettingsController::class, 'update']);
 
         Route::get('/employees', [Cabinet\EmployeeController::class, 'index']);
         Route::post('/employees', [Cabinet\EmployeeController::class, 'store']);
+        Route::get('/employees/{employee}', [Cabinet\EmployeeController::class, 'show']);
         Route::patch('/employees/{employee}', [Cabinet\EmployeeController::class, 'update']);
         Route::delete('/employees/{employee}', [Cabinet\EmployeeController::class, 'destroy']);
     });

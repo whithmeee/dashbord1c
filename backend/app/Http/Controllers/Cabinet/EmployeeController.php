@@ -21,6 +21,13 @@ class EmployeeController extends Controller
         return EmployeeResource::collection($request->user()->employees()->orderBy('name')->get());
     }
 
+    public function show(Request $request, Employee $employee): EmployeeResource
+    {
+        $this->ensureOwnEmployee($request, $employee);
+
+        return new EmployeeResource($employee);
+    }
+
     public function store(StoreEmployeeRequest $request): JsonResponse
     {
         $employee = $request->user()->employees()->create($request->validated());

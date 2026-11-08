@@ -29,6 +29,7 @@ class IntegrationResource extends JsonResource
             'config_name' => $this->config_name,
             'is_active' => $this->is_active,
             'status' => $this->is_active ? 'active' : 'inactive',
+            'connected_at' => $this->created_at,
         ];
     }
 }

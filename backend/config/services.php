@@ -46,6 +46,8 @@ return [
         'timeout' => (int) env('ONEC_TIMEOUT', 30),
         'page_size' => (int) env('ONEC_PAGE_SIZE', 1000),
         'reference_cache_ttl' => (int) env('ONEC_REFERENCE_CACHE_TTL', 3600),
+        'health_timeout' => (int) env('ONEC_HEALTH_TIMEOUT', 5),
+        'health_cache_ttl' => (int) env('ONEC_HEALTH_CACHE_TTL', 60),
     ],
 
 ];

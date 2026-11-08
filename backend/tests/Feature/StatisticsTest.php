@@ -120,7 +120,7 @@ class StatisticsTest extends TestCase
         $this->getJson('/cabinet/statistics?from=2026-10-26&to=2026-11-08&group=week')
             ->assertOk()
             ->assertJsonPath('total', 4)
-            ->assertExactJsonStructure(['period', 'total', 'by_period', 'by_integration', 'by_author'])
+            ->assertExactJsonStructure(['period', 'total', 'summary', 'by_period', 'by_integration', 'by_author'])
             ->assertJsonPath('by_period', [
                 ['period' => '2026-10-26', 'requests' => 1],
                 ['period' => '2026-11-02', 'requests' => 3],

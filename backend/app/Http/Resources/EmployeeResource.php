@@ -26,6 +26,7 @@ class EmployeeResource extends JsonResource
             'login' => $this->login,
             'is_online' => $this->isOnline(),
             'last_seen_at' => $this->last_seen_at,
+            'created_at' => $this->created_at,
         ];
     }
 }

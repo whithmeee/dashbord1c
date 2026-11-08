@@ -2,6 +2,37 @@
 
 Бэкенд — Laravel, авторизация по **сессионной cookie** (Sanctum SPA). Токенов нет.
 
+## Для агента фронтенда: откуда берутся данные
+
+Прочитайте этот раздел первым. Он отвечает на вопрос «этой цифре можно верить и откуда она». Бэкенд — единственный источник истины: суммы и статистику на клиенте не пересчитывайте.
+
+| Что на экране | Ручка | Источник данных | Реальные? |
+|---|---|---|---|
+| Продажи по покупателям (выручка по месяцам, топ-5) | `GET /cabinet/finance/sales` | **1С по OData** (`Document_РеализацияТоваровУслуг`, справочник `Catalog_Контрагенты`), каждый раз заново | да |
+| Таблица-виджет и текст-сводка в чате | `POST /api/chats/{id}/messages` | таблица считается в PHP **из 1С**, текст пишет **DeepSeek** по уже посчитанным цифрам | да |
+| «Состояние системы» | `GET /cabinet/system-status` | **живой запрос к каждой базе 1С** (кэш 60 с) | да |
+| Проверка одной базы | `GET /cabinet/integrations/{id}/check` | **живой запрос к 1С** | да |
+| «Подключено систем» | `GET /cabinet/integrations`, `/cabinet/dashboard` | наша БД (таблица `integrations`, даты подключения) | да |
+| «Статус подписки» (даты, дни) | `GET /cabinet/subscription` | наша БД (даты на компании), дни считаются на сервере | да |
+| «Активные пользователи» | `GET /cabinet/employees` | наша БД; `is_online` = активность за 5 минут | да |
+| «Запросы к ИИ за месяц» | `GET /cabinet/statistics` | наша БД: считаются вопросы пользователей в таблице `messages` | да |
+| Профиль, телефоны, мессенджеры | `GET /cabinet/settings`, `/auth/me` | наша БД | да |
+| Админ-панель: компании, базы, пользователи, статистика | `/admin-panel/*` | наша БД | да |
+
+**Что на фронте пока не реально** (не пытайтесь искать для этого ручку):
+- Каталог отчётов (`modules/dashboard/catalog/*`) — статичные карточки «планируется». Данные есть только у отчёта «Продажи по покупателям».
+- `modules/dashboard/adapters/demo/*` — выдуманные суммы за май–октябрь, прототип. В рабочий экран не подключать.
+- Остальные финансовые отчёты (расходы, финансовый результат, поступления, платежи) на бэкенде **не реализованы**. Для каждого нужны сущность 1С, ручка и маппер, по образцу `/cabinet/finance/sales`.
+
+**Правила, чтобы не сломать данные**
+1. Деньги приходят в **копейках** (`*_minor`, целые числа). Делите на 100 только при отображении.
+2. `currency` в отчёте продаж сейчас `null` (`currency_status: not_provided_by_current_odata`): текущая публикация 1С не отдаёт валюту. Не подписывайте суммы символом «₽», пока валюта не определена.
+3. Продажи учитывают только проведённые документы без пометки удаления.
+4. Ошибки и состояния определяйте по HTTP-статусу и полю `code`, **не по тексту `message`** (он на русском, но может меняться).
+5. Нет сети до 1С: `502` (`onec_unavailable` в отчёте продаж). Нет подписки: `403 subscription_inactive`. Почта не подтверждена: `403 email_verification_required`. Выбранная база отключена: `409 integration_inactive`.
+6. Статистика запросов и отчёты не ходят в 1С, только «Продажи», чат и проверки состояния. Поэтому медленные ответы (до нескольких секунд) ждите только у этих трёх.
+
+---
 ## 0. Общие правила
 
 **Подключение**
@@ -101,7 +132,7 @@
 `<integration>`:
 ```json
 { "id": 3, "company_id": 1, "name": "Основная", "odata_url": "https://...", "login": "odata",
-  "config_name": "Бухгалтерия предприятия", "is_active": true, "status": "active" }
+  "config_name": "Бухгалтерия предприятия", "is_active": true, "status": "active", "connected_at": "2026-10-15T09:30:00.000000Z" }
 ```
 Пароль 1С не возвращается никогда. `status`: `active` | `inactive` (включена или отключена администратором).
 
@@ -112,9 +143,53 @@
 - `GET /cabinet/settings` → объект компании (как `account`).
 - `PATCH /cabinet/settings` — тело: `{ name?, phones?: [{phone, label?}], messengers?: [{name, contact}] }`. Если `phones`/`messengers` переданы — **целиком заменяют** существующие (до 10 штук), если не переданы — не меняются. Email и подписку клиент менять не может. Ответ — объект компании.
 
+### Состояние системы (карточка «Состояние системы»)
+`GET /cabinet/system-status` — владелец и сотрудник. Проверяет реальную доступность баз 1С (все базы опрашиваются одновременно, таймаут 5 с), результат кэшируется на 60 секунд.
+```json
+{ "status": "degraded",
+  "message": "Работает частично: активно баз 1 из 2.",
+  "total": 2, "active_count": 1, "inactive_count": 1,
+  "integrations": [
+    { "id": 3, "name": "Основная", "status": "active", "reason": null, "checked_at": "..." },
+    { "id": 4, "name": "Филиал", "status": "inactive", "reason": "unreachable", "checked_at": "..." } ] }
+```
+- `status`: `operational` — все базы работают; `degraded` — часть не работает; `inactive` — баз нет или не работает ни одна.
+- `message` — готовый текст для карточки: «Не активно: ни одной базы не подключено.», «Не активно: ни одна из баз не работает.», «Работает частично: активно баз N из M.», «Все системы работают.».
+- В `integrations[]` у каждой базы `status` (`active` | `inactive`) и `reason`: `disabled` (отключена администратором), `unreachable` (1С не отвечает) или `null`.
+### Продажи по покупателям (реальные данные из 1С)
+`GET /cabinet/finance/sales?integration_id=3&from=2026-05-01&to=2026-10-31` — владелец и сотрудник; нужна подтверждённая почта.
+- `integration_id` — своя база (чужая или несуществующая даёт `404`), `from`/`to` — `YYYY-MM-DD`, обе границы включительно, `to >= from`.
+- Если база отключена — `409 integration_inactive`. Если 1С не ответила — `502`, `code: onec_unavailable`.
+- Сервер забирает документы реализации из 1С (проведённые, без пометки удаления), суммирует по месяцам и покупателям в копейках.
+```json
+{ "integration_id": 3,
+  "period": { "from": "2026-05-01", "to": "2026-10-31" },
+  "money": { "currency": null, "currency_status": "not_provided_by_current_odata", "amount_scale": 2, "unit": "minor_units" },
+  "monthly": [ { "period": "2026-05", "amount_minor": 125000050 } ],
+  "total_amount_minor": 925000010,
+  "customers": [ { "name": "ООО Ромашка", "amount_minor": 400000000 } ],
+  "customers_total_amount_minor": 925000010 }
+```
+- `monthly` — только месяцы, в которых есть продажи, по возрастанию `YYYY-MM`. Пропущенные месяцы дорисовывайте нулями на клиенте.
+- `customers` — **топ-5** по убыванию; `customers_total_amount_minor` — сумма по всем покупателям (не только топ-5), по ней считается доля топа.
+- Запрос идёт в 1С и может занять несколько секунд, выставляйте индикатор загрузки.
+### Подписка (для модалки «Статус подписки»)
+`GET /cabinet/subscription` — доступно и владельцу, и сотруднику, при неактивной подписке тоже.
+```json
+{ "status": "active", "state": "active",
+  "starts_at": "2026-10-01", "ends_at": "2027-09-30",
+  "total_days": 365, "elapsed_days": 35, "days_left": 330,
+  "progress_percent": 10, "expires_soon": false }
+```
+- `state`: `active` | `expired` (срок вышел) | `not_started` (ещё не началась); `status` — `active` или `inactive` для плашки.
+- `days_left` — полных дней до окончания (в последний день = 0; у `expired` и `not_started` = 0). Подписка действует включительно по `ends_at`.
+- `expires_soon` — осталось 7 дней или меньше.
+- `progress_percent` — доля прошедшего срока (для прогресс-бара).
+
 ### Сотрудники **[владелец]**
-`<employee>`: `{ id, company_id, name, position, login, is_online, last_seen_at }`. `is_online` — была активность за последние 5 минут.
+`<employee>`: `{ id, company_id, name, position, login, is_online, last_seen_at, created_at }` (`created_at` — когда добавлен). `is_online` — была активность за последние 5 минут.
 - `GET /cabinet/employees` → `[ <employee> ]`
+- `GET /cabinet/employees/{id}` → `<employee>`
 - `POST /cabinet/employees` `{ name, position, login, password }` → `201 <employee>`. Логин: латиница, цифры, `-`, `_`, уникальный. Пароль ≥ 8, буквы + цифры.
 - `PATCH /cabinet/employees/{id}` `{ name?, position?, login?, password? }` → `<employee>`. Смена пароля завершает сессии сотрудника.
 - `DELETE /cabinet/employees/{id}` → `204`
@@ -141,6 +216,14 @@
 - `DELETE /api/chats/{id}` → `204` (вместе с сообщениями).
 - `GET /api/chats/{id}/messages` → `[ <message> ]` по порядку.
 - `POST /api/chats/{id}/messages` `{ "content": "Покажи выручку за октябрь" }` (до 2000 символов) → `201 <message>` ответа ассистента. Занимает несколько секунд (DeepSeek + 1С), показывайте индикатор. Лимит 20 в минуту. Если у чата база отключена — `409 integration_inactive` (предложите переключить базу). `502` — 1С или DeepSeek недоступны.
+
+**Повторная отправка без дублей (`Idempotency-Key`).** В `POST /api/chats/{id}/messages` можно передать заголовок `Idempotency-Key: <UUID>`. Один и тот же ключ с тем же текстом не создаёт второй вопрос:
+- уже выполненный запрос — вернётся то же сообщение ассистента (`201`);
+- запрос ещё идёт — `409`, `code: message_request_processing`;
+- результат неизвестен (сервер упал или прошло более 5 минут) — `409`, `code: message_request_unknown`, после этого обновите историю `GET /api/chats/{id}/messages`;
+- тот же ключ с другим текстом или в другой базе — `409`, `code: idempotency_key_conflict`; ключ не UUID — `422`, `code: invalid_idempotency_key`.
+
+`GET /api/chats/{id}/message-requests/{requestId}` (ключ — тот же UUID) → `{ "request_id": "...", "status": "processing"|"completed"|"unknown", "message": <message> }`. Поле `message` есть только у `completed`. Используйте после обрыва связи, чтобы узнать итог, не отправляя вопрос повторно. Новый UUID для каждого нового вопроса.
 
 `<message>`:
 ```json
@@ -170,6 +253,7 @@
 | Параметр | Значение |
 |---|---|
 | `period` | `today` (сегодня), `week` (7 дней), `month` (30 дней, по умолчанию), `year` (365 дней). Считается назад от `to` (по умолчанию — сегодня) |
+| `month` | `YYYY-MM` — календарный месяц целиком (для «запросов за месяц»), группировка по дням. Главнее `period`, но слабее `from`/`to` |
 | `from`, `to` | `YYYY-MM-DD`, обе границы включительно. Задают произвольный промежуток и главнее `period`. Максимум 5 лет |
 | `group` | `hour`, `day`, `week`, `month`. По умолчанию подбирается сам: 1 день → `hour`, до 31 дня → `day`, до 120 дней → `week`, дальше → `month`. `hour` — только до 7 дней |
 | `integration_id` | только одна база |
@@ -180,6 +264,8 @@
 {
   "period": { "from": "2026-10-04", "to": "2026-11-02", "group": "day" },
   "total": 128,
+  "summary": { "average_per_day": 4.3, "active_days": 22,
+    "peak_day": { "date": "2026-10-14", "requests": 17 }, "last_request_at": "2026-11-02T14:05:00+00:00" },
   "by_period": [ { "period": "2026-10-04", "requests": 3 }, ... ],
   "by_integration": [ { "integration_id": 3, "name": "Основная", "requests": 100 } ],
   "by_author": [ { "type": "company"|"employee", "id": 1, "name": "Иван", "requests": 40 } ],
@@ -187,6 +273,7 @@
 }
 ```
 - `by_period` без пропусков: пустые интервалы приходят с `requests: 0`. Подписи: `hour` → `2026-11-02 14:00`, `day` → `2026-11-02`, `week` → понедельник недели `2026-10-26`, `month` → `2026-11`.
+- `summary`: `average_per_day` — среднее за календарные дни периода, `active_days` — дней с хотя бы одним запросом, `peak_day` — самый загруженный день (`null`, если запросов не было), `last_request_at` — последний запрос (`null`, если не было).
 - `by_author` — у владельца (`/cabinet`) и у админа с `company_id`. У сотрудника его нет.
 - `by_company` — только у админа без `company_id`.
 - Для выбора промежутков в интерфейсе: кнопки День / Неделя / Месяц / Год → `period`, выбор дат → `from`+`to`.
@@ -227,6 +314,9 @@
 
 ---
 
+### Страница «Безопасность»
+`GET /security` — обычная веб-страница (Blade `resources/views/security.blade.php`), не JSON, без входа. Сейчас там только заголовок; текст политики безопасности вставьте в `<main>` этого шаблона либо сделайте страницу во фронтенде и уберите маршрут.
+
 ## 6. Сводная таблица
 
 | Метод и путь | Кто | Условия |
@@ -234,7 +324,7 @@
 | `POST /auth/login` | все | — |
 | `GET /auth/me`, `POST /auth/logout`, `POST /auth/change-password` | все вошедшие | — |
 | `POST /auth/email/verify`, `POST /auth/email/resend` | company | — |
-| `GET /cabinet/dashboard`, `/cabinet/integrations`, `/cabinet/integrations/{id}/check`, `/cabinet/statistics` | company, employee | почта подтверждена |
+| `GET /cabinet/dashboard`, `/cabinet/integrations`, `/cabinet/integrations/{id}/check`, `/cabinet/statistics`, `/cabinet/subscription`, `/cabinet/system-status`, `/cabinet/finance/sales` | company, employee | почта подтверждена |
 | `GET, PATCH /cabinet/settings`, CRUD `/cabinet/employees` | company | почта подтверждена |
-| `GET, POST /api/chats`, `PATCH, DELETE /api/chats/{id}`, `GET, POST /api/chats/{id}/messages` | company, employee | почта + активная подписка |
+| `GET, POST /api/chats`, `PATCH, DELETE /api/chats/{id}`, `GET, POST /api/chats/{id}/messages`, `GET /api/chats/{id}/message-requests/{requestId}` | company, employee | почта + активная подписка |
 | `/admin-panel/*` | admin | иначе 404 |

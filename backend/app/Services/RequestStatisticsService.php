@@ -37,8 +37,36 @@ class RequestStatisticsService
         return [
             'period' => ['from' => $from->toDateString(), 'to' => $to->toDateString(), 'group' => $group],
             'total' => (clone $questions)->count(),
+            'summary' => $this->summary($questions, $from, $to),
             'by_period' => $this->byPeriod($questions, $from, $to, $group),
             'by_integration' => $this->byIntegration($questions),
+        ];
+    }
+
+    /**
+     * Averages and extremes for the period: the numbers behind "how much and when".
+     *
+     * @param  Builder<Message>  $questions
+     * @return array{average_per_day: float, active_days: int, peak_day: ?array{date: string, requests: int}, last_request_at: ?string}
+     */
+    private function summary(Builder $questions, CarbonImmutable $from, CarbonImmutable $to): array
+    {
+        $days = DB::query()->fromSub(
+            (clone $questions)
+                ->select(DB::raw('DATE(messages.created_at) as day'), DB::raw('count(*) as requests'))
+                ->groupBy(DB::raw('DATE(messages.created_at)')),
+            'daily',
+        );
+
+        $peak = (clone $days)->orderByDesc('requests')->orderBy('day')->first();
+        $total = (int) (clone $days)->sum('requests');
+        $lastRequestAt = (clone $questions)->max('messages.created_at');
+
+        return [
+            'average_per_day' => round($total / ((int) $from->diffInDays($to) + 1), 1),
+            'active_days' => (clone $days)->count(),
+            'peak_day' => $peak === null ? null : ['date' => CarbonImmutable::parse($peak->day)->toDateString(), 'requests' => (int) $peak->requests],
+            'last_request_at' => $lastRequestAt === null ? null : CarbonImmutable::parse($lastRequestAt)->toIso8601String(),
         ];
     }
 

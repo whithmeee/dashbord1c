@@ -95,6 +95,20 @@ class Company extends Authenticatable
     }
 
     /**
+     * `not_started`, `active` or `expired` relative to today.
+     */
+    public function subscriptionState(): string
+    {
+        $today = now()->startOfDay();
+
+        return match (true) {
+            $this->subscription_starts_at->gt($today) => 'not_started',
+            $this->subscription_ends_at->lt($today) => 'expired',
+            default => 'active',
+        };
+    }
+
+    /**
      * Replace the company's phones and messengers. A null list leaves that collection untouched.
      *
      * @param  list<array{phone: string, label?: ?string}>|null  $phones
