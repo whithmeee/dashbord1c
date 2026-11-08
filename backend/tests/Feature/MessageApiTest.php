@@ -74,7 +74,9 @@ class MessageApiTest extends TestCase
 
         $this->assertDatabaseCount('messages', 2);
         $this->assertSame('Покажи выручку за октябрь', $chat->fresh()->title);
-        Http::assertSentCount(1);
+        $this->assertCount(1, collect(Http::recorded())->filter(
+            fn (array $record): bool => str_contains($record[0]->url(), 'deepseek'),
+        ));
     }
 
     public function test_top_customers_does_not_expose_unconfirmed_money_to_deepseek(): void
@@ -103,7 +105,9 @@ class MessageApiTest extends TestCase
 
         $this->assertStringNotContainsString('₽', $response->getContent());
         $this->assertStringNotContainsString('revenue', $response->getContent());
-        Http::assertSentCount(1);
+        $this->assertCount(1, collect(Http::recorded())->filter(
+            fn (array $record): bool => str_contains($record[0]->url(), 'deepseek'),
+        ));
     }
 
     public function test_question_without_tool_call_returns_plain_text(): void
@@ -435,7 +439,7 @@ class MessageApiTest extends TestCase
         ]);
     }
 
-    public function test_tool_call_records_both_model_calls_separately(): void
+    public function test_financial_safety_response_records_the_single_model_call(): void
     {
         $chat = $this->chatFor($this->company);
         Http::fake([
@@ -453,9 +457,9 @@ class MessageApiTest extends TestCase
 
         $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])->assertCreated();
 
-        $this->assertDatabaseCount('deepseek_usages', 2);
+        $this->assertDatabaseCount('deepseek_usages', 1);
         $this->assertDatabaseHas('deepseek_usages', ['call_index' => 1, 'provider_request_id' => 'completion-1', 'total_tokens' => 14]);
-        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 2, 'provider_request_id' => 'completion-2', 'cached_tokens' => 5, 'status' => DeepSeekUsage::RECORDED]);
+        Http::assertSentCount(2);
     }
 
     public function test_timeout_keeps_usage_unknown_with_null_tokens(): void
@@ -514,7 +518,7 @@ class MessageApiTest extends TestCase
         ]);
     }
 
-    public function test_usage_from_first_call_survives_failure_of_second_call(): void
+    public function test_usage_from_financial_safety_response_is_recorded(): void
     {
         $chat = $this->chatFor($this->company);
         Http::fake([
@@ -524,15 +528,15 @@ class MessageApiTest extends TestCase
                     'tool_calls' => [[
                         'function' => ['name' => 'get_sales_summary', 'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}'],
                     ]],
-                ]]], 'usage' => ['prompt_tokens' => 4, 'completion_tokens' => 2, 'total_tokens' => 6]])
-                ->push([], 503),
-            '*Catalog_*' => Http::response(['value' => []]),
+                ]]], 'usage' => ['prompt_tokens' => 4, 'completion_tokens' => 2, 'total_tokens' => 6]]),
             '*Document_*' => Http::response(['value' => []]),
         ]);
 
-        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])->assertStatus(502);
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])
+            ->assertCreated()
+            ->assertJsonPath('widget.code', 'currency_unconfirmed');
 
         $this->assertDatabaseHas('deepseek_usages', ['call_index' => 1, 'status' => DeepSeekUsage::RECORDED, 'total_tokens' => 6]);
-        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 2, 'status' => DeepSeekUsage::UNKNOWN]);
+        $this->assertDatabaseCount('deepseek_usages', 1);
     }
 }
