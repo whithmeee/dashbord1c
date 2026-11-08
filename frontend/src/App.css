@@ -40,6 +40,11 @@
   letter-spacing: -0.055em;
 }
 
+.application-heading p {
+  @apply mt-4 text-base;
+  color: var(--app-muted);
+}
+
 @keyframes content-enter {
   from {
     opacity: 0;

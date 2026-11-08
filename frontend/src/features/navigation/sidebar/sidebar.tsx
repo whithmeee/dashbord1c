@@ -16,7 +16,7 @@ type SidebarProps = {
 }
 
 export function Sidebar({ controller, onLogout, logoutError }: SidebarProps) {
-  const { movement } = useInterfaceMotion()
+  const { movement, reducedMotion } = useInterfaceMotion()
   const [loggingOut, setLoggingOut] = useState(false)
 
   async function logout() {
@@ -39,7 +39,7 @@ export function Sidebar({ controller, onLogout, logoutError }: SidebarProps) {
 
       <LayoutGroup id="sidebar">
         <nav className="sidebar-navigation" aria-label="Основная навигация">
-          {sidebarSections.map(({ id, label, icon: Icon }) => (
+          {sidebarSections.map(({ id, label, icon: Icon, ai }) => (
             <button
               className="sidebar-navigation-item"
               type="button"
@@ -56,10 +56,17 @@ export function Sidebar({ controller, onLogout, logoutError }: SidebarProps) {
                   aria-hidden="true"
                 />
               )}
-              <span className="sidebar-navigation-icon">
+              <motion.span
+                className="sidebar-navigation-icon"
+                animate={{ transform: controller.isSectionActive(id) && !reducedMotion ? 'scale(1.04)' : 'scale(1)' }}
+                transition={movement}
+              >
                 <Icon size={20} />
+              </motion.span>
+              <span className="sidebar-navigation-label">
+                {label}
+                {ai && <span className="sidebar-ai-badge">AI</span>}
               </span>
-              <span>{label}</span>
               <span className="sidebar-active-dot" />
             </button>
           ))}

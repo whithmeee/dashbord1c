@@ -12,7 +12,7 @@ export function CabinetTabs({
   onSelect: (tab: CabinetTab) => void
   canManageEmployees: boolean
 }) {
-  const { movement } = useInterfaceMotion()
+  const { movement, reducedMotion } = useInterfaceMotion()
   const visibleTabs = cabinetTabs.filter(({ id }) => id !== 'team' || canManageEmployees)
 
   return (
@@ -35,25 +35,32 @@ export function CabinetTabs({
         </select>
       </label>
       <LayoutGroup id="cabinet-tabs">
-        <nav className="cabinet-tabs" aria-label="Разделы личного кабинета">
+        <nav className="cabinet-tabs" role="tablist" aria-label="Разделы личного кабинета">
           {visibleTabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               type="button"
-              aria-current={active === id ? 'page' : undefined}
+              role="tab"
+              aria-selected={active === id}
               onClick={() => onSelect(id)}
               data-testid={`cabinet-tab-${id}`}
             >
-              <Icon size={16} />
-              {label}
               {active === id && (
                 <motion.span
-                  className="cabinet-tab-indicator"
-                  layoutId="indicator"
+                  className="cabinet-tab-active-pill"
+                  layoutId="cabinet-tab-active-pill"
                   transition={movement}
                   aria-hidden="true"
                 />
               )}
+              <motion.span
+                className="cabinet-tab-content"
+                animate={{ transform: active === id && !reducedMotion ? 'scale(1.01)' : 'scale(1)' }}
+                transition={movement}
+              >
+                <Icon size={16} />
+                {label}
+              </motion.span>
             </button>
           ))}
         </nav>

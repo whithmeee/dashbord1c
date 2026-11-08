@@ -84,10 +84,17 @@
 
 .cabinet-tabs {
   display: flex;
-  gap: 24px;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px;
   margin-bottom: 20px;
   overflow-x: auto;
-  border-bottom: 1px solid var(--app-border);
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--app-panel-solid), var(--app-soft));
+  box-shadow: inset 0 -2px 4px rgb(16 29 59 / 8%), inset 0 1px 0 rgb(255 255 255 / 90%);
 }
 
 .cabinet-tabs button {
@@ -96,18 +103,35 @@
   align-items: center;
   gap: 7px;
   flex-shrink: 0;
-  min-height: 44px;
-  padding: 8px 0 16px;
+  min-height: 40px;
+  padding: 8px 16px;
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-radius: 999px;
   background: transparent;
   color: var(--app-muted);
   font-size: 13px;
   cursor: pointer;
+  overflow: hidden;
 }
 
-.cabinet-tabs button[aria-current='page'] {
-  color: var(--app-accent-text);
+.cabinet-tabs button[aria-selected='true'] {
+  color: var(--app-panel-solid);
+}
+
+.cabinet-tab-content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.cabinet-tab-active-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--app-accent);
+  box-shadow: 0 2px 8px rgb(16 29 59 / 10%);
 }
 
 .cabinet button:focus-visible {
@@ -169,14 +193,4 @@
 
 .cabinet-placeholder button {
   margin-top: 24px;
-}
-
-.cabinet-tab-indicator {
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--app-accent);
-  pointer-events: none;
 }

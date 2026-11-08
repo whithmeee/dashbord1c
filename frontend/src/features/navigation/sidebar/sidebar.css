@@ -1,14 +1,14 @@
 @reference "../../../index.css";
 
 .sidebar {
-  @apply relative flex min-h-0 flex-col rounded-3xl border p-3;
+  @apply relative flex min-h-0 flex-col rounded-3xl border px-3 py-4;
   color: var(--app-text);
   border-color: var(--app-border);
   background: var(--app-panel);
 }
 
 .sidebar-brand {
-  @apply relative flex justify-center px-2 pb-4;
+  @apply relative flex justify-center px-2 pb-5;
 }
 
 .sidebar-brand > button {
@@ -28,7 +28,7 @@
 }
 
 .sidebar-navigation-item {
-  @apply grid min-h-10 cursor-pointer items-center rounded-xl border-0 bg-transparent px-2 text-left;
+  @apply grid min-h-10 cursor-pointer items-center rounded-full border-0 bg-transparent px-3 text-left;
   grid-template-columns: 34px minmax(0, 1fr) 8px;
   color: var(--app-muted);
   position: relative;
@@ -42,11 +42,22 @@
 }
 
 .sidebar-navigation-item[aria-current='page'] {
-  color: var(--app-accent-text);
+  color: var(--app-panel-solid);
 }
 
 .sidebar-navigation-icon {
   @apply grid size-8 place-items-center rounded-lg;
+}
+
+.sidebar-navigation-label {
+  @apply flex min-w-0 items-center gap-2;
+}
+
+.sidebar-ai-badge {
+  @apply inline-flex shrink-0 items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase;
+  background: #e5efff;
+  color: #2563eb;
+  letter-spacing: 0.04em;
 }
 
 .sidebar-active-dot {

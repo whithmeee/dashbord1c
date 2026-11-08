@@ -59,6 +59,7 @@ function App({ onLogout, logoutError }: AppProps) {
             <div className="application-heading">
               <span className="application-eyebrow">Раздел</span>
               <h1>{sidebar.activeSectionLabel}</h1>
+              <p>Раздел скоро появится в приложении</p>
             </div>
           )}
         </main>
