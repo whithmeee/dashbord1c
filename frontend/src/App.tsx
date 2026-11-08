@@ -54,7 +54,7 @@ function App({ onLogout, logoutError }: AppProps) {
               onToggleExpanded={sidebar.toggleSidebar}
             />
           ) : isCabinetActive ? (
-            <Cabinet onOpenChat={() => sidebar.selectSection('chat')} />
+            <Cabinet />
           ) : (
             <div className="application-heading">
               <span className="application-eyebrow">Раздел</span>

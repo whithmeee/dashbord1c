@@ -55,6 +55,10 @@ button {
   font: inherit;
 }
 
+p {
+  font-weight: 500;
+}
+
 input,
 textarea,
 select {

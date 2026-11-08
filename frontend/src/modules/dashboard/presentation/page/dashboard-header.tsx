@@ -19,7 +19,7 @@ export function DashboardHeader({
       <header className="dashboard-header">
         <div>
           <span className="application-eyebrow">Обзор бизнеса</span>
-          <h1>Дашборды</h1>
+          <h1>Аналитика</h1>
           <p>Главные цифры — перед глазами</p>
         </div>
         <button

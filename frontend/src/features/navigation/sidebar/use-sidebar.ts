@@ -7,12 +7,10 @@ export function useSidebar() {
   const [activeSectionId, setActiveSectionId] =
     useState<SidebarSectionId>('cabinet')
 
-  const activeSectionLabel = useMemo(
-    () =>
-      sidebarSections.find((section) => section.id === activeSectionId)
-        ?.label ?? sidebarSections[0].label,
-    [activeSectionId],
-  )
+  const activeSectionLabel = useMemo(() => {
+    const section = sidebarSections.find(({ id }) => id === activeSectionId)
+    return section?.screenLabel ?? section?.label ?? sidebarSections[0].label
+  }, [activeSectionId])
 
   const selectSection = useCallback((sectionId: SidebarSectionId) => {
     setActiveSectionId(sectionId)

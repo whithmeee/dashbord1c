@@ -3,6 +3,16 @@
 .application-shell {
   @apply flex min-h-screen flex-col gap-2 overflow-hidden p-3;
   height: 100dvh;
+  --app-background: #f4f5f8;
+  --app-panel: #ffffff;
+  --app-panel-solid: #ffffff;
+  --app-text: #0b0b0c;
+  --app-muted: #4a5060;
+  --app-border: #e3e5ea;
+  --app-soft: #f1f2f5;
+  --app-accent: #0b0b0c;
+  --app-accent-soft: #dbe6fb;
+  --app-accent-text: #0b0b0c;
   background: var(--app-background);
 }
 

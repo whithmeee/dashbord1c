@@ -7,7 +7,7 @@ import { resetEmployees } from '../employees/employees-runtime'
 import { CabinetPage } from './presentation/shell/cabinet-page'
 import './cabinet-state.css'
 
-export function Cabinet({ onOpenChat }: { onOpenChat: () => void }) {
+export function Cabinet() {
   const authState = useSyncExternalStore(
     authSessionStore.subscribe,
     authSessionStore.getSnapshot,
@@ -57,7 +57,7 @@ export function Cabinet({ onOpenChat }: { onOpenChat: () => void }) {
   const canManageEmployees = authState.status === 'authenticated-client'
     && authState.session.type === 'company'
 
-  return <CabinetPage dashboard={dashboardState.data} onOpenChat={onOpenChat} canManageEmployees={canManageEmployees} />
+  return <CabinetPage dashboard={dashboardState.data} canManageEmployees={canManageEmployees} />
 }
 
 function getSessionKey(state: ReturnType<typeof authSessionStore.getSnapshot>): string | undefined {

@@ -17,11 +17,9 @@ import './cabinet-tab-picker.css'
 
 export function CabinetPage({
   dashboard,
-  onOpenChat,
   canManageEmployees,
 }: {
   dashboard: CabinetDashboard
-  onOpenChat: () => void
   canManageEmployees: boolean
 }) {
   const [activeTab, setActiveTab] = useState<CabinetTab>('overview')
@@ -56,7 +54,6 @@ export function CabinetPage({
         {activeTab === 'overview' ? (
           <Overview
             dashboard={dashboard}
-            onOpenChat={onOpenChat}
             onSelectTab={selectTab}
             animateEntrance={animateOverview}
           />
