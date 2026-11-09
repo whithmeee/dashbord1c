@@ -26,6 +26,7 @@ export function mapEmployee(value: unknown): Employee {
     login: readString(employee.login, 'employee.login'),
     isOnline: readBoolean(employee.is_online, 'employee.is_online'),
     lastSeenAt: readNullableString(employee.last_seen_at, 'employee.last_seen_at'),
+    createdAt: readNullableString(employee.created_at ?? null, 'employee.created_at'),
   }
 }
 

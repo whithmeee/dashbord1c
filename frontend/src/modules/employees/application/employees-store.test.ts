@@ -12,6 +12,7 @@ const employee: Employee = {
   login: 'ivan',
   isOnline: false,
   lastSeenAt: null,
+  createdAt: null,
 }
 
 function gateway(overrides: Partial<EmployeesGateway> = {}): EmployeesGateway {

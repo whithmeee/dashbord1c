@@ -11,6 +11,7 @@ const employeeDto = {
   login: 'ivan',
   is_online: false,
   last_seen_at: null,
+  created_at: '2026-10-01T08:00:00Z',
 }
 
 describe('createHttpEmployeesGateway', () => {
@@ -35,6 +36,7 @@ describe('createHttpEmployeesGateway', () => {
       login: 'ivan',
       isOnline: false,
       lastSeenAt: null,
+      createdAt: '2026-10-01T08:00:00Z',
     })
     expect(post).toHaveBeenCalledWith('/cabinet/employees', input, undefined)
   })

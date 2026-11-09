@@ -1,7 +1,7 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import { AlertCircle, CheckCircle2, Database, LoaderCircle, RotateCcw } from 'lucide-react'
 import { motion } from 'motion/react'
-import { ApiError } from '../../../shared/api'
+import { ApiError, describeError } from '../../../shared/api'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
 import { integrationsStore } from '../integrations-runtime'
 import type { Integration } from '../domain/integration'
@@ -93,7 +93,8 @@ function IntegrationCard({
         <div className="integration-card-title-row">
           <div>
             <h3>{integration.name}</h3>
-            <p>{integration.configName}</p>
+            <p>{integration.configName ?? 'Конфигурация не указана'}</p>
+            {integration.connectedAt && <time dateTime={integration.connectedAt}>Подключена {formatCheckedAt(integration.connectedAt)}</time>}
           </div>
           <span className={`integration-status integration-status-${integration.status}`}>
             {getIntegrationStatusLabel(integration.status)}
@@ -105,7 +106,7 @@ function IntegrationCard({
             {getIntegrationCheckLabel(liveStatus)}
           </span>
           {checkedAt && <time dateTime={checkedAtValue}>{checkedAt}</time>}
-          {checkState.status === 'error' && <span className="integration-check-error">{checkState.error.message}</span>}
+          {checkState.status === 'error' && <span className="integration-check-error">{getErrorMessage(checkState.error)}</span>}
           <button
             className="cabinet-button integration-check-button"
             type="button"
@@ -172,5 +173,5 @@ function getErrorMessage(error: Error): string {
     if (error.status === 502 || error.kind === 'network') return 'Сервер 1С временно недоступен.'
   }
 
-  return error.message || 'Проверьте соединение и попробуйте ещё раз.'
+  return describeError(error)
 }

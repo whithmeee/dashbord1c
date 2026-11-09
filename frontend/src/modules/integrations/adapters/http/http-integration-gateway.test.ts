@@ -5,7 +5,7 @@ import { createHttpIntegrationGateway } from './http-integration-gateway'
 
 describe('createHttpIntegrationGateway', () => {
   it('requests the list endpoint and maps its array response', async () => {
-    const get = vi.fn().mockResolvedValue([{ id: 1, name: '1С', config_name: 'Бухгалтерия', is_active: true, status: 'active' }])
+    const get = vi.fn().mockResolvedValue([{ id: 1, name: '1С', config_name: 'Бухгалтерия', connected_at: '2026-10-15T09:30:00.000000Z', is_active: true, status: 'active' }])
     const gateway = createHttpIntegrationGateway({ get } as unknown as ApiClient)
     const signal = new AbortController().signal
 
@@ -13,6 +13,7 @@ describe('createHttpIntegrationGateway', () => {
       id: 1,
       name: '1С',
       configName: 'Бухгалтерия',
+      connectedAt: '2026-10-15T09:30:00.000000Z',
       isActive: true,
       status: 'active',
     }])

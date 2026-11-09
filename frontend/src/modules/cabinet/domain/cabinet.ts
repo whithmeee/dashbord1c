@@ -31,7 +31,8 @@ export type CabinetIntegration = {
   readonly name: string
   readonly odataUrl: string
   readonly login: string
-  readonly configName: string
+  readonly configName: string | null
+  readonly connectedAt: string | null
   readonly isActive: boolean
   readonly status: 'active' | 'inactive'
 }

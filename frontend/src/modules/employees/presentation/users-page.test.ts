@@ -10,6 +10,7 @@ const employee: Employee = {
   login: 'ivan',
   isOnline: false,
   lastSeenAt: null,
+  createdAt: null,
 }
 
 describe('users presentation helpers', () => {

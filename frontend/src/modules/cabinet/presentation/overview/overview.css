@@ -221,3 +221,40 @@
     margin-left: 44px;
   }
 }
+
+.cabinet-kpi-card-static {
+  cursor: default;
+}
+
+.cabinet-system-bases {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cabinet-system-bases li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-text);
+  font-size: 13px;
+}
+
+.cabinet-system-bases small {
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.cabinet-system-base-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--app-success);
+}
+
+.cabinet-system-bases li[data-status='inactive'] .cabinet-system-base-dot {
+  background: var(--app-error);
+}

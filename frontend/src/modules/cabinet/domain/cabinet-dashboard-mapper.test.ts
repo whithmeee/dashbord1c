@@ -23,6 +23,7 @@ const integration = {
   odata_url: 'https://1cfresh.example/odata',
   login: 'odata',
   config_name: 'Бухгалтерия предприятия',
+  connected_at: '2026-10-15T09:30:00.000000Z',
   is_active: true,
   status: 'active',
 }
@@ -55,6 +56,7 @@ describe('mapCabinetDashboard', () => {
         odataUrl: 'https://1cfresh.example/odata',
         login: 'odata',
         configName: 'Бухгалтерия предприятия',
+        connectedAt: '2026-10-15T09:30:00.000000Z',
         isActive: true,
         status: 'active',
       }],

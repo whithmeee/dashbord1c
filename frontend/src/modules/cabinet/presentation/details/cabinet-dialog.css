@@ -1,0 +1,167 @@
+.cabinet-dialog-overlay {
+  position: fixed;
+  z-index: 9;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(16 29 59 / 18%);
+}
+
+.cabinet-dialog {
+  display: flex;
+  max-height: calc(100dvh - 40px);
+  flex-direction: column;
+  width: min(100%, 520px);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-card-radius);
+  background: var(--app-panel);
+  box-shadow: 0 24px 80px rgb(16 29 59 / 18%);
+}
+
+.cabinet-dialog-large {
+  width: min(100%, 860px);
+}
+
+.cabinet-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 0;
+}
+
+.cabinet-dialog-header h2 {
+  margin: 0;
+  color: var(--app-text);
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.cabinet-dialog-close {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  background: var(--app-panel);
+  color: var(--app-text);
+  cursor: pointer;
+}
+
+.cabinet-dialog-body {
+  overflow-y: auto;
+  padding: 20px 24px 24px;
+}
+
+.cabinet-dialog-body .employees-page {
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.cabinet-dialog-state {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 40px 16px;
+  color: var(--app-muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.cabinet-dialog-state p {
+  margin: 0;
+}
+
+.cabinet-dialog-spinner {
+  animation: cabinet-dialog-spin 1s linear infinite;
+}
+
+.cabinet-dialog-facts {
+  display: grid;
+  gap: 0;
+  margin: 20px 0 0;
+}
+
+.cabinet-dialog-facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--app-border);
+  font-size: 14px;
+}
+
+.cabinet-dialog-facts > div:last-child {
+  border-bottom: 0;
+}
+
+.cabinet-dialog-facts dt {
+  color: var(--app-muted);
+}
+
+.cabinet-dialog-facts dd {
+  margin: 0;
+  color: var(--app-text);
+  font-weight: 600;
+  text-align: right;
+}
+
+.subscription-dialog-status {
+  margin: 0 0 16px;
+  color: var(--app-success);
+  font-size: 22px;
+  font-weight: 650;
+}
+
+.subscription-dialog-status[data-status='inactive'] {
+  color: var(--app-error);
+}
+
+.subscription-dialog-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--app-warning-soft);
+  color: var(--app-warning);
+  font-size: 13px;
+}
+
+.subscription-dialog-progress {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--app-soft);
+}
+
+.subscription-dialog-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--app-accent);
+}
+
+@keyframes cabinet-dialog-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 560px) {
+  .cabinet-dialog-overlay {
+    padding: 12px;
+  }
+
+  .cabinet-dialog-header,
+  .cabinet-dialog-body {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+}

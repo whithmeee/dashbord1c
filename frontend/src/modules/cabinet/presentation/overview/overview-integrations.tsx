@@ -28,7 +28,7 @@ export function OverviewIntegrations({
           </span>
           <div>
             <strong>{integration.name}</strong>
-            <p>{integration.configName}</p>
+            <p>{integration.configName ?? 'Конфигурация не указана'}</p>
           </div>
           <span
             className={

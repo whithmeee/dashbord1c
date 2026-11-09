@@ -1,0 +1,146 @@
+.statistics-month-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.statistics-month-switch strong {
+  min-width: 160px;
+  color: var(--app-text);
+  font-size: 15px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.statistics-month-switch .cabinet-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.statistics-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.statistics-tiles > div {
+  padding: 14px 16px;
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  background: var(--app-panel);
+}
+
+.statistics-tiles dt {
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.statistics-tiles dd {
+  margin: 6px 0 0;
+  color: var(--app-text);
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.statistics-section {
+  margin-top: 24px;
+}
+
+.statistics-section h3 {
+  margin: 0 0 12px;
+  color: var(--app-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.statistics-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 120px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.statistics-bars li {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  height: 100%;
+  min-width: 0;
+}
+
+.statistics-bar {
+  display: block;
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: var(--app-accent);
+}
+
+.statistics-bar[data-empty='true'] {
+  background: var(--app-border);
+}
+
+.statistics-bars-scale {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0 0;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.statistics-breakdown {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.statistics-breakdown li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(80px, 40%) 40px;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.statistics-breakdown-name {
+  overflow: hidden;
+  color: var(--app-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statistics-breakdown-track {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--app-soft);
+}
+
+.statistics-breakdown-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--app-accent);
+}
+
+.statistics-breakdown strong {
+  color: var(--app-text);
+  text-align: right;
+}
+
+@media (max-width: 560px) {
+  .statistics-breakdown li {
+    grid-template-columns: minmax(0, 1fr) 40px;
+  }
+
+  .statistics-breakdown-track {
+    display: none;
+  }
+}

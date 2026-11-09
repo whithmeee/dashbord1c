@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { RefreshCw, TrendingUp, Users } from 'lucide-react'
+import { describeError } from '../../../shared/api'
 import { authSessionStore } from '../../auth/react/auth-runtime'
 import { integrationsStore } from '../../integrations/integrations-runtime'
 import { financialSalesStore } from '../financial-sales-runtime'
@@ -129,7 +130,7 @@ export function FinancialSalesPage({ onBack }: { onBack: () => void }) {
       )}
       {sales.status === 'loading' && <p role="status">Загружаем финансовый отчёт…</p>}
       {sales.status === 'error' && (
-        <StateCard title="Финансовый отчёт недоступен" message={sales.error.message} action={() => void financialSalesStore.retry()} />
+        <StateCard title="Финансовый отчёт недоступен" message={describeError(sales.error)} action={() => void financialSalesStore.retry()} />
       )}
       {sales.status === 'success' && (
         <FinancialSalesReport report={sales.report} reducedMotion={Boolean(reducedMotion)} />

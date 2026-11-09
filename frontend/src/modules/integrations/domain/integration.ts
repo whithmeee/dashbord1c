@@ -5,7 +5,8 @@ export type IntegrationCheckStatus = 'online' | 'offline' | 'inactive'
 export type Integration = {
   readonly id: number
   readonly name: string
-  readonly configName: string
+  readonly configName: string | null
+  readonly connectedAt: string | null
   readonly isActive: boolean
   readonly status: IntegrationStatus
 }

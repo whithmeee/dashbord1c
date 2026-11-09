@@ -6,6 +6,7 @@ export type {
   RequestOptions,
 } from './api-client'
 export { ApiError } from './api-error'
+export { describeError } from './api-error-message'
 export type {
   ApiErrorKind,
   ValidationErrors,

@@ -5,8 +5,8 @@ import type { Integration, IntegrationCheck } from '../domain/integration'
 import { createIntegrationsStore } from './integrations-store'
 
 const items: readonly Integration[] = [
-  { id: 1, name: 'Основная', configName: 'Бухгалтерия', isActive: true, status: 'active' },
-  { id: 2, name: 'Филиал', configName: 'Бухгалтерия', isActive: true, status: 'active' },
+  { id: 1, name: 'Основная', configName: 'Бухгалтерия', connectedAt: null, isActive: true, status: 'active' },
+  { id: 2, name: 'Филиал', configName: 'Бухгалтерия', connectedAt: null, isActive: true, status: 'active' },
 ]
 
 function check(id: number, status: IntegrationCheck['status'] = 'online'): IntegrationCheck {

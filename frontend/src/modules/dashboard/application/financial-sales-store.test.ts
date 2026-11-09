@@ -16,7 +16,7 @@ const report: SalesReport = {
   customersTotalAmountMinor: 35035,
 }
 
-const active = { id: 7, name: 'Основная', configName: 'Бухгалтерия', isActive: true, status: 'active' as const }
+const active = { id: 7, name: 'Основная', configName: 'Бухгалтерия', connectedAt: null, isActive: true, status: 'active' as const }
 
 function deferred<T>() {
   let resolve!: (value: T) => void

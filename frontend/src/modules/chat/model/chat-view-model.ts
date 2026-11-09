@@ -1,4 +1,4 @@
-import { ApiError } from '../../../shared/api'
+import { ApiError, describeError } from '../../../shared/api'
 import type { ChatMessage as DomainChatMessage } from '../domain/chat'
 
 export type ChatMessageAuthor = 'assistant' | 'user'
@@ -34,7 +34,7 @@ export function isChatDraftEmpty(draft: string): boolean {
 
 export function getChatErrorMessage(error: unknown): string {
   if (!(error instanceof ApiError)) {
-    return error instanceof Error ? error.message : 'Проверьте соединение и попробуйте ещё раз.'
+    return describeError(error)
   }
 
   switch (error.status) {
@@ -54,6 +54,6 @@ export function getChatErrorMessage(error: unknown): string {
     case 502:
       return 'DeepSeek или 1С временно недоступны. Обновите историю позже.'
     default:
-      return error.kind === 'network' ? 'Нет связи с сервером. Обновите историю позже.' : error.message
+      return error.kind === 'network' ? 'Нет связи с сервером. Обновите историю позже.' : describeError(error)
   }
 }

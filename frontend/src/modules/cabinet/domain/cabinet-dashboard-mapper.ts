@@ -64,7 +64,8 @@ function mapIntegration(value: unknown): CabinetIntegration {
     name: readString(integration.name, 'integrations.items[].name'),
     odataUrl: readString(integration.odata_url, 'integrations.items[].odata_url'),
     login: readString(integration.login, 'integrations.items[].login'),
-    configName: readString(integration.config_name, 'integrations.items[].config_name'),
+    configName: readNullableString(integration.config_name, 'integrations.items[].config_name'),
+    connectedAt: readNullableString(integration.connected_at ?? null, 'integrations.items[].connected_at'),
     isActive: readBoolean(integration.is_active, 'integrations.items[].is_active'),
     status,
   }

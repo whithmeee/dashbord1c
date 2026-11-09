@@ -41,7 +41,8 @@ function mapIntegration(value: unknown): Integration {
   return {
     id: readNumber(integration.id, 'integration.id'),
     name: readString(integration.name, 'integration.name'),
-    configName: readString(integration.config_name, 'integration.config_name'),
+    configName: readNullableString(integration.config_name, 'integration.config_name'),
+    connectedAt: readNullableString(integration.connected_at ?? null, 'integration.connected_at'),
     isActive: readBoolean(integration.is_active, 'integration.is_active'),
     status,
   }
@@ -53,6 +54,10 @@ function readRecord(value: unknown, path: string): Record<string, unknown> {
   }
 
   return value as Record<string, unknown>
+}
+
+function readNullableString(value: unknown, path: string): string | null {
+  return value === null ? null : readString(value, path)
 }
 
 function readString(value: unknown, path: string): string {

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useSyncExternalStore } from 'react'
 import { AlertCircle, LoaderCircle, RotateCcw } from 'lucide-react'
+import { describeError } from '../../shared/api'
 import { authSessionStore } from '../auth/react/auth-runtime'
 import { cabinetDashboardStore } from './cabinet-runtime'
 import { cabinetDetailsStore, resetCabinetDetails } from './cabinet-details-runtime'
+import { resetCabinetStatistics } from './cabinet-statistics-runtime'
 import { resetIntegrations } from '../integrations/integrations-runtime'
 import { resetEmployees } from '../employees/employees-runtime'
 import { CabinetPage } from './presentation/shell/cabinet-page'
@@ -35,6 +37,7 @@ export function Cabinet() {
         cabinetDashboardStore.reset()
       }
       if (detailsState.status !== 'idle') resetCabinetDetails()
+      resetCabinetStatistics()
       return
     }
 
@@ -44,6 +47,7 @@ export function Cabinet() {
       resetEmployees()
       cabinetDashboardStore.reset()
       resetCabinetDetails()
+      resetCabinetStatistics()
       void cabinetDashboardStore.load()
       void cabinetDetailsStore.load()
     }
@@ -98,7 +102,7 @@ function CabinetState({
         <>
           <AlertCircle className="cabinet-state-icon" size={28} />
           <h1>Не удалось загрузить кабинет</h1>
-          <p>{error?.message || 'Проверьте соединение и попробуйте ещё раз.'}</p>
+          <p>{describeError(error)}</p>
           <button className="cabinet-button cabinet-button-primary" type="button" onClick={onRetry}>
             <RotateCcw size={16} />
             Повторить

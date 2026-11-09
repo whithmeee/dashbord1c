@@ -6,6 +6,7 @@ export type Employee = {
   readonly login: string
   readonly isOnline: boolean
   readonly lastSeenAt: string | null
+  readonly createdAt: string | null
 }
 
 export type CreateEmployeeInput = {

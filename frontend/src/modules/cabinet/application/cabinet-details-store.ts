@@ -1,5 +1,6 @@
 import type { ApiError } from '../../../shared/api'
 import type { CabinetDetailsGateway } from '../adapters/http/http-cabinet-details-gateway'
+import { toMonthKey } from '../domain/cabinet-statistics-period'
 import type { CabinetStatistics, CabinetSubscription, CabinetSystemStatus } from '../domain/cabinet-details'
 
 export type CabinetDetailsState =
@@ -22,7 +23,7 @@ export function createCabinetDetailsStore(gateway: CabinetDetailsGateway, sessio
   const load = (): Promise<void> => {
     if (state.status === 'loading' && request) return request
     const current = ++revision; controller = new AbortController(); const signal = controller.signal; publish({ status: 'loading' })
-    const operation = Promise.all([gateway.getSystemStatus({ signal }), gateway.getSubscription({ signal }), gateway.getStatistics(undefined, { signal })])
+    const operation = Promise.all([gateway.getSystemStatus({ signal }), gateway.getSubscription({ signal }), gateway.getStatistics({ month: toMonthKey(new Date()) }, { signal })])
       .then(([systemStatus, subscription, statistics]) => { if (revision === current) publish({ status: 'success', systemStatus, subscription, statistics }) })
       .catch((error: unknown) => { if (revision !== current || signal.aborted) return; if (isUnauthorized(error)) session.expireSession(); else publish({ status: 'error', error: normalizeError(error) }) })
       .finally(() => { if (request === operation) { request = undefined; controller = undefined } })

@@ -11,6 +11,7 @@ describe('employee mapper', () => {
       login: 'ivan_petrov',
       is_online: true,
       last_seen_at: '2026-11-06T10:00:00Z',
+      created_at: '2026-10-01T08:00:00Z',
       password: 'secret-pass1',
     })).toEqual({
       id: 4,
@@ -20,6 +21,7 @@ describe('employee mapper', () => {
       login: 'ivan_petrov',
       isOnline: true,
       lastSeenAt: '2026-11-06T10:00:00Z',
+      createdAt: '2026-10-01T08:00:00Z',
     })
   })
 

@@ -60,7 +60,7 @@ export function Auth({ store, state }: AuthProps) {
           transition={movement}
         >
           <div className="auth-fields">
-            <AuthField name="login" label="Логин" />
+            <AuthField name="login" label="Email или логин" />
             <AuthField name="password" label="Пароль" />
           </div>
           <button
