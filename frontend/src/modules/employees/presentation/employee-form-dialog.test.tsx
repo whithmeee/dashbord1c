@@ -11,5 +11,6 @@ describe('EmployeeForm dialog', () => {
     expect(html).toContain('role="dialog"')
     expect(html).toContain('aria-modal="true"')
     expect(html).toContain('Новый сотрудник')
+    expect(html).toContain('aria-label="Показать пароль"')
   })
 })
