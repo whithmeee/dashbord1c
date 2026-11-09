@@ -27,6 +27,10 @@
   height: 220px;
 }
 
+.dashboard-chart-recharts-doughnut {
+  height: 220px;
+}
+
 .dashboard-recharts-tooltip {
   display: grid;
   gap: 4px;
@@ -62,6 +66,10 @@
   }
 
   .dashboard-chart-recharts {
+    height: 190px;
+  }
+
+  .dashboard-chart-recharts-doughnut {
     height: 190px;
   }
 }
