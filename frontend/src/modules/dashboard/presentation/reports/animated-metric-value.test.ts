@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getAnimatedMetricTransition } from './animated-metric-value'
+import { getAnimatedMetricTransition } from './animated-metric-motion'
 
 describe('animated metric value', () => {
   it('uses a spring for changing demo KPI values', () => {

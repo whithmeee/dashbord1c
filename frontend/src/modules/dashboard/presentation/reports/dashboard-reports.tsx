@@ -2,11 +2,11 @@ import { FinanceReports } from './finance-reports'
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowDownToLine, Landmark, TrendingUp, Wallet } from 'lucide-react'
 import { RevenueChart, DebtorsChart } from '../charts/report-charts'
-import { formatMoney } from './money-format'
 import type { DashboardReport } from '../../domain/dashboard-report'
 import { ReportDetails } from './report-details'
 import './dashboard-reports.css'
 import { dashboardCardMotion, getDashboardCardTransition } from './dashboard-motion'
+import { AnimatedMetricValue } from './animated-metric-value'
 
 export function DashboardReports({ report }: { report: DashboardReport }) {
   const reducedMotion = useReducedMotion()
@@ -29,7 +29,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         </span>
         <span>Выручка за период</span>
         <strong data-testid="revenue-total">
-          {formatMoney(report.revenueTotal)}
+          <AnimatedMetricValue amount={report.revenueTotal} reducedMotion={Boolean(reducedMotion)} />
         </strong>
         <small>Сумма по выбранным месяцам</small>
       </motion.article>
@@ -39,20 +39,30 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         </span>
         <span>Долг топ-5 контрагентов</span>
         <strong data-testid="debt-total">
-          {formatMoney(report.topFiveDebt)}
+          <AnimatedMetricValue amount={report.topFiveDebt} reducedMotion={Boolean(reducedMotion)} />
         </strong>
         <small>На {report.debtAsOf} · не зависит от периода выручки</small>
       </motion.article>
       <motion.article className="dashboard-metric" {...cardProps(2)}>
         <span className="dashboard-metric-icon"><ArrowDownToLine size={20} /></span>
         <span>Расходы за период</span>
-        <strong>{formatMoney(report.expenses.reduce((sum, point) => sum + point.amount, 0))}</strong>
+        <strong>
+          <AnimatedMetricValue
+            amount={report.expenses.reduce((sum, point) => sum + point.amount, 0)}
+            reducedMotion={Boolean(reducedMotion)}
+          />
+        </strong>
         <small>Операционные затраты</small>
       </motion.article>
       <motion.article className="dashboard-metric" {...cardProps(3)}>
         <span className="dashboard-metric-icon"><Landmark size={20} /></span>
         <span>Остаток денежных средств</span>
-        <strong>{formatMoney(report.cashBalance.at(-1)?.amount ?? 0)}</strong>
+        <strong>
+          <AnimatedMetricValue
+            amount={report.cashBalance.at(-1)?.amount ?? 0}
+            reducedMotion={Boolean(reducedMotion)}
+          />
+        </strong>
         <small>На конец выбранного периода</small>
       </motion.article>
       <motion.article className="dashboard-report" {...cardProps(4)}>
