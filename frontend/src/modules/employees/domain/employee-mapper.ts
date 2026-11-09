@@ -1,4 +1,4 @@
-import type { Employee } from './employee'
+import { employeeSections, type Employee, type EmployeeSection } from './employee'
 
 export class InvalidEmployeeError extends Error {
   constructor(message: string) {
@@ -24,6 +24,7 @@ export function mapEmployee(value: unknown): Employee {
     name: readString(employee.name, 'employee.name'),
     position: readString(employee.position, 'employee.position'),
     login: readString(employee.login, 'employee.login'),
+    sections: readSections(employee.sections),
     isOnline: readBoolean(employee.is_online, 'employee.is_online'),
     lastSeenAt: readNullableString(employee.last_seen_at, 'employee.last_seen_at'),
     createdAt: readNullableString(employee.created_at ?? null, 'employee.created_at'),
@@ -68,6 +69,14 @@ function readBoolean(value: unknown, path: string): boolean {
   }
 
   return value
+}
+
+function readSections(value: unknown): readonly EmployeeSection[] {
+  if (value === undefined) return [...employeeSections]
+  if (!Array.isArray(value) || value.some((item) => !employeeSections.includes(item as EmployeeSection))) {
+    throw invalid('employee.sections must contain known sections')
+  }
+  return value as EmployeeSection[]
 }
 
 function invalid(message: string): InvalidEmployeeError {

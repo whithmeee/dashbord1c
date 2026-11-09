@@ -86,6 +86,11 @@
 .employees-field input { box-sizing: border-box; width: 100%; padding: 11px 12px; border: 1px solid var(--app-border); border-radius: 10px; color: var(--app-text); font: inherit; font-weight: 400; }
 .employees-field input:focus { outline: 2px solid var(--app-accent); outline-offset: 1px; }
 .employees-field-error { margin: 0; font-size: 12px; font-weight: 400; }
+.employees-permissions { margin: 20px 0 0; padding: 14px; border: 1px solid var(--app-border); border-radius: 14px; }
+.employees-permissions legend { padding: 0 6px; color: var(--app-text); font-size: 13px; font-weight: 600; }
+.employees-permissions > p { margin: 0 0 12px; color: var(--app-muted); font-size: 12px; }
+.employees-permissions-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.employees-permission { display: flex; align-items: center; gap: 8px; color: var(--app-text); font-size: 13px; font-weight: 500; cursor: pointer; }
 .employees-modal-actions { justify-content: flex-end; gap: 8px; margin-top: 22px; }
 .employees-confirm { text-align: center; }
 .employees-confirm > svg { color: var(--app-error); }

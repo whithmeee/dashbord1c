@@ -21,6 +21,7 @@ describe('users presentation helpers', () => {
       position: 'Главбух',
       login: 'ivan',
       password: '',
+      sections: ['finance', 'chat'],
     })).toEqual({ position: 'Главбух' })
   })
 

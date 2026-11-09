@@ -19,7 +19,7 @@ export type CreateEmployeeInput = {
   readonly position: string
   readonly login: string
   readonly password: string
-  readonly sections: readonly EmployeeSection[]
+  readonly sections?: readonly EmployeeSection[]
 }
 
 export type UpdateEmployeeInput = {

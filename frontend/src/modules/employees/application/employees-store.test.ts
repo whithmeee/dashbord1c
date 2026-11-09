@@ -10,6 +10,7 @@ const employee: Employee = {
   name: 'Иван',
   position: 'Бухгалтер',
   login: 'ivan',
+  sections: ['finance', 'chat'],
   isOnline: false,
   lastSeenAt: null,
   createdAt: null,
