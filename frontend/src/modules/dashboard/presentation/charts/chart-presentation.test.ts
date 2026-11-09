@@ -47,7 +47,7 @@ describe('report chart animation', () => {
       data: { datasets: [{ data: [10, 20] }] },
     }
 
-    activePointCrosshairPlugin.afterDraw?.(chart as never)
+    activePointCrosshairPlugin.afterDraw?.(chart as never, {} as never, {} as never)
 
     expect(context.moveTo).toHaveBeenCalledWith(44, 12)
     expect(context.lineTo).toHaveBeenCalledWith(44, 96)
@@ -61,7 +61,7 @@ describe('report chart animation', () => {
       ...chart,
       ctx: emptyContext,
       tooltip: { getActiveElements: () => [] },
-    } as never)
+    } as never, {} as never, {} as never)
 
     expect(emptyContext.save).not.toHaveBeenCalled()
   })

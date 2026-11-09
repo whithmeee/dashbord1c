@@ -1,7 +1,10 @@
 import { Bar, Line } from 'react-chartjs-2'
 import type { ReportPoint } from '../../domain/dashboard-report'
 import { formatAxisMoney } from '../reports/money-format'
-import { useReportChart } from './chart-presentation'
+import {
+  activePointCrosshairPlugin,
+  useReportChart,
+} from './chart-presentation'
 import './report-charts.css'
 
 type ReportChartProps = { points: ReportPoint[] }
@@ -27,6 +30,7 @@ export function RevenueChart({ points }: ReportChartProps) {
             y: amountAxis,
           },
         }}
+        plugins={[activePointCrosshairPlugin]}
         data={{
           labels: chart.labels,
           datasets: [
@@ -38,6 +42,9 @@ export function RevenueChart({ points }: ReportChartProps) {
               fill: true,
               tension: 0.3,
               pointRadius: 4,
+              pointHoverRadius: 6,
+              pointHoverBorderWidth: 2,
+              pointHoverBackgroundColor: '#ffffff',
               pointBackgroundColor: '#0071e3',
               borderWidth: 2.5,
             },
