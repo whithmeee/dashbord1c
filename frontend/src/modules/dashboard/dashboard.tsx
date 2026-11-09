@@ -5,6 +5,8 @@ import { DashboardNavigation } from './presentation/catalog/dashboard-navigation
 import { ReportCatalog } from './presentation/catalog/report-catalog'
 import { DashboardPage } from './presentation/page/dashboard-page'
 import { createDemoDashboardSource } from './adapters/demo/demo-dashboard-source'
+import { dashboardSectionMotion, getDashboardSectionTransition } from './dashboard-section-motion'
+import './dashboard-section-motion.css'
 
 const demoDashboardSource = createDemoDashboardSource('ready')
 
@@ -23,7 +25,15 @@ export function Dashboard({
     setView(next)
     workspaceRef.current?.scrollIntoView({ block: 'start' })
   }
-  const { appearance } = useInterfaceMotion()
+  const { reducedMotion } = useInterfaceMotion()
+  const sectionTransition = getDashboardSectionTransition(Boolean(reducedMotion))
+  const sectionProps = (active: boolean) => ({
+    initial: active && !reducedMotion ? dashboardSectionMotion.initial : false,
+    animate: active ? dashboardSectionMotion.enter : dashboardSectionMotion.exit,
+    transition: sectionTransition,
+    'aria-hidden': !active,
+    inert: !active,
+  })
   return (
     <div
       className="dashboard-workspace"
@@ -37,12 +47,8 @@ export function Dashboard({
         onSelect={selectView}
         onBack={onBack}
       />
-      <motion.div
-        hidden={view !== 'overview'}
-        initial={false}
-        animate={{ opacity: view === 'overview' ? 1 : 0 }}
-        transition={appearance}
-      >
+      <div className="dashboard-section-transition">
+      <motion.div className="dashboard-section" data-dashboard-section="overview" {...sectionProps(view === 'overview')}>
         <DashboardPage
           loadDashboard={demoDashboardSource}
           onBack={onBack}
@@ -50,14 +56,10 @@ export function Dashboard({
           footer={null}
         />
       </motion.div>
-      <motion.div
-        hidden={view !== 'catalog'}
-        initial={false}
-        animate={{ opacity: view === 'catalog' ? 1 : 0 }}
-        transition={appearance}
-      >
+      <motion.div className="dashboard-section" data-dashboard-section="catalog" {...sectionProps(view === 'catalog')}>
         <ReportCatalog onOpenOverview={() => selectView('overview')} />
       </motion.div>
+      </div>
     </div>
   )
 }
