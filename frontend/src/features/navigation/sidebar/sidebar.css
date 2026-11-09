@@ -65,7 +65,7 @@
 }
 
 .sidebar-navigation-item[aria-current='page'] .sidebar-active-dot {
-  background: var(--app-accent);
+  background: var(--app-panel-solid);
 }
 
 .sidebar-logout {

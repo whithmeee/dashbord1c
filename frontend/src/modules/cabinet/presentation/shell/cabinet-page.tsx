@@ -23,7 +23,7 @@ export function CabinetPage({
   canManageEmployees: boolean
 }) {
   const [activeTab, setActiveTab] = useState<CabinetTab>('overview')
-  const { appearance } = useInterfaceMotion()
+  const { appearance, reducedMotion } = useInterfaceMotion()
   const [animateOverview, setAnimateOverview] = useState(true)
   const selectTab = (tab: CabinetTab) => {
     setAnimateOverview(false)
@@ -47,9 +47,9 @@ export function CabinetPage({
 
       <motion.div
         key={activeTab}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={appearance}
+        initial={reducedMotion ? { opacity: 0 } : { opacity: 0, transform: 'translateY(4px)' }}
+        animate={{ opacity: 1, transform: 'translateY(0)' }}
+        transition={{ ...appearance, duration: reducedMotion ? 0 : 0.12, ease: [0.23, 1, 0.32, 1] }}
       >
         {activeTab === 'overview' ? (
           <Overview

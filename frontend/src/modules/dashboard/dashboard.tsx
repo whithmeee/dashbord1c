@@ -3,7 +3,10 @@ import { motion } from 'motion/react'
 import { useInterfaceMotion } from '../../shared/motion/use-interface-motion'
 import { DashboardNavigation } from './presentation/catalog/dashboard-navigation'
 import { ReportCatalog } from './presentation/catalog/report-catalog'
-import { FinancialSalesPage } from './presentation/financial-sales-page'
+import { DashboardPage } from './presentation/page/dashboard-page'
+import { createDemoDashboardSource } from './adapters/demo/demo-dashboard-source'
+
+const demoDashboardSource = createDemoDashboardSource('ready')
 
 export function Dashboard({
   onBack,
@@ -40,7 +43,12 @@ export function Dashboard({
         animate={{ opacity: view === 'overview' ? 1 : 0 }}
         transition={appearance}
       >
-        <FinancialSalesPage onBack={onBack} />
+        <DashboardPage
+          loadDashboard={demoDashboardSource}
+          onBack={onBack}
+          notice={null}
+          footer={null}
+        />
       </motion.div>
       <motion.div
         hidden={view !== 'catalog'}

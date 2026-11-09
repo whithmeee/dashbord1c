@@ -8,6 +8,10 @@ export type DashboardReport = {
   result: ReportPoint[]
   receipts: ReportPoint[]
   payments: ReportPoint[]
+  vat: ReportPoint[]
+  receivables: ReportPoint[]
+  payables: ReportPoint[]
+  cashBalance: ReportPoint[]
   revenueTotal: number
   topFiveDebt: number
   debtAsOf: string
