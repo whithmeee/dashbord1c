@@ -1,4 +1,6 @@
 import type { DashboardPeriod } from '../../domain/dashboard-report'
+import { LayoutGroup, motion, useReducedMotion } from 'motion/react'
+import { dashboardFilterMotion } from '../dashboard-filter-motion'
 
 const periods: Record<DashboardPeriod, { id: DashboardPeriod; label: string }> =
   {
@@ -19,16 +21,14 @@ export function DashboardPeriods({
   period: DashboardPeriod
   onSelectPeriod: (period: DashboardPeriod) => void
 }) {
+  const reducedMotion = useReducedMotion()
   return (
     <div className="dashboard-toolbar">
       <div>
         <strong>Период выручки</strong>
       </div>
-      <div
-        className="dashboard-periods"
-        role="group"
-        aria-label="Период выручки"
-      >
+      <LayoutGroup id="dashboard-periods">
+      <div className="dashboard-periods" role="group" aria-label="Период выручки">
         {Object.values(periods).map((item) => (
           <button
             key={item.id}
@@ -37,10 +37,19 @@ export function DashboardPeriods({
             onClick={() => onSelectPeriod(item.id)}
             data-testid={`period-${item.id}`}
           >
+            {item.id === period && (
+              <motion.span
+                layoutId={dashboardFilterMotion.layoutId}
+                className="dashboard-period-selection"
+                transition={reducedMotion ? { duration: 0 } : dashboardFilterMotion.transition}
+                aria-hidden="true"
+              />
+            )}
             {item.label}
           </button>
         ))}
       </div>
+      </LayoutGroup>
     </div>
   )
 }

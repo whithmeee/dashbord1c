@@ -89,8 +89,20 @@
   gap: 4px;
 }
 
-.dashboard button[aria-pressed='true'] {
+.dashboard-periods button {
+  position: relative;
+  isolation: isolate;
+}
+
+.dashboard-period-selection {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   background: var(--app-accent);
+}
+
+.dashboard button[aria-pressed='true'] {
   color: white;
   border-color: var(--app-accent-text);
 }
