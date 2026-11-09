@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import type { DashboardReport } from '../../domain/dashboard-report'
 import { FinanceChart } from '../charts/finance-chart'
 import { ReportDetails } from './report-details'
+import { dashboardCardMotion, getDashboardCardTransition } from './dashboard-motion'
 
 const financeViews = [
   {
@@ -69,9 +70,10 @@ export function FinanceReports({ report }: { report: DashboardReport }) {
       className="dashboard-report"
       key={view.key}
       data-testid={`finance-report-${view.key}`}
-      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, transform: 'translateY(12px)' }}
-      animate={{ opacity: 1, transform: 'translateY(0)' }}
-      transition={{ duration: reducedMotion ? 0.16 : 0.24, ease: [0.23, 1, 0.32, 1], delay: reducedMotion ? 0 : financeViews.indexOf(view) * 0.05 }}
+      initial={reducedMotion ? dashboardCardMotion.reducedInitial : dashboardCardMotion.initial}
+      animate={dashboardCardMotion.animate}
+      transition={getDashboardCardTransition(Boolean(reducedMotion), financeViews.indexOf(view) + 6)}
+      whileHover={reducedMotion ? undefined : dashboardCardMotion.hover}
     >
       <header>
         <h2>{view.title}</h2>
