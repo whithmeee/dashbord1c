@@ -18,7 +18,6 @@ export function RevenueChart({ points }: ReportChartProps) {
   return (
     <div className="dashboard-chart" data-testid="revenue-chart">
       <Line
-        updateMode="none"
         role="img"
         aria-label="Выручка по месяцам в рублях"
         options={{
@@ -57,7 +56,6 @@ export function DebtorsChart({ points }: ReportChartProps) {
       data-testid="debtors-chart"
     >
       <Bar
-        updateMode="none"
         role="img"
         aria-label="Пять крупнейших должников, долг в рублях"
         options={{

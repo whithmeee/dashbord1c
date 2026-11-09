@@ -29,11 +29,22 @@ ChartJS.defaults.color = '#62626a'
 
 export function useReportChart(points: ReportPoint[]) {
   const reducedMotion = useReducedMotion()
+  const options = createReportChartOptions(Boolean(reducedMotion))
+  return {
+    options,
+    labels: points.map((point) => point.label),
+    values: points.map((point) => point.amount),
+  }
+}
+
+export function createReportChartOptions(reducedMotion: boolean) {
+  const updateDuration = reducedMotion ? 0 : 380
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    animation: reducedMotion ? false : { duration: 180 },
+    animation: reducedMotion ? false : { duration: 520, easing: 'easeOutCubic' },
     transitions: {
+      default: { animation: { duration: updateDuration, easing: 'easeOutCubic' } },
       resize: { animation: { duration: 0 } },
       active: { animation: { duration: 0 } },
     },
@@ -46,9 +57,5 @@ export function useReportChart(points: ReportPoint[]) {
       },
     },
   } satisfies ChartOptions<'line' | 'bar'>
-  return {
-    options,
-    labels: points.map((point) => point.label),
-    values: points.map((point) => point.amount),
-  }
+  return options
 }
