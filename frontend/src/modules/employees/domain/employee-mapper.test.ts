@@ -9,6 +9,7 @@ describe('employee mapper', () => {
       name: 'Иван Петров',
       position: 'Бухгалтер',
       login: 'ivan_petrov',
+      sections: ['finance', 'chat'],
       is_online: true,
       last_seen_at: '2026-11-06T10:00:00Z',
       created_at: '2026-10-01T08:00:00Z',
@@ -19,6 +20,7 @@ describe('employee mapper', () => {
       name: 'Иван Петров',
       position: 'Бухгалтер',
       login: 'ivan_petrov',
+      sections: ['finance', 'chat'],
       isOnline: true,
       lastSeenAt: '2026-11-06T10:00:00Z',
       createdAt: '2026-10-01T08:00:00Z',
@@ -33,6 +35,7 @@ describe('employee mapper', () => {
       name: 'Иван',
       position: 'Менеджер',
       login: 'ivan',
+      sections: [],
       is_online: false,
       last_seen_at: null,
     }).lastSeenAt).toBeNull()

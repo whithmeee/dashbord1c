@@ -8,6 +8,7 @@ const employee: Employee = {
   name: 'Иван',
   position: 'Бухгалтер',
   login: 'ivan',
+  sections: ['finance', 'chat'],
   isOnline: false,
   lastSeenAt: null,
   createdAt: null,
@@ -21,6 +22,16 @@ describe('users presentation helpers', () => {
       login: 'ivan',
       password: '',
     })).toEqual({ position: 'Главбух' })
+  })
+
+  it('includes changed employee sections in an update', () => {
+    expect(buildEmployeeUpdateInput(employee, {
+      name: employee.name,
+      position: employee.position,
+      login: employee.login,
+      password: '',
+      sections: ['statistics'],
+    })).toEqual({ sections: ['statistics'] })
   })
 
   it('allows management only for a company session', () => {

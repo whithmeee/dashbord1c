@@ -9,6 +9,7 @@ const employeeDto = {
   name: 'Иван',
   position: 'Бухгалтер',
   login: 'ivan',
+  sections: ['finance', 'chat'],
   is_online: false,
   last_seen_at: null,
   created_at: '2026-10-01T08:00:00Z',
@@ -26,7 +27,7 @@ describe('createHttpEmployeesGateway', () => {
   it('creates an employee with the Laravel payload', async () => {
     const post = vi.fn().mockResolvedValue(employeeDto)
     const gateway = createHttpEmployeesGateway({ post } as unknown as ApiClient)
-    const input = { name: 'Иван', position: 'Бухгалтер', login: 'ivan', password: 'secret-pass1' }
+    const input = { name: 'Иван', position: 'Бухгалтер', login: 'ivan', password: 'secret-pass1', sections: ['finance', 'chat'] as const }
 
     await expect(gateway.create(input)).resolves.toEqual({
       id: 4,
@@ -37,6 +38,7 @@ describe('createHttpEmployeesGateway', () => {
       isOnline: false,
       lastSeenAt: null,
       createdAt: '2026-10-01T08:00:00Z',
+      sections: ['finance', 'chat'],
     })
     expect(post).toHaveBeenCalledWith('/cabinet/employees', input, undefined)
   })
