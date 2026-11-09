@@ -91,7 +91,7 @@ export function EmployeeForm({
 const sectionLabels: Record<EmployeeSection, string> = {
   finance: 'Финансовые отчёты',
   integrations: 'Синхронизация с 1С',
-  statistics: 'Статистика',
+  analytics: 'Аналитика',
   subscription: 'Подписка',
   system_status: 'Состояние системы',
   chat: 'ИИ-ассистент',

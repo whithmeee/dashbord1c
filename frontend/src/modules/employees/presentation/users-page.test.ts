@@ -31,8 +31,8 @@ describe('users presentation helpers', () => {
       position: employee.position,
       login: employee.login,
       password: '',
-      sections: ['statistics'],
-    })).toEqual({ sections: ['statistics'] })
+      sections: ['analytics'],
+    })).toEqual({ sections: ['analytics'] })
   })
 
   it('allows management only for a company session', () => {
