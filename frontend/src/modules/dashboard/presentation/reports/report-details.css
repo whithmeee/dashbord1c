@@ -16,5 +16,12 @@
 }
 
 .report-details-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+}
+
+.report-details-inner {
+  min-height: 0;
   overflow: hidden;
 }

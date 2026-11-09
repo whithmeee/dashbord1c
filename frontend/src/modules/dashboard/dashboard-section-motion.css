@@ -1,0 +1,13 @@
+.dashboard-section-transition {
+  display: grid;
+  min-width: 0;
+}
+
+.dashboard-section {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.dashboard-section[aria-hidden='true'] {
+  pointer-events: none;
+}

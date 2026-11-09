@@ -1,7 +1,8 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
 import { useInterfaceMotion } from '../../../../shared/motion/use-interface-motion'
+import { getDashboardDetailsTransition } from '../dashboard-filter-motion'
 import type { ReportPoint } from '../../domain/dashboard-report'
 import { formatMoney } from './money-format'
 import './report-details.css'
@@ -9,13 +10,27 @@ import './report-details.css'
 export function ReportDetails({
   points,
   label,
+  open: controlledOpen,
+  onToggle,
 }: {
   points: ReportPoint[]
   label: string
+  open?: boolean
+  onToggle?: (open: boolean) => void
 }) {
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
   const id = useId()
-  const { movement } = useInterfaceMotion()
+  const detailsRef = useRef<HTMLDivElement>(null)
+  const { reducedMotion, movement } = useInterfaceMotion()
+  const toggle = () => {
+    const nextOpen = !open
+    if (onToggle) onToggle(nextOpen)
+    else setInternalOpen(nextOpen)
+  }
+  useEffect(() => {
+    if (detailsRef.current) detailsRef.current.inert = !open
+  }, [open])
 
   return (
     <div className="dashboard-details">
@@ -24,7 +39,7 @@ export function ReportDetails({
         className="report-details-toggle"
         aria-expanded={open}
         aria-controls={id}
-        onClick={() => setOpen((current) => !current)}
+        onClick={toggle}
       >
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={movement}>
           <ChevronDown size={14} />
@@ -34,12 +49,13 @@ export function ReportDetails({
       <motion.div
         id={id}
         initial={false}
-        animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
-        transition={movement}
+        animate={{ gridTemplateRows: open ? '1fr' : '0fr', opacity: open ? 1 : 0 }}
+        transition={getDashboardDetailsTransition(Boolean(reducedMotion))}
         className="report-details-content"
         aria-hidden={!open}
+        ref={detailsRef}
       >
-        <table>
+        <div className="report-details-inner"><table>
           <caption>{label}</caption>
           <thead>
             <tr>
@@ -55,7 +71,7 @@ export function ReportDetails({
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </motion.div>
     </div>
   )

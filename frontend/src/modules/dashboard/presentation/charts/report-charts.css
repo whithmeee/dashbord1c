@@ -1,13 +1,13 @@
 .dashboard-chart {
   position: relative;
-  height: clamp(260px, 32vh, 360px);
+  height: 220px;
   min-width: 0;
   margin-top: 24px;
 }
 
 @media (max-width: 760px) {
   .dashboard-chart {
-    height: 240px;
+    height: 190px;
   }
 }
 
@@ -16,7 +16,53 @@
 }
 
 .dashboard-chart-bars {
-  height: 260px;
+  height: 220px;
+}
+
+.dashboard-chart-doughnut {
+  height: 220px;
+}
+
+.dashboard-chart-recharts {
+  height: 180px;
+  margin-top: 16px;
+}
+
+.dashboard-chart-recharts-doughnut {
+  height: 180px;
+  margin-top: 16px;
+}
+
+.dashboard-chart-recharts-compact {
+  height: 150px;
+  margin-top: 16px;
+}
+
+.dashboard-chart-recharts :focus,
+.dashboard-chart-recharts-doughnut :focus,
+.dashboard-chart-recharts-compact :focus {
+  outline: none;
+}
+
+.dashboard-recharts-tooltip {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  background: var(--app-panel-solid);
+  box-shadow: 0 8px 24px rgb(20 20 24 / 12%);
+  color: var(--app-text);
+  font-size: 12px;
+}
+
+.dashboard-recharts-tooltip span {
+  color: var(--app-muted);
+}
+
+.dashboard-recharts-tooltip strong {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 760px) {
@@ -26,5 +72,21 @@
 
   .dashboard-chart-bars {
     height: 220px;
+  }
+
+  .dashboard-chart-doughnut {
+    height: 190px;
+  }
+
+  .dashboard-chart-recharts {
+    height: 170px;
+  }
+
+  .dashboard-chart-recharts-doughnut {
+    height: 170px;
+  }
+
+  .dashboard-chart-recharts-compact {
+    height: 160px;
   }
 }

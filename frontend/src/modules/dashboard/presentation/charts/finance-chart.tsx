@@ -54,7 +54,6 @@ export function FinanceChart({
     >
       {variant === 'line' ? (
         <Line
-          updateMode="none"
           role="img"
           aria-label={label}
           options={options}
@@ -62,7 +61,6 @@ export function FinanceChart({
         />
       ) : (
         <Bar
-          updateMode="none"
           role="img"
           aria-label={label}
           options={options}

@@ -1,7 +1,10 @@
-import { Bar, Line } from 'react-chartjs-2'
+import { Bar, Doughnut, Line } from 'react-chartjs-2'
 import type { ReportPoint } from '../../domain/dashboard-report'
-import { formatAxisMoney } from '../reports/money-format'
-import { useReportChart } from './chart-presentation'
+import { formatAxisMoney, formatMoney } from '../reports/money-format'
+import {
+  activePointCrosshairPlugin,
+  useReportChart,
+} from './chart-presentation'
 import './report-charts.css'
 
 type ReportChartProps = { points: ReportPoint[] }
@@ -18,7 +21,6 @@ export function RevenueChart({ points }: ReportChartProps) {
   return (
     <div className="dashboard-chart" data-testid="revenue-chart">
       <Line
-        updateMode="none"
         role="img"
         aria-label="Выручка по месяцам в рублях"
         options={{
@@ -28,6 +30,7 @@ export function RevenueChart({ points }: ReportChartProps) {
             y: amountAxis,
           },
         }}
+        plugins={[activePointCrosshairPlugin]}
         data={{
           labels: chart.labels,
           datasets: [
@@ -39,6 +42,9 @@ export function RevenueChart({ points }: ReportChartProps) {
               fill: true,
               tension: 0.3,
               pointRadius: 4,
+              pointHoverRadius: 6,
+              pointHoverBorderWidth: 2,
+              pointHoverBackgroundColor: '#ffffff',
               pointBackgroundColor: '#0071e3',
               borderWidth: 2.5,
             },
@@ -57,7 +63,6 @@ export function DebtorsChart({ points }: ReportChartProps) {
       data-testid="debtors-chart"
     >
       <Bar
-        updateMode="none"
         role="img"
         aria-label="Пять крупнейших должников, долг в рублях"
         options={{
@@ -83,6 +88,49 @@ export function DebtorsChart({ points }: ReportChartProps) {
               ],
               borderRadius: 6,
               barThickness: 24,
+            },
+          ],
+        }}
+      />
+    </div>
+  )
+}
+
+export function DebtorsDoughnutChart({ points }: ReportChartProps) {
+  const chart = useReportChart(points)
+  return (
+    <div className="dashboard-chart dashboard-chart-doughnut" data-testid="debtors-doughnut-chart">
+      <Doughnut
+        role="img"
+        aria-label="Распределение задолженности пяти крупнейших должников"
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: chart.options.animation,
+          transitions: chart.options.transitions,
+          cutout: '68%',
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: { boxWidth: 10, padding: 14 },
+            },
+            tooltip: {
+              callbacks: {
+                label: (item) => formatMoney(Number(item.raw)),
+              },
+            },
+          },
+        }}
+        data={{
+          labels: chart.labels,
+          datasets: [
+            {
+              data: chart.values,
+              backgroundColor: ['#005bb5', '#2875c5', '#528fd5', '#80a9df', '#b1c9eb'],
+              borderColor: 'transparent',
+              borderWidth: 2,
+              hoverOffset: 6,
             },
           ],
         }}
