@@ -1,5 +1,6 @@
 import { CalendarDays } from 'lucide-react'
 import type { CabinetSubscriptionStatus } from '../../domain/cabinet'
+import type { CabinetSubscription } from '../../domain/cabinet-details'
 import './overview-subscription.css'
 
 const subscriptionStatuses = {
@@ -9,9 +10,14 @@ const subscriptionStatuses = {
 
 export function OverviewSubscription({
   status,
+  subscription,
+  fallbackStatus,
 }: {
-  status: CabinetSubscriptionStatus
+  status?: CabinetSubscriptionStatus
+  subscription?: CabinetSubscription
+  fallbackStatus?: CabinetSubscriptionStatus
 }) {
+  const resolvedStatus = subscription?.status ?? fallbackStatus ?? status ?? 'inactive'
   return (
     <section className="cabinet-panel" data-testid="cabinet-subscription">
       <div className="cabinet-panel-heading">
@@ -24,9 +30,9 @@ export function OverviewSubscription({
           <dd>
             <span
               className="cabinet-subscription-status"
-              data-status={status}
+              data-status={resolvedStatus}
             >
-              {subscriptionStatuses[status]}
+              {subscriptionStatuses[resolvedStatus]}
             </span>
           </dd>
         </div>
@@ -34,6 +40,7 @@ export function OverviewSubscription({
           <dt>Доступ к кабинету</dt>
           <dd>Доступен независимо от статуса подписки</dd>
         </div>
+        {subscription && <div><dt>Срок действия</dt><dd>{subscription.startsAt} — {subscription.endsAt} · осталось дней: {subscription.daysLeft}</dd></div>}
       </dl>
     </section>
   )

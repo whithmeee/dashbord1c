@@ -7,6 +7,7 @@ import {
   type CabinetDashboard,
   type CabinetTab,
 } from '../../domain/cabinet'
+import type { CabinetDetailsState } from '../../application/cabinet-details-store'
 import { CabinetTabs } from './cabinet-tabs'
 import { Overview } from '../overview/overview'
 import { IntegrationsPage } from '../../../integrations/presentation/integrations-page'
@@ -17,10 +18,14 @@ import './cabinet-tab-picker.css'
 
 export function CabinetPage({
   dashboard,
+  detailsState,
   canManageEmployees,
+  onRetryDetails,
 }: {
   dashboard: CabinetDashboard
+  detailsState: CabinetDetailsState
   canManageEmployees: boolean
+  onRetryDetails: () => void
 }) {
   const [activeTab, setActiveTab] = useState<CabinetTab>('overview')
   const { appearance, reducedMotion } = useInterfaceMotion()
@@ -54,8 +59,10 @@ export function CabinetPage({
         {activeTab === 'overview' ? (
           <Overview
             dashboard={dashboard}
+            detailsState={detailsState}
             onSelectTab={selectTab}
             animateEntrance={animateOverview}
+            onRetryDetails={onRetryDetails}
           />
         ) : activeTab === 'integrations' ? (
           <IntegrationsPage />

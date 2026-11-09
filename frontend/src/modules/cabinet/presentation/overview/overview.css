@@ -89,6 +89,9 @@
   background: #e8f6ee;
 }
 
+.cabinet-system-status-icon[data-status='degraded'] { color: var(--app-warning); background: var(--app-warning-soft); }
+.cabinet-system-status-icon[data-status='inactive'] { color: var(--app-error); background: var(--app-warning-soft); }
+
 .cabinet-system-status h2 {
   margin: 0;
   font-size: 17px;
@@ -188,6 +191,12 @@
   padding: 24px 0;
   color: var(--app-muted);
 }
+
+.cabinet-details-error { display: flex; align-items: center; gap: 10px; margin: -8px 0 24px; color: var(--app-warning); font-size: 13px; }
+.cabinet-details-error .cabinet-button { margin-left: auto; }
+.cabinet-statistics-summary { display: grid; gap: 12px; }
+.cabinet-statistics-summary p { margin: 12px 0 0; }
+.cabinet-statistics-summary strong { color: var(--app-muted); font-size: 13px; }
 
 @media (max-width: 1150px) {
   .cabinet-kpi-grid {

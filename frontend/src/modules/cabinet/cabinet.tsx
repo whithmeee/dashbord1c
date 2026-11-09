@@ -2,6 +2,7 @@ import { useEffect, useRef, useSyncExternalStore } from 'react'
 import { AlertCircle, LoaderCircle, RotateCcw } from 'lucide-react'
 import { authSessionStore } from '../auth/react/auth-runtime'
 import { cabinetDashboardStore } from './cabinet-runtime'
+import { cabinetDetailsStore, resetCabinetDetails } from './cabinet-details-runtime'
 import { resetIntegrations } from '../integrations/integrations-runtime'
 import { resetEmployees } from '../employees/employees-runtime'
 import { CabinetPage } from './presentation/shell/cabinet-page'
@@ -18,6 +19,11 @@ export function Cabinet() {
     cabinetDashboardStore.getSnapshot,
     cabinetDashboardStore.getSnapshot,
   )
+  const detailsState = useSyncExternalStore(
+    cabinetDetailsStore.subscribe,
+    cabinetDetailsStore.getSnapshot,
+    cabinetDetailsStore.getSnapshot,
+  )
   const sessionKey = getSessionKey(authState)
   const previousSessionKey = useRef<string>()
 
@@ -28,6 +34,7 @@ export function Cabinet() {
       if (dashboardState.status !== 'idle') {
         cabinetDashboardStore.reset()
       }
+      if (detailsState.status !== 'idle') resetCabinetDetails()
       return
     }
 
@@ -36,9 +43,11 @@ export function Cabinet() {
       resetIntegrations()
       resetEmployees()
       cabinetDashboardStore.reset()
+      resetCabinetDetails()
       void cabinetDashboardStore.load()
+      void cabinetDetailsStore.load()
     }
-  }, [dashboardState.status, sessionKey])
+  }, [dashboardState.status, detailsState.status, sessionKey])
 
   if (dashboardState.status === 'idle' || dashboardState.status === 'loading') {
     return <CabinetState status="loading" />
@@ -57,7 +66,7 @@ export function Cabinet() {
   const canManageEmployees = authState.status === 'authenticated-client'
     && authState.session.type === 'company'
 
-  return <CabinetPage dashboard={dashboardState.data} canManageEmployees={canManageEmployees} />
+  return <CabinetPage dashboard={dashboardState.data} detailsState={detailsState} canManageEmployees={canManageEmployees} onRetryDetails={() => void cabinetDetailsStore.retry()} />
 }
 
 function getSessionKey(state: ReturnType<typeof authSessionStore.getSnapshot>): string | undefined {
