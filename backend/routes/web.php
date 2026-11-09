@@ -32,7 +32,7 @@ Route::prefix('cabinet')->middleware(['auth:company,employee', 'last.seen', 'com
         Route::get('/integrations', [Cabinet\IntegrationController::class, 'index']);
         Route::get('/integrations/{integration}/check', [Cabinet\IntegrationController::class, 'check'])->middleware('throttle:30,1');
     });
-    Route::get('/statistics', Cabinet\StatisticsController::class)->middleware('section:statistics');
+    Route::get('/statistics', Cabinet\StatisticsController::class)->middleware('section:analytics');
     Route::get('/subscription', Cabinet\SubscriptionController::class)->middleware('section:subscription');
     Route::get('/system-status', Cabinet\SystemStatusController::class)->middleware('section:system_status');
     Route::middleware('company.access:owner')->group(function () {

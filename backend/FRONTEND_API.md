@@ -204,7 +204,7 @@
 ```
 Входы и выходы пишутся с момента этого обновления; `items` — от новых к старым. Выход фиксируется только по кнопке «Выйти» (протухшая сессия выходом не считается).
 
-**Доступ сотрудника по разделам.** `sections` — массив из: `finance` (`/cabinet/finance/sales`), `integrations` (`/cabinet/integrations*`), `statistics` (`/cabinet/statistics`), `subscription` (`/cabinet/subscription`), `system_status` (`/cabinet/system-status`), `chat` (`/api/chats*`). Не передан при создании — доступны все разделы. Главная `/cabinet/dashboard` доступна всегда. Если раздела у сотрудника нет — ручка отвечает `404`, а сам список разделов приходит в `account.sections` (`/auth/me`, логин) — по нему прячьте пункты меню. Владелец компании разделами не ограничен.
+**Доступ сотрудника по разделам.** `sections` — массив из: `finance` (`/cabinet/finance/sales`), `integrations` (`/cabinet/integrations*`), `analytics` (`/cabinet/statistics`, аналитика), `subscription` (`/cabinet/subscription`), `system_status` (`/cabinet/system-status`), `chat` (`/api/chats*`). Не передан при создании — доступны все разделы. Главная `/cabinet/dashboard` доступна всегда, но без закрытых блоков: без `integrations` в ней нет ключа `integrations`, без `subscription` нет `company.subscription_status`. Если раздела у сотрудника нет — ручка отвечает `404`, а сам список разделов приходит в `account.sections` (`/auth/me`, логин) — по нему прячьте пункты меню. Владелец компании разделами не ограничен.
 
 ### Статистика запросов к боту
 `GET /cabinet/statistics` — см. раздел 4. Владелец видит всю компанию, сотрудник — только свои запросы.

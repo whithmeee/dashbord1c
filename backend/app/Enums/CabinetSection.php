@@ -6,7 +6,7 @@ enum CabinetSection: string
 {
     case Finance = 'finance';
     case Integrations = 'integrations';
-    case Statistics = 'statistics';
+    case Analytics = 'analytics';
     case Subscription = 'subscription';
     case SystemStatus = 'system_status';
     case Chat = 'chat';
