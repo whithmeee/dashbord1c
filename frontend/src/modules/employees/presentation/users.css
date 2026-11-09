@@ -87,6 +87,11 @@
 .employees-field { display: grid; gap: 7px; margin-top: 14px; color: var(--app-text); font-size: 13px; font-weight: 600; }
 .employees-field input { box-sizing: border-box; width: 100%; padding: 11px 12px; border: 1px solid var(--app-border); border-radius: 10px; color: var(--app-text); font: inherit; font-weight: 400; }
 .employees-field input:focus { outline: 2px solid var(--app-accent); outline-offset: 1px; }
+.employees-password-field { position: relative; display: block; }
+.employees-password-field input { padding-right: 44px; }
+.employees-password-field button { position: absolute; top: 50%; right: 8px; display: inline-grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--app-text); cursor: pointer; transform: translateY(-50%); }
+.employees-password-field button:hover { background: var(--app-soft); }
+.employees-password-field button:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 1px; }
 .employees-field-error { margin: 0; font-size: 12px; font-weight: 400; }
 .employees-permissions { margin: 20px 0 0; padding: 14px; border: 1px solid var(--app-border); border-radius: 14px; }
 .employees-permissions legend { padding: 0 6px; color: var(--app-text); font-size: 13px; font-weight: 600; }
