@@ -196,7 +196,13 @@
 - `GET /cabinet/employees/{id}` → `<employee>`
 - `POST /cabinet/employees` `{ name, position, login, password, sections? }` → `201 <employee>`. Логин: латиница, цифры, `-`, `_`, уникальный. Пароль ≥ 8, буквы + цифры.
 - `PATCH /cabinet/employees/{id}` `{ name?, position?, login?, password?, sections? }` → `<employee>`. Смена пароля завершает сессии сотрудника.
-- `DELETE /cabinet/employees/{id}` → `204`
+- `DELETE /cabinet/employees/{id}` → `204` (вместе с историей входов сотрудника)
+- `GET /cabinet/employees/{id}/activity?limit=50` → профиль активности (только владелец, `limit` 1–200):
+```json
+{ "last_login_at": "..."|null, "last_logout_at": "..."|null, "questions_count": 12,
+  "items": [ { "type": "login"|"logout"|"question", "at": "...", "details": null|"текст вопроса (до 200 символов)" } ] }
+```
+Входы и выходы пишутся с момента этого обновления; `items` — от новых к старым. Выход фиксируется только по кнопке «Выйти» (протухшая сессия выходом не считается).
 
 **Доступ сотрудника по разделам.** `sections` — массив из: `finance` (`/cabinet/finance/sales`), `integrations` (`/cabinet/integrations*`), `statistics` (`/cabinet/statistics`), `subscription` (`/cabinet/subscription`), `system_status` (`/cabinet/system-status`), `chat` (`/api/chats*`). Не передан при создании — доступны все разделы. Главная `/cabinet/dashboard` доступна всегда. Если раздела у сотрудника нет — ручка отвечает `404`, а сам список разделов приходит в `account.sections` (`/auth/me`, логин) — по нему прячьте пункты меню. Владелец компании разделами не ограничен.
 

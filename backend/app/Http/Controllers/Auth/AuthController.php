@@ -7,8 +7,10 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\EmployeeActivity;
 use App\Services\AuthService;
 use App\Services\EmailVerificationService;
+use App\Services\EmployeeActivityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +28,7 @@ class AuthController extends Controller
      *
      * @return array{type: string, account: array<string, mixed>}
      */
-    public function login(LoginRequest $request, EmailVerificationService $verification): array
+    public function login(LoginRequest $request, EmailVerificationService $verification, EmployeeActivityService $activity): array
     {
         $account = $this->auth->attempt($request->validated('login'), $request->validated('password'));
 
@@ -37,6 +39,10 @@ class AuthController extends Controller
         $this->auth->login($account);
         $request->session()->regenerate();
 
+        if ($account instanceof Employee) {
+            $activity->record($account, EmployeeActivity::LOGIN);
+        }
+
         if ($account instanceof Company && ! $account->hasVerifiedEmail()
             && Cache::add("verification-code:{$account->id}", true, self::CODE_RESEND_COOLDOWN_SECONDS)) {
             $verification->sendCode($account);
@@ -45,11 +51,12 @@ class AuthController extends Controller
         return $this->auth->payload($account);
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request, EmployeeActivityService $activity): JsonResponse
     {
         $account = $request->user();
 
         if ($account instanceof Employee) {
+            $activity->record($account, EmployeeActivity::LOGOUT);
             $account->forceFill(['last_seen_at' => null])->saveQuietly();
         }
 

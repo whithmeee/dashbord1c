@@ -42,7 +42,8 @@ Route::prefix('cabinet')->middleware(['auth:company,employee', 'last.seen', 'com
         Route::get('/employees', [Cabinet\EmployeeController::class, 'index']);
         Route::post('/employees', [Cabinet\EmployeeController::class, 'store']);
         Route::get('/employees/{employee}', [Cabinet\EmployeeController::class, 'show']);
-        Route::patch('/employees/{employee}', [Cabinet\EmployeeController::class, 'update']);
+        Route::get('/employees/{employee}/activity', Cabinet\EmployeeActivityController::class);
+        Route::patch('/employees/{employee}',[Cabinet\EmployeeController::class, 'update']);
         Route::delete('/employees/{employee}', [Cabinet\EmployeeController::class, 'destroy']);
     });
 });
