@@ -4,7 +4,6 @@ import { LogOut } from 'lucide-react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
 import { OsminogLogo } from '../../../shared/brand/osminog-logo'
 import { SidebarToggle } from './sidebar-toggle'
-import { sidebarSections } from './sidebar.config'
 import type { SidebarController } from './use-sidebar'
 import './sidebar.css'
 import './sidebar-motion.css'
@@ -39,7 +38,7 @@ export function Sidebar({ controller, onLogout, logoutError }: SidebarProps) {
 
       <LayoutGroup id="sidebar">
         <nav className="sidebar-navigation" aria-label="Основная навигация">
-          {sidebarSections.map(({ id, label, icon: Icon, ai }) => (
+          {controller.visibleSections.map(({ id, label, icon: Icon, ai }) => (
             <button
               className="sidebar-navigation-item"
               type="button"

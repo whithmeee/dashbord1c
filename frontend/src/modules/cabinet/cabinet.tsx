@@ -1,6 +1,7 @@
 import { useEffect, useRef, useSyncExternalStore } from 'react'
 import { AlertCircle, LoaderCircle, RotateCcw } from 'lucide-react'
 import { describeError } from '../../shared/api'
+import { sectionAccessFor } from '../auth/domain/section-access'
 import { authSessionStore } from '../auth/react/auth-runtime'
 import { cabinetDashboardStore } from './cabinet-runtime'
 import { cabinetDetailsStore, resetCabinetDetails } from './cabinet-details-runtime'
@@ -27,6 +28,7 @@ export function Cabinet() {
     cabinetDetailsStore.getSnapshot,
   )
   const sessionKey = getSessionKey(authState)
+  const session = authState.status === 'authenticated-client' ? authState.session : undefined
   const previousSessionKey = useRef<string>()
 
   useEffect(() => {
@@ -49,9 +51,11 @@ export function Cabinet() {
       resetCabinetDetails()
       resetCabinetStatistics()
       void cabinetDashboardStore.load()
-      void cabinetDetailsStore.load()
+      void cabinetDetailsStore.load(
+        sectionAccessFor(session),
+      )
     }
-  }, [dashboardState.status, detailsState.status, sessionKey])
+  }, [dashboardState.status, detailsState.status, session, sessionKey])
 
   if (dashboardState.status === 'idle' || dashboardState.status === 'loading') {
     return <CabinetState status="loading" />

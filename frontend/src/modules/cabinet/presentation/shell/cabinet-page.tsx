@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
+import { useSectionAccess } from '../../../auth/react/use-section-access'
 import { useInterfaceMotion } from '../../../../shared/motion/use-interface-motion'
 import {
   describeCabinetDashboard,
@@ -28,6 +29,7 @@ export function CabinetPage({
   canManageEmployees: boolean
   onRetryDetails: () => void
 }) {
+  const access = useSectionAccess()
   const [activeTab, setActiveTab] = useState<CabinetTab>('overview')
   const { appearance, reducedMotion } = useInterfaceMotion()
   const [animateOverview, setAnimateOverview] = useState(true)
@@ -50,7 +52,7 @@ export function CabinetPage({
         </div>
         <CabinetViewerIdentity viewer={dashboard.viewer} />
       </header>
-      <CabinetTabs active={activeTab} onSelect={selectTab} canManageEmployees={canManageEmployees} />
+      <CabinetTabs active={activeTab} onSelect={selectTab} canManageEmployees={canManageEmployees} access={access} />
 
       <motion.div
         key={activeTab}
@@ -65,8 +67,9 @@ export function CabinetPage({
             onSelectTab={selectTab}
             animateEntrance={animateOverview}
             onRetryDetails={onRetryDetails}
+            access={access}
           />
-        ) : activeTab === 'integrations' ? (
+        ) : activeTab === 'integrations' && access('integrations') ? (
           <IntegrationsPage />
         ) : (
           <UsersPage canManage={canManageEmployees} />

@@ -2,6 +2,8 @@ import { SidebarLayout } from './features/navigation/sidebar/sidebar-layout'
 import { SidebarToggle } from './features/navigation/sidebar/sidebar-toggle'
 import { MobileNavigation } from './features/navigation/sidebar/mobile-navigation'
 import { Sidebar } from './features/navigation/sidebar/sidebar'
+import { useSectionAccess } from './modules/auth/react/use-section-access'
+import { SectionNotFound } from './features/navigation/section-not-found'
 import { useSidebar } from './features/navigation/sidebar/use-sidebar'
 import { Chat } from './modules/chat/components/chat'
 import { useChat } from './modules/chat/hooks/use-chat'
@@ -17,7 +19,9 @@ type AppProps = {
 }
 
 function App({ onLogout, logoutError }: AppProps) {
-  const sidebar = useSidebar()
+  const access = useSectionAccess()
+  const sidebar = useSidebar(access)
+  const isActiveSectionVisible = sidebar.visibleSections.some(({ id }) => sidebar.isSectionActive(id))
   const isCabinetActive = sidebar.isSectionActive('cabinet')
   const isChatActive = sidebar.isSectionActive('chat')
   const isDashboardActive = sidebar.isSectionActive('dashboards')
@@ -45,7 +49,9 @@ function App({ onLogout, logoutError }: AppProps) {
         <main
           className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}`}
         >
-          {isChatActive ? (
+          {!isActiveSectionVisible ? (
+            <SectionNotFound onBack={() => sidebar.selectSection('cabinet')} />
+          ) : isChatActive ? (
             <Chat controller={chat} />
           ) : isDashboardActive ? (
             <Dashboard

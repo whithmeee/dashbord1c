@@ -1,3 +1,5 @@
+import type { SectionKey } from './section-access'
+
 export type SubscriptionStatus = 'active' | 'inactive'
 
 export type CompanyPhone = {
@@ -31,6 +33,7 @@ export type EmployeeAccount = {
   readonly login: string
   readonly isOnline: boolean
   readonly lastSeenAt?: string
+  readonly sections?: readonly SectionKey[]
 }
 
 export type AdminRole = {

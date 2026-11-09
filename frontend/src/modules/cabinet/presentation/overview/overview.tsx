@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { AlertCircle, RotateCcw } from 'lucide-react'
+import { allowEverySection, type SectionAccess } from '../../../auth/domain/section-access'
 import type { CabinetDashboard, CabinetTab } from '../../domain/cabinet'
 import type { CabinetDetailsState } from '../../application/cabinet-details-store'
 import { EmployeesDialog } from '../details/employees-dialog'
@@ -16,6 +17,7 @@ type OverviewProps = {
   onSelectTab: (tab: CabinetTab) => void
   detailsState: CabinetDetailsState
   onRetryDetails: () => void
+  access?: SectionAccess
 }
 
 export function Overview({
@@ -24,6 +26,7 @@ export function Overview({
   animateEntrance,
   detailsState,
   onRetryDetails,
+  access = allowEverySection,
 }: OverviewProps) {
   const reducedMotion = useReducedMotion()
   const [dialog, setDialog] = useState<OverviewDialog | null>(null)
@@ -50,13 +53,16 @@ export function Overview({
         <OverviewKpiCards
           dashboard={dashboard}
           detailsState={detailsState}
+          access={access}
           onSelectTab={onSelectTab}
           onOpenDialog={setDialog}
         />
       </motion.div>
-      <motion.section className="cabinet-system-status cabinet-panel" variants={entrance}>
-        <OverviewSystemStatus detailsState={detailsState} />
-      </motion.section>
+      {access('system_status') && (
+        <motion.section className="cabinet-system-status cabinet-panel" variants={entrance}>
+          <OverviewSystemStatus detailsState={detailsState} />
+        </motion.section>
+      )}
       {detailsState.status === 'error' && (
         <div className="cabinet-details-error" role="alert">
           <AlertCircle size={17} aria-hidden="true" />
@@ -66,11 +72,11 @@ export function Overview({
           </button>
         </div>
       )}
-      {dialog === 'subscription' && (
+      {dialog === 'subscription' && access('subscription') && (
         <SubscriptionDialog subscription={details?.subscription} onClose={closeDialog} />
       )}
       {dialog === 'employees' && <EmployeesDialog onClose={closeDialog} />}
-      {dialog === 'statistics' && <StatisticsDialog onClose={closeDialog} />}
+      {dialog === 'statistics' && access('analytics') && <StatisticsDialog onClose={closeDialog} />}
     </motion.div>
   )
 }

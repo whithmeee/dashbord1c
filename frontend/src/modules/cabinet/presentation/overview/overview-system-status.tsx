@@ -15,7 +15,7 @@ const reasonLabels: Record<Exclude<CabinetIntegrationReason, null>, string> = {
 
 function describeSystem(detailsState: CabinetDetailsState): string {
   if (detailsState.status === 'success') {
-    return detailsState.systemStatus.message
+    return detailsState.systemStatus?.message ?? ''
   }
 
   return detailsState.status === 'error'

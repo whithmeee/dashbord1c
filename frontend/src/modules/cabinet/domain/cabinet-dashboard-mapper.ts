@@ -19,12 +19,19 @@ export function mapCabinetDashboard(value: unknown): CabinetDashboard {
   const payload = readRecord(value, 'dashboard')
   const company = mapCompany(readRecord(payload.company, 'company'))
   const viewer = mapViewer(readRecord(payload.viewer, 'viewer'))
-  const integrations = mapIntegrations(readRecord(payload.integrations, 'integrations'))
+  const integrations = payload.integrations === undefined
+    ? undefined
+    : mapIntegrations(readRecord(payload.integrations, 'integrations'))
   const employees = payload.employees === undefined
     ? undefined
     : mapEmployees(readRecord(payload.employees, 'employees'))
 
-  return { company, viewer, integrations, ...(employees ? { employees } : {}) }
+  return {
+    company,
+    viewer,
+    ...(integrations ? { integrations } : {}),
+    ...(employees ? { employees } : {}),
+  }
 }
 
 function mapViewer(value: Record<string, unknown>): CabinetViewer {
@@ -38,8 +45,10 @@ function mapViewer(value: Record<string, unknown>): CabinetViewer {
 }
 
 function mapCompany(value: Record<string, unknown>): CabinetCompany {
-  const status = readString(value.subscription_status, 'company.subscription_status')
-  if (status !== 'active' && status !== 'inactive') {
+  const status = value.subscription_status === undefined
+    ? undefined
+    : readString(value.subscription_status, 'company.subscription_status')
+  if (status !== undefined && status !== 'active' && status !== 'inactive') {
     throw invalid('company.subscription_status must be active or inactive')
   }
 
@@ -48,7 +57,7 @@ function mapCompany(value: Record<string, unknown>): CabinetCompany {
     name: readString(value.name, 'company.name'),
     email: readString(value.email, 'company.email'),
     emailVerified: readBoolean(value.email_verified, 'company.email_verified'),
-    subscriptionStatus: status,
+    ...(status ? { subscriptionStatus: status } : {}),
     phones: readArray(value.phones, 'company.phones').map(mapPhone),
     messengers: readArray(value.messengers, 'company.messengers').map(mapMessenger),
     createdAt: readString(value.created_at, 'company.created_at'),

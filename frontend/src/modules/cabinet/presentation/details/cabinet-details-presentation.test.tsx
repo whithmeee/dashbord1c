@@ -7,6 +7,7 @@ import type {
   CabinetSubscription,
   CabinetSystemStatus,
 } from '../../domain/cabinet-details'
+import { allowEverySection, type SectionAccess } from '../../../auth/domain/section-access'
 import { OverviewKpiCards } from '../overview/overview-kpi-cards'
 import { OverviewSystemStatus } from '../overview/overview-system-status'
 import { StatisticsReport } from './statistics-report'
@@ -145,14 +146,23 @@ describe('system status', () => {
 })
 
 describe('overview cards', () => {
-  const render = (owner: boolean) => renderToStaticMarkup(
+  const render = (owner: boolean, access: SectionAccess = allowEverySection) => renderToStaticMarkup(
     <OverviewKpiCards
       dashboard={dashboard(owner)}
       detailsState={success(systemStatus({}))}
+      access={access}
       onSelectTab={vi.fn()}
       onOpenDialog={vi.fn()}
     />,
   )
+
+  it('hides the cards of sections the employee has no access to', () => {
+    const html = render(false, (section) => section === 'subscription')
+
+    expect(html).toContain('data-testid="kpi-subscription"')
+    expect(html).not.toContain('data-testid="kpi-integrations"')
+    expect(html).not.toContain('data-testid="kpi-statistics"')
+  })
 
   it('makes subscription, users and statistics cards interactive for the owner', () => {
     const html = render(true)

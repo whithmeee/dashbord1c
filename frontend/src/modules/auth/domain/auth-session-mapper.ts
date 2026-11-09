@@ -6,6 +6,7 @@ import type {
   CompanyPhone,
   EmployeeAccount,
 } from './auth-session'
+import { sectionKeys, type SectionKey } from './section-access'
 
 export class InvalidAuthSessionError extends Error {
   constructor(message: string) {
@@ -63,7 +64,18 @@ function parseEmployee(account: Record<string, unknown>): EmployeeAccount {
     login: readString(account.login, 'account.login'),
     isOnline: readBoolean(account.is_online, 'account.is_online'),
     lastSeenAt: readOptionalString(account.last_seen_at, 'account.last_seen_at'),
+    sections: readSections(account.sections),
   }
+}
+
+function readSections(value: unknown): readonly SectionKey[] | undefined {
+  if (value === undefined || value === null) {
+    return undefined
+  }
+
+  return readArray(value, 'account.sections').filter(
+    (section): section is SectionKey => sectionKeys.includes(section as SectionKey),
+  )
 }
 
 function parseAdmin(account: Record<string, unknown>): AdminAccount {

@@ -1,19 +1,25 @@
 import { LayoutGroup, motion } from 'motion/react'
 import { useInterfaceMotion } from '../../../../shared/motion/use-interface-motion'
 import type { CabinetTab } from '../../domain/cabinet'
+import { allowEverySection, type SectionAccess } from '../../../auth/domain/section-access'
 import { cabinetTabs } from './cabinet-tabs.config'
 
 export function CabinetTabs({
   active,
   onSelect,
   canManageEmployees,
+  access = allowEverySection,
 }: {
   active: CabinetTab
   onSelect: (tab: CabinetTab) => void
   canManageEmployees: boolean
+  access?: SectionAccess
 }) {
   const { movement, reducedMotion } = useInterfaceMotion()
-  const visibleTabs = cabinetTabs.filter(({ id }) => id !== 'team' || canManageEmployees)
+  const visibleTabs = cabinetTabs.filter(
+    ({ id }) =>
+      (id !== 'team' || canManageEmployees) && (id !== 'integrations' || access('integrations')),
+  )
 
   return (
     <>
@@ -27,7 +33,7 @@ export function CabinetTabs({
             if (tab) onSelect(tab.id)
           }}
         >
-          {cabinetTabs.map(({ id, label }) => (
+          {visibleTabs.map(({ id, label }) => (
             <option key={id} value={id}>
               {label}
             </option>

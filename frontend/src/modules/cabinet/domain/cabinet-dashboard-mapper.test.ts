@@ -114,11 +114,22 @@ describe('mapCabinetDashboard', () => {
       company: { ...company, phones: [], messengers: [] },
       viewer: companyViewer,
       integrations: { count: 0, active_count: 0, items: [] },
-    }).integrations.items).toEqual([])
+    }).integrations?.items).toEqual([])
 
     expect(() => mapCabinetDashboard({ company })).toThrow(
       InvalidCabinetDashboardError,
     )
+  })
+
+  it('maps a dashboard whose closed blocks the backend left out', () => {
+    const result = mapCabinetDashboard({
+      company: { ...company, subscription_status: undefined },
+      viewer: { type: 'employee', name: 'Иван Петров', position: 'Бухгалтер' },
+    })
+
+    expect(result.integrations).toBeUndefined()
+    expect(result.company.subscriptionStatus).toBeUndefined()
+    expect(describeCabinetDashboard(result)).toBe('Рабочее пространство компании')
   })
 
   it('derives compact company initials and a real dashboard description', () => {

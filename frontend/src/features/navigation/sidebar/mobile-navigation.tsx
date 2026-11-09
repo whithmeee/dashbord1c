@@ -1,5 +1,4 @@
 import { ChevronDown } from 'lucide-react'
-import { sidebarSections } from './sidebar.config'
 import type { SidebarController } from './use-sidebar'
 import './mobile-navigation.css'
 
@@ -8,7 +7,7 @@ export function MobileNavigation({
 }: {
   controller: SidebarController
 }) {
-  const active = sidebarSections.find(({ id }) =>
+  const active = controller.visibleSections.find(({ id }) =>
     controller.isSectionActive(id),
   )
 
@@ -20,14 +19,14 @@ export function MobileNavigation({
           aria-label="Раздел приложения"
           value={active?.id}
           onChange={(event) => {
-            const section = sidebarSections.find(
+            const section = controller.visibleSections.find(
               ({ id }) => id === event.target.value,
             )
             if (section) controller.selectSection(section.id)
           }}
           data-testid="mobile-navigation"
         >
-          {sidebarSections.map(({ id, label }) => (
+          {controller.visibleSections.map(({ id, label }) => (
             <option key={id} value={id}>
               {label}
             </option>

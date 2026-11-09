@@ -7,7 +7,7 @@ export type CabinetCompany = {
   readonly name: string
   readonly email: string
   readonly emailVerified: boolean
-  readonly subscriptionStatus: CabinetSubscriptionStatus
+  readonly subscriptionStatus?: CabinetSubscriptionStatus
   readonly phones: readonly CabinetPhone[]
   readonly messengers: readonly CabinetMessenger[]
   readonly createdAt: string
@@ -54,7 +54,7 @@ export type CabinetViewer =
 export type CabinetDashboard = {
   readonly company: CabinetCompany
   readonly viewer: CabinetViewer
-  readonly integrations: {
+  readonly integrations?: {
     readonly count: number
     readonly activeCount: number
     readonly items: readonly CabinetIntegration[]
@@ -78,7 +78,9 @@ export function getCabinetInitials(name: string): string {
 }
 
 export function describeCabinetDashboard(dashboard: CabinetDashboard): string {
-  return `Интеграций: ${dashboard.integrations.count}`
+  return dashboard.integrations
+    ? `Интеграций: ${dashboard.integrations.count}`
+    : 'Рабочее пространство компании'
 }
 
 export type CabinetOverview = {
