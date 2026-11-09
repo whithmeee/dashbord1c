@@ -69,6 +69,7 @@ const dashboard = (withEmployees: boolean): CabinetDashboard => ({
     messengers: [],
     createdAt: '2026-10-01T00:00:00Z',
   },
+  viewer: { type: 'company', name: 'Осминог', position: null },
   integrations: { count: 2, activeCount: 1, items: [] },
   employees: withEmployees ? { count: 3, onlineCount: 1, items: [] } : undefined,
 })

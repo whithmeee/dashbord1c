@@ -17,6 +17,7 @@ const dashboard: CabinetDashboard = {
     messengers: [],
     createdAt: '2026-11-05T00:00:00Z',
   },
+  viewer: { type: 'company', name: 'Осминог', position: null },
   integrations: { count: 0, activeCount: 0, items: [] },
 }
 

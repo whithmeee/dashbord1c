@@ -28,6 +28,8 @@ const integration = {
   status: 'active',
 }
 
+const companyViewer = { type: 'company', name: 'Осминог', position: null }
+
 describe('mapCabinetDashboard', () => {
   it('maps the signed-in employee viewer', () => {
     const result = mapCabinetDashboard({
@@ -46,6 +48,7 @@ describe('mapCabinetDashboard', () => {
   it('maps company and subscription status', () => {
     const result = mapCabinetDashboard({
       company,
+      viewer: companyViewer,
       integrations: { count: 1, active_count: 1, items: [integration] },
     })
 
@@ -57,6 +60,7 @@ describe('mapCabinetDashboard', () => {
   it('maps integration list and counters', () => {
     const result = mapCabinetDashboard({
       company,
+      viewer: companyViewer,
       integrations: { count: 1, active_count: 1, items: [integration] },
     })
 
@@ -80,6 +84,7 @@ describe('mapCabinetDashboard', () => {
   it('keeps nullable employee fields and absent employee block', () => {
     const employeeResult = mapCabinetDashboard({
       company,
+      viewer: companyViewer,
       integrations: { count: 0, active_count: 0, items: [] },
       employees: {
         count: 1,
@@ -99,6 +104,7 @@ describe('mapCabinetDashboard', () => {
     expect(employeeResult.employees?.items[0].lastSeenAt).toBeNull()
     expect(mapCabinetDashboard({
       company,
+      viewer: companyViewer,
       integrations: { count: 0, active_count: 0, items: [] },
     }).employees).toBeUndefined()
   })
@@ -106,6 +112,7 @@ describe('mapCabinetDashboard', () => {
   it('supports empty collections and rejects an invalid required payload', () => {
     expect(mapCabinetDashboard({
       company: { ...company, phones: [], messengers: [] },
+      viewer: companyViewer,
       integrations: { count: 0, active_count: 0, items: [] },
     }).integrations.items).toEqual([])
 
@@ -117,6 +124,7 @@ describe('mapCabinetDashboard', () => {
   it('derives compact company initials and a real dashboard description', () => {
     const dashboard = mapCabinetDashboard({
       company,
+      viewer: companyViewer,
       integrations: { count: 2, active_count: 1, items: [] },
     })
 

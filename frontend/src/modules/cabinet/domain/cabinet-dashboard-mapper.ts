@@ -5,6 +5,7 @@ import type {
   CabinetIntegration,
   CabinetMessenger,
   CabinetPhone,
+  CabinetViewer,
 } from './cabinet'
 
 export class InvalidCabinetDashboardError extends Error {
@@ -17,12 +18,23 @@ export class InvalidCabinetDashboardError extends Error {
 export function mapCabinetDashboard(value: unknown): CabinetDashboard {
   const payload = readRecord(value, 'dashboard')
   const company = mapCompany(readRecord(payload.company, 'company'))
+  const viewer = mapViewer(readRecord(payload.viewer, 'viewer'))
   const integrations = mapIntegrations(readRecord(payload.integrations, 'integrations'))
   const employees = payload.employees === undefined
     ? undefined
     : mapEmployees(readRecord(payload.employees, 'employees'))
 
-  return { company, integrations, ...(employees ? { employees } : {}) }
+  return { company, viewer, integrations, ...(employees ? { employees } : {}) }
+}
+
+function mapViewer(value: Record<string, unknown>): CabinetViewer {
+  const type = readString(value.type, 'viewer.type')
+  const name = readString(value.name, 'viewer.name')
+  const position = readNullableString(value.position, 'viewer.position')
+
+  if (type === 'employee' && position !== null) return { type, name, position }
+  if (type === 'company' && position === null) return { type, name, position }
+  throw invalid('viewer must match the employee or company contract')
 }
 
 function mapCompany(value: Record<string, unknown>): CabinetCompany {

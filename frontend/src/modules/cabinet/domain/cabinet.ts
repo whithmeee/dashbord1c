@@ -47,8 +47,13 @@ export type CabinetEmployee = {
   readonly lastSeenAt: string | null
 }
 
+export type CabinetViewer =
+  | { readonly type: 'employee'; readonly name: string; readonly position: string }
+  | { readonly type: 'company'; readonly name: string; readonly position: null }
+
 export type CabinetDashboard = {
   readonly company: CabinetCompany
+  readonly viewer: CabinetViewer
   readonly integrations: {
     readonly count: number
     readonly activeCount: number

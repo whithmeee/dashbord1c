@@ -16,6 +16,7 @@ describe('createHttpCabinetGateway', () => {
         messengers: [],
         created_at: '2026-11-05T00:00:00Z',
       },
+      viewer: { type: 'company', name: 'Осминог', position: null },
       integrations: { count: 0, active_count: 0, items: [] },
     })
     const gateway = createHttpCabinetGateway({ get } as unknown as ApiClient)

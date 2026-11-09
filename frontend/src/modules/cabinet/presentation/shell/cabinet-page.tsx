@@ -9,6 +9,7 @@ import {
 } from '../../domain/cabinet'
 import type { CabinetDetailsState } from '../../application/cabinet-details-store'
 import { CabinetTabs } from './cabinet-tabs'
+import { CabinetViewerIdentity } from './cabinet-viewer'
 import { Overview } from '../overview/overview'
 import { IntegrationsPage } from '../../../integrations/presentation/integrations-page'
 import { UsersPage } from '../../../employees/presentation/users-page'
@@ -47,6 +48,7 @@ export function CabinetPage({
             <p>{describeCabinetDashboard(dashboard)}</p>
           </div>
         </div>
+        <CabinetViewerIdentity viewer={dashboard.viewer} />
       </header>
       <CabinetTabs active={activeTab} onSelect={selectTab} canManageEmployees={canManageEmployees} />
 
