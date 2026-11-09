@@ -24,15 +24,24 @@
 }
 
 .dashboard-chart-recharts {
-  height: 220px;
+  height: 180px;
+  margin-top: 16px;
 }
 
 .dashboard-chart-recharts-doughnut {
-  height: 220px;
+  height: 180px;
+  margin-top: 16px;
 }
 
 .dashboard-chart-recharts-compact {
-  height: 170px;
+  height: 150px;
+  margin-top: 16px;
+}
+
+.dashboard-chart-recharts :focus,
+.dashboard-chart-recharts-doughnut :focus,
+.dashboard-chart-recharts-compact :focus {
+  outline: none;
 }
 
 .dashboard-recharts-tooltip {
@@ -70,14 +79,14 @@
   }
 
   .dashboard-chart-recharts {
-    height: 190px;
+    height: 170px;
   }
 
   .dashboard-chart-recharts-doughnut {
-    height: 190px;
+    height: 170px;
   }
 
   .dashboard-chart-recharts-compact {
-    height: 170px;
+    height: 160px;
   }
 }

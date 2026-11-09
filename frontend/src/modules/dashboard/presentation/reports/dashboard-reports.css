@@ -1,12 +1,12 @@
 .dashboard-reports {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
+  gap: 16px;
 }
 .dashboard-metric,
 .dashboard-report {
   min-width: 0;
-  padding: 24px;
+  padding: 18px;
   border: 1px solid var(--app-border);
   border-radius: var(--app-card-radius);
   background: var(--app-panel-solid);
@@ -102,6 +102,19 @@
   .dashboard-report-half,
   .dashboard-report-balanced {
     grid-column: span 2;
+  }
+}
+
+@media (min-width: 761px) {
+  .dashboard-reports {
+    min-height: calc(100dvh - 220px);
+    align-content: stretch;
+  }
+}
+
+@media (min-width: 1101px) {
+  .dashboard-reports {
+    grid-template-rows: auto minmax(250px, 1fr) minmax(210px, 1fr);
   }
 }
 

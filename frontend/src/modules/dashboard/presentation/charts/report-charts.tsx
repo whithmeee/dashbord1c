@@ -1,6 +1,6 @@
-import { Bar, Line } from 'react-chartjs-2'
+import { Bar, Doughnut, Line } from 'react-chartjs-2'
 import type { ReportPoint } from '../../domain/dashboard-report'
-import { formatAxisMoney } from '../reports/money-format'
+import { formatAxisMoney, formatMoney } from '../reports/money-format'
 import {
   activePointCrosshairPlugin,
   useReportChart,
@@ -88,6 +88,49 @@ export function DebtorsChart({ points }: ReportChartProps) {
               ],
               borderRadius: 6,
               barThickness: 24,
+            },
+          ],
+        }}
+      />
+    </div>
+  )
+}
+
+export function DebtorsDoughnutChart({ points }: ReportChartProps) {
+  const chart = useReportChart(points)
+  return (
+    <div className="dashboard-chart dashboard-chart-doughnut" data-testid="debtors-doughnut-chart">
+      <Doughnut
+        role="img"
+        aria-label="Распределение задолженности пяти крупнейших должников"
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: chart.options.animation,
+          transitions: chart.options.transitions,
+          cutout: '68%',
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: { boxWidth: 10, padding: 14 },
+            },
+            tooltip: {
+              callbacks: {
+                label: (item) => formatMoney(Number(item.raw)),
+              },
+            },
+          },
+        }}
+        data={{
+          labels: chart.labels,
+          datasets: [
+            {
+              data: chart.values,
+              backgroundColor: ['#005bb5', '#2875c5', '#528fd5', '#80a9df', '#b1c9eb'],
+              borderColor: 'transparent',
+              borderWidth: 2,
+              hoverOffset: 6,
             },
           ],
         }}

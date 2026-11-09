@@ -34,11 +34,6 @@
   background: var(--app-background);
 }
 
-@media (min-width: 761px) {
-  .application-content-dashboard {
-    overflow: hidden;
-  }
-}
 
 .application-heading {
   @apply text-center;

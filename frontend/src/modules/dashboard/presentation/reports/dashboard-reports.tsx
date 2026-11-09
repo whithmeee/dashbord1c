@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react'
+import { useState } from 'react'
 import { ArrowDownToLine, Landmark, TrendingUp, Wallet } from 'lucide-react'
 import { RechartsDebtorsDoughnut } from '../charts/recharts-debtors-chart'
 import { RechartsCashLine, RechartsExpensesBar } from '../charts/recharts-finance-charts'
@@ -11,6 +12,7 @@ import { AnimatedMetricValue } from './animated-metric-value'
 
 export function DashboardReports({ report }: { report: DashboardReport }) {
   const reducedMotion = useReducedMotion()
+  const [openDetails, setOpenDetails] = useState<string | null>(null)
   const cardProps = (index: number) => ({
     initial: reducedMotion ? dashboardCardMotion.reducedInitial : dashboardCardMotion.initial,
     animate: dashboardCardMotion.animate,
@@ -72,7 +74,12 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <p>По месяцам · ₽</p>
         </header>
         <RechartsRevenueArea points={report.revenue} />
-        <ReportDetails points={report.revenue} label="Выручка по месяцам" />
+        <ReportDetails
+          points={report.revenue}
+          label="Выручка по месяцам"
+          open={openDetails === 'revenue'}
+          onToggle={(open) => setOpenDetails(open ? 'revenue' : null)}
+        />
       </motion.article>
       <motion.article className="dashboard-report dashboard-report-half" {...cardProps(5)}>
         <header>
@@ -83,6 +90,8 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         <ReportDetails
           points={report.debtors}
           label="Задолженность контрагентов"
+          open={openDetails === 'debtors'}
+          onToggle={(open) => setOpenDetails(open ? 'debtors' : null)}
         />
       </motion.article>
       <motion.article className="dashboard-report dashboard-report-balanced" {...cardProps(6)}>
@@ -91,7 +100,12 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <p>Операционные затраты · ₽</p>
         </header>
         <RechartsExpensesBar points={report.expenses} />
-        <ReportDetails points={report.expenses} label="Расходы по месяцам" />
+        <ReportDetails
+          points={report.expenses}
+          label="Расходы по месяцам"
+          open={openDetails === 'expenses'}
+          onToggle={(open) => setOpenDetails(open ? 'expenses' : null)}
+        />
       </motion.article>
       <motion.article className="dashboard-report dashboard-report-balanced" {...cardProps(7)}>
         <header>
@@ -99,7 +113,12 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <p>На конец месяца · ₽</p>
         </header>
         <RechartsCashLine points={report.cashBalance} />
-        <ReportDetails points={report.cashBalance} label="Остаток денежных средств" />
+        <ReportDetails
+          points={report.cashBalance}
+          label="Остаток денежных средств"
+          open={openDetails === 'cash'}
+          onToggle={(open) => setOpenDetails(open ? 'cash' : null)}
+        />
       </motion.article>
     </motion.div>
   )

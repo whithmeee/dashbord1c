@@ -6,7 +6,10 @@ import {
   PointElement,
   LineElement,
   BarElement,
+  ArcElement,
+  DoughnutController,
   Filler,
+  Legend,
   Tooltip,
   type ChartOptions,
   type Plugin,
@@ -20,7 +23,10 @@ ChartJS.register(
   PointElement,
   LineElement,
   BarElement,
+  ArcElement,
+  DoughnutController,
   Filler,
+  Legend,
   Tooltip,
 )
 

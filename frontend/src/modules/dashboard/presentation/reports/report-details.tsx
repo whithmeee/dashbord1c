@@ -10,14 +10,24 @@ import './report-details.css'
 export function ReportDetails({
   points,
   label,
+  open: controlledOpen,
+  onToggle,
 }: {
   points: ReportPoint[]
   label: string
+  open?: boolean
+  onToggle?: (open: boolean) => void
 }) {
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
   const id = useId()
   const detailsRef = useRef<HTMLDivElement>(null)
   const { reducedMotion, movement } = useInterfaceMotion()
+  const toggle = () => {
+    const nextOpen = !open
+    if (onToggle) onToggle(nextOpen)
+    else setInternalOpen(nextOpen)
+  }
   useEffect(() => {
     if (detailsRef.current) detailsRef.current.inert = !open
   }, [open])
@@ -29,7 +39,7 @@ export function ReportDetails({
         className="report-details-toggle"
         aria-expanded={open}
         aria-controls={id}
-        onClick={() => setOpen((current) => !current)}
+        onClick={toggle}
       >
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={movement}>
           <ChevronDown size={14} />
