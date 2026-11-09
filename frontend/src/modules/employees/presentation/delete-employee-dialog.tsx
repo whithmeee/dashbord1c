@@ -1,5 +1,6 @@
 import { AlertTriangle } from 'lucide-react'
 import type { Employee } from '../domain/employee'
+import { EmployeeDialog } from './employee-dialog'
 
 export function DeleteEmployeeDialog({
   employee,
@@ -13,11 +14,14 @@ export function DeleteEmployeeDialog({
   onClose: () => void
 }) {
   return (
-    <div className="employees-overlay" role="presentation">
-      <div className="employees-modal employees-confirm" role="alertdialog" aria-modal="true" aria-labelledby="delete-employee-title">
+    <EmployeeDialog
+      title="Удалить сотрудника?"
+      description={`Сотрудник «${employee.name}» больше не сможет войти в кабинет.`}
+      role="alertdialog"
+      onClose={onClose}
+    >
+      <div className="employees-modal employees-confirm">
         <AlertTriangle size={24} aria-hidden="true" />
-        <h3 id="delete-employee-title">Удалить сотрудника?</h3>
-        <p>Сотрудник «{employee.name}» больше не сможет войти в кабинет.</p>
         <footer className="employees-modal-actions">
           <button className="cabinet-button" type="button" onClick={onClose}>Отмена</button>
           <button className="cabinet-button employees-danger-button" type="button" disabled={pending} onClick={onConfirm}>
@@ -25,6 +29,6 @@ export function DeleteEmployeeDialog({
           </button>
         </footer>
       </div>
-    </div>
+    </EmployeeDialog>
   )
 }
