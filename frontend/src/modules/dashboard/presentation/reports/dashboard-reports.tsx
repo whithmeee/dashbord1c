@@ -1,7 +1,7 @@
-import { FinanceReports } from './finance-reports'
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowDownToLine, Landmark, TrendingUp, Wallet } from 'lucide-react'
-import { RevenueChart, DebtorsChart } from '../charts/report-charts'
+import { DebtorsDoughnutChart } from '../charts/report-charts'
+import { RechartsRevenueArea } from '../charts/recharts-revenue-chart'
 import type { DashboardReport } from '../../domain/dashboard-report'
 import { ReportDetails } from './report-details'
 import './dashboard-reports.css'
@@ -65,26 +65,25 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         </strong>
         <small>На конец выбранного периода</small>
       </motion.article>
-      <motion.article className="dashboard-report" {...cardProps(4)}>
+      <motion.article className="dashboard-report dashboard-report-wide" {...cardProps(4)}>
         <header>
-          <h2>Динамика выручки</h2>
+          <h2>Выручка по месяцам</h2>
           <p>По месяцам · ₽</p>
         </header>
-        <RevenueChart points={report.revenue} />
+        <RechartsRevenueArea points={report.revenue} />
         <ReportDetails points={report.revenue} label="Выручка по месяцам" />
       </motion.article>
-      <motion.article className="dashboard-report" {...cardProps(5)}>
+      <motion.article className="dashboard-report dashboard-report-half" {...cardProps(5)}>
         <header>
-          <h2>Топ-5 должников</h2>
-          <p>Задолженность на {report.debtAsOf} · ₽</p>
+          <h2>Распределение задолженности</h2>
+          <p>Топ-5 контрагентов · ₽</p>
         </header>
-        <DebtorsChart points={report.debtors} />
+        <DebtorsDoughnutChart points={report.debtors} />
         <ReportDetails
           points={report.debtors}
           label="Задолженность контрагентов"
         />
       </motion.article>
-      <FinanceReports report={report} />
     </motion.div>
   )
 }
