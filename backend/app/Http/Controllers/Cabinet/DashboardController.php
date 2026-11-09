@@ -24,7 +24,10 @@ class DashboardController extends Controller
         $account = $request->user();
         $company = $account->ownerCompany()->load(['phones', 'messengers']);
 
-        $dashboard = ['company' => (new CompanyResource($company))->resolve()];
+        $dashboard = [
+            'company' => (new CompanyResource($company))->resolve(),
+            'viewer' => $this->viewer($account),
+        ];
 
         if ($this->allows($account, CabinetSection::Integrations)) {
             $dashboard['integrations'] = $this->integrations($company);
@@ -39,6 +42,18 @@ class DashboardController extends Controller
         }
 
         return $dashboard;
+    }
+
+    /**
+     * Who is looking at the cabinet: the company itself or one of its employees.
+     *
+     * @return array{type: string, name: string, position: ?string}
+     */
+    private function viewer(Company|Employee $account): array
+    {
+        return $account instanceof Employee
+            ? ['type' => 'employee', 'name' => $account->name, 'position' => $account->position]
+            : ['type' => 'company', 'name' => $account->name, 'position' => null];
     }
 
     private function allows(Company|Employee $account, CabinetSection $section): bool
