@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowDownToLine, Landmark, TrendingUp, Wallet } from 'lucide-react'
 import { RechartsDebtorsDoughnut } from '../charts/recharts-debtors-chart'
+import { RechartsCashLine, RechartsExpensesBar } from '../charts/recharts-finance-charts'
 import { RechartsRevenueArea } from '../charts/recharts-revenue-chart'
 import type { DashboardReport } from '../../domain/dashboard-report'
 import { ReportDetails } from './report-details'
@@ -83,6 +84,22 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           points={report.debtors}
           label="Задолженность контрагентов"
         />
+      </motion.article>
+      <motion.article className="dashboard-report dashboard-report-balanced" {...cardProps(6)}>
+        <header>
+          <h2>Расходы по месяцам</h2>
+          <p>Операционные затраты · ₽</p>
+        </header>
+        <RechartsExpensesBar points={report.expenses} />
+        <ReportDetails points={report.expenses} label="Расходы по месяцам" />
+      </motion.article>
+      <motion.article className="dashboard-report dashboard-report-balanced" {...cardProps(7)}>
+        <header>
+          <h2>Остаток денежных средств</h2>
+          <p>На конец месяца · ₽</p>
+        </header>
+        <RechartsCashLine points={report.cashBalance} />
+        <ReportDetails points={report.cashBalance} label="Остаток денежных средств" />
       </motion.article>
     </motion.div>
   )
