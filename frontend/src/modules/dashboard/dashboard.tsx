@@ -5,6 +5,7 @@ import { DashboardNavigation } from './presentation/catalog/dashboard-navigation
 import { ReportCatalog } from './presentation/catalog/report-catalog'
 import { DashboardPage } from './presentation/page/dashboard-page'
 import { createDemoDashboardSource } from './adapters/demo/demo-dashboard-source'
+import { DemoNotice } from './adapters/demo/demo-controls'
 import { dashboardSectionMotion, getDashboardSectionTransition } from './dashboard-section-motion'
 import './dashboard-section-motion.css'
 
@@ -52,7 +53,7 @@ export function Dashboard({
         <DashboardPage
           loadDashboard={demoDashboardSource}
           onBack={onBack}
-          notice={null}
+          notice={<DemoNotice />}
           footer={null}
         />
       </motion.div>
