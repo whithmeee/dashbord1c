@@ -41,6 +41,24 @@ describe('createHttpEmployeesGateway', () => {
     expect(post).toHaveBeenCalledWith('/cabinet/employees', input, undefined)
   })
 
+  it('loads employee activity from the profile endpoint', async () => {
+    const get = vi.fn().mockResolvedValue({
+      last_login_at: '2026-11-10T08:00:00Z',
+      last_logout_at: null,
+      questions_count: 1,
+      items: [{ type: 'question', at: '2026-11-10T09:00:00Z', details: 'Покажи отчёт' }],
+    })
+    const gateway = createHttpEmployeesGateway({ get } as unknown as ApiClient)
+
+    await expect(gateway.activity(4)).resolves.toEqual({
+      lastLoginAt: '2026-11-10T08:00:00Z',
+      lastLogoutAt: null,
+      questionsCount: 1,
+      items: [{ type: 'question', at: '2026-11-10T09:00:00Z', details: 'Покажи отчёт' }],
+    })
+    expect(get).toHaveBeenCalledWith('/cabinet/employees/4/activity?limit=50', undefined)
+  })
+
   it('updates only provided fields and forwards the signal', async () => {
     const patch = vi.fn().mockResolvedValue(employeeDto)
     const gateway = createHttpEmployeesGateway({ patch } as unknown as ApiClient)

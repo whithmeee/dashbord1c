@@ -1,19 +1,22 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import { AlertCircle, LoaderCircle, Pencil, Plus, RotateCcw, Trash2, Users } from 'lucide-react'
+import { Activity, AlertCircle, LoaderCircle, Pencil, Plus, RotateCcw, Trash2, Users } from 'lucide-react'
 import { ApiError, describeError } from '../../../shared/api'
 import { motion } from 'motion/react'
 import { useInterfaceMotion } from '../../../shared/motion/use-interface-motion'
-import { employeesStore } from '../employees-runtime'
+import { employeeActivityStore, employeesStore } from '../employees-runtime'
 import type { Employee } from '../domain/employee'
 import { EmployeeForm, type EmployeeFormValues } from './employee-form'
 import { DeleteEmployeeDialog } from './delete-employee-dialog'
+import { EmployeeActivityPanel } from './employee-activity-panel'
 import { buildEmployeeUpdateInput } from './users-page-helpers'
 import './users.css'
 
 export function UsersPage({ canManage }: { canManage: boolean }) {
   const state = useSyncExternalStore(employeesStore.subscribe, employeesStore.getSnapshot, employeesStore.getSnapshot)
+  const activity = useSyncExternalStore(employeeActivityStore.subscribe, employeeActivityStore.getSnapshot, employeeActivityStore.getSnapshot)
   const { appearance } = useInterfaceMotion()
   const [form, setForm] = useStateForm()
+  const activityEmployeeId = activity.status === 'idle' ? undefined : activity.employeeId
 
   useEffect(() => {
     if (canManage) void employeesStore.load()
@@ -55,7 +58,7 @@ export function UsersPage({ canManage }: { canManage: boolean }) {
   return (
     <section className="employees-page" data-testid="employees-page">
       <header className="employees-heading"><div><h2>Пользователи и права</h2><p>Управляйте доступом сотрудников к кабинету.</p></div><button className="cabinet-button cabinet-button-primary" type="button" onClick={() => setForm({ mode: 'create' })}><Plus size={16} />Добавить сотрудника</button></header>
-      {state.employees.length === 0 ? <EmployeesEmpty onAdd={() => setForm({ mode: 'create' })} /> : <div className="employees-list">{state.employees.map((employee, index) => <EmployeeCard key={employee.id} employee={employee} appearance={appearance} index={index} onEdit={() => setForm({ mode: 'edit', employeeId: employee.id })} onDelete={() => setForm({ mode: 'delete', employeeId: employee.id })} />)}</div>}
+      {state.employees.length === 0 ? <EmployeesEmpty onAdd={() => setForm({ mode: 'create' })} /> : <div className="employees-list">{state.employees.map((employee, index) => <div key={employee.id}><EmployeeCard employee={employee} appearance={appearance} index={index} onEdit={() => setForm({ mode: 'edit', employeeId: employee.id })} onDelete={() => setForm({ mode: 'delete', employeeId: employee.id })} onActivity={() => void employeeActivityStore.load(employee.id)} />{activityEmployeeId === employee.id && <EmployeeActivityPanel state={activity} employeeName={employee.name} />}</div>)}</div>}
       {mutationError && <p className="employees-operation-error" role="alert">{getErrorMessage(mutationError.error)}</p>}
       {form.mode === 'create' && <EmployeeForm pending={pending === true} errors={mutationError?.operation === 'create' ? mutationError.validationErrors : undefined} onSubmit={(values) => void submit(values)} onClose={() => setForm({ mode: 'closed' })} />}
       {form.mode === 'edit' && editing && <EmployeeForm employee={editing} pending={pending === true} errors={mutationError?.operation === 'update' ? mutationError.validationErrors : undefined} onSubmit={(values) => void submit(values)} onClose={() => setForm({ mode: 'closed' })} />}
@@ -64,8 +67,8 @@ export function UsersPage({ canManage }: { canManage: boolean }) {
   )
 }
 
-function EmployeeCard({ employee, appearance, index, onEdit, onDelete }: { employee: Employee; appearance: ReturnType<typeof useInterfaceMotion>['appearance']; index: number; onEdit: () => void; onDelete: () => void }) {
-  return <motion.div className="employees-card" data-testid={`employee-${employee.id}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...appearance, delay: index * 0.04 }}><div className={`employees-status-dot${employee.isOnline ? ' employees-status-online' : ''}`} aria-label={employee.isOnline ? 'Онлайн' : 'Не в сети'} /><div className="employees-card-main"><div className="employees-card-title"><div><h3>{employee.name}</h3><p>{employee.position} · {employee.login}</p></div><span className={`employees-status${employee.isOnline ? ' employees-status-online' : ''}`}>{employee.isOnline ? 'Онлайн' : 'Не в сети'}</span></div>{employee.lastSeenAt && <time dateTime={employee.lastSeenAt}>Последняя активность: {formatLastSeen(employee.lastSeenAt)}</time>}{employee.createdAt && <time dateTime={employee.createdAt}>Добавлен: {formatLastSeen(employee.createdAt)}</time>}</div><div className="employees-card-actions"><button className="employees-icon-button" type="button" aria-label={`Редактировать ${employee.name}`} onClick={onEdit}><Pencil size={16} /></button><button className="employees-icon-button employees-danger-icon" type="button" aria-label={`Удалить ${employee.name}`} onClick={onDelete}><Trash2 size={16} /></button></div></motion.div>
+function EmployeeCard({ employee, appearance, index, onEdit, onDelete, onActivity }: { employee: Employee; appearance: ReturnType<typeof useInterfaceMotion>['appearance']; index: number; onEdit: () => void; onDelete: () => void; onActivity: () => void }) {
+  return <motion.div className="employees-card" data-testid={`employee-${employee.id}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...appearance, delay: index * 0.04 }}><div className={`employees-status-dot${employee.isOnline ? ' employees-status-online' : ''}`} aria-label={employee.isOnline ? 'Онлайн' : 'Не в сети'} /><div className="employees-card-main"><div className="employees-card-title"><div><h3>{employee.name}</h3><p>{employee.position} · {employee.login}</p></div><span className={`employees-status${employee.isOnline ? ' employees-status-online' : ''}`}>{employee.isOnline ? 'Онлайн' : 'Не в сети'}</span></div>{employee.lastSeenAt && <time dateTime={employee.lastSeenAt}>Последняя активность: {formatLastSeen(employee.lastSeenAt)}</time>}{employee.createdAt && <time dateTime={employee.createdAt}>Добавлен: {formatLastSeen(employee.createdAt)}</time>}</div><div className="employees-card-actions"><button className="employees-icon-button" type="button" aria-label={`Активность ${employee.name}`} onClick={onActivity}><Activity size={16} /></button><button className="employees-icon-button" type="button" aria-label={`Редактировать ${employee.name}`} onClick={onEdit}><Pencil size={16} /></button><button className="employees-icon-button employees-danger-icon" type="button" aria-label={`Удалить ${employee.name}`} onClick={onDelete}><Trash2 size={16} /></button></div></motion.div>
 }
 
 function EmployeesEmpty({ onAdd }: { onAdd: () => void }) { return <div className="employees-empty" data-testid="employees-empty"><Users size={30} /><h2>Сотрудников пока нет</h2><p>Добавьте первого сотрудника, чтобы предоставить доступ к кабинету.</p><button className="cabinet-button cabinet-button-primary" type="button" onClick={onAdd}><Plus size={16} />Добавить сотрудника</button></div> }

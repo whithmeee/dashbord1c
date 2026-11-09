@@ -18,6 +18,7 @@ const employee: Employee = {
 function gateway(overrides: Partial<EmployeesGateway> = {}): EmployeesGateway {
   return {
     list: vi.fn().mockResolvedValue([employee]),
+    activity: vi.fn().mockResolvedValue({ lastLoginAt: null, lastLogoutAt: null, questionsCount: 0, items: [] }),
     create: vi.fn().mockResolvedValue(employee),
     update: vi.fn().mockResolvedValue(employee),
     remove: vi.fn().mockResolvedValue(undefined),
