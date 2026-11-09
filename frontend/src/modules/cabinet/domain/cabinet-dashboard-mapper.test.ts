@@ -29,6 +29,20 @@ const integration = {
 }
 
 describe('mapCabinetDashboard', () => {
+  it('maps the signed-in employee viewer', () => {
+    const result = mapCabinetDashboard({
+      company,
+      viewer: { type: 'employee', name: 'Иван Петров', position: 'Бухгалтер' },
+      integrations: { count: 0, active_count: 0, items: [] },
+    })
+
+    expect(result.viewer).toEqual({
+      type: 'employee',
+      name: 'Иван Петров',
+      position: 'Бухгалтер',
+    })
+  })
+
   it('maps company and subscription status', () => {
     const result = mapCabinetDashboard({
       company,
