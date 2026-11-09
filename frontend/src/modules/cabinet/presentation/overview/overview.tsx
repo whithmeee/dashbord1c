@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { AlertCircle, MessageSquare, RotateCcw } from 'lucide-react'
+import { AlertCircle, RotateCcw } from 'lucide-react'
 import type { CabinetDashboard, CabinetTab } from '../../domain/cabinet'
 import type { CabinetDetailsState } from '../../application/cabinet-details-store'
 import { EmployeesDialog } from '../details/employees-dialog'
 import { StatisticsDialog } from '../details/statistics-dialog'
 import { SubscriptionDialog } from '../details/subscription-dialog'
 import { OverviewKpiCards, type OverviewDialog } from './overview-kpi-cards'
-import { OverviewSubscription } from './overview-subscription'
 import { OverviewSystemStatus } from './overview-system-status'
 import './overview.css'
 
@@ -67,26 +66,6 @@ export function Overview({
           </button>
         </div>
       )}
-      <div className="cabinet-overview-grid">
-        <div>
-          <OverviewSubscription
-            subscription={details?.subscription}
-            fallbackStatus={dashboard.company.subscriptionStatus}
-          />
-        </div>
-        <div className="cabinet-panel cabinet-statistics-summary">
-          <div className="cabinet-panel-heading">
-            <h2>Активность запросов</h2>
-            <MessageSquare size={20} aria-hidden="true" />
-          </div>
-          <p>За выбранный период: {details?.statistics.total ?? '—'} запросов</p>
-          <strong>
-            {details
-              ? `Пиковый день: ${details.statistics.summary.peakDay?.date ?? 'нет данных'}`
-              : 'Статистика загружается'}
-          </strong>
-        </div>
-      </div>
       {dialog === 'subscription' && (
         <SubscriptionDialog subscription={details?.subscription} onClose={closeDialog} />
       )}
