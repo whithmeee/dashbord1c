@@ -3,6 +3,7 @@
 use App\Exceptions\DeepSeekException;
 use App\Exceptions\OneCException;
 use App\Http\Middleware\EnsureCompanyAccess;
+use App\Http\Middleware\EnsureEmployeeSection;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\TrackLastSeen;
 use App\Support\RussianErrorMessages;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => EnsureUserIsAdmin::class,
             'company.access' => EnsureCompanyAccess::class,
             'last.seen' => TrackLastSeen::class,
+            'section' => EnsureEmployeeSection::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

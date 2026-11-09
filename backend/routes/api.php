@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 | Available to a company and its employees with a confirmed email and an active subscription.
 | Authenticated by the same session cookie as the web routes (Sanctum stateful SPA).
 */
-Route::middleware(['auth:sanctum', 'last.seen', 'company.access:subscription'])->group(function () {
+Route::middleware(['auth:sanctum', 'last.seen', 'company.access:subscription', 'section:chat'])->group(function () {
     Route::get('/chats', [ChatController::class, 'index']);
     Route::post('/chats', [ChatController::class, 'store']);
     Route::patch('/chats/{chat}', [ChatController::class, 'update']);

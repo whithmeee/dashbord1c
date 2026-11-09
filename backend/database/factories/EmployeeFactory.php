@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\CabinetSection;
 use App\Models\Company;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,6 +25,7 @@ class EmployeeFactory extends Factory
             'name' => fake()->name(),
             'position' => fake()->jobTitle(),
             'login' => fake()->unique()->userName(),
+            'sections' => CabinetSection::values(),
             'password' => static::$password ??= Hash::make('password'),
         ];
     }

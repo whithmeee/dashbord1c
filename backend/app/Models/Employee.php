@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CabinetSection;
 use Database\Factories\EmployeeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-#[Fillable(['company_id', 'name', 'position', 'login', 'password'])]
+#[Fillable(['company_id', 'name', 'position', 'login', 'password', 'sections'])]
 #[Hidden(['password', 'remember_token'])]
 class Employee extends Authenticatable
 {
@@ -18,6 +19,13 @@ class Employee extends Authenticatable
     use HasFactory;
 
     public const ONLINE_WINDOW_MINUTES = 5;
+
+    public function __construct(array $attributes = [])
+    {
+        $this->attributes['sections'] = json_encode(CabinetSection::values());
+
+        parent::__construct($attributes);
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -29,6 +37,7 @@ class Employee extends Authenticatable
         return [
             'password' => 'hashed',
             'last_seen_at' => 'datetime',
+            'sections' => 'array',
         ];
     }
 
@@ -54,6 +63,11 @@ class Employee extends Authenticatable
     public function ownerCompany(): Company
     {
         return $this->company;
+    }
+
+    public function hasSection(string $section): bool
+    {
+        return in_array($section, $this->sections ?? [], true);
     }
 
     public function isOnline(): bool

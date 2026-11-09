@@ -27,12 +27,14 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('cabinet')->middleware(['auth:company,employee', 'last.seen', 'company.access'])->group(function () {
     Route::get('/dashboard', Cabinet\DashboardController::class);
-    Route::get('/finance/sales', Cabinet\FinanceSalesController::class);
-    Route::get('/integrations', [Cabinet\IntegrationController::class, 'index']);
-    Route::get('/integrations/{integration}/check', [Cabinet\IntegrationController::class, 'check'])->middleware('throttle:30,1');
-    Route::get('/statistics', Cabinet\StatisticsController::class);
-    Route::get('/subscription', Cabinet\SubscriptionController::class);
-    Route::get('/system-status', Cabinet\SystemStatusController::class);
+    Route::get('/finance/sales', Cabinet\FinanceSalesController::class)->middleware('section:finance');
+    Route::middleware('section:integrations')->group(function () {
+        Route::get('/integrations', [Cabinet\IntegrationController::class, 'index']);
+        Route::get('/integrations/{integration}/check', [Cabinet\IntegrationController::class, 'check'])->middleware('throttle:30,1');
+    });
+    Route::get('/statistics', Cabinet\StatisticsController::class)->middleware('section:statistics');
+    Route::get('/subscription', Cabinet\SubscriptionController::class)->middleware('section:subscription');
+    Route::get('/system-status', Cabinet\SystemStatusController::class)->middleware('section:system_status');
     Route::middleware('company.access:owner')->group(function () {
         Route::get('/settings', [Cabinet\SettingsController::class, 'show']);
         Route::patch('/settings', [Cabinet\SettingsController::class, 'update']);

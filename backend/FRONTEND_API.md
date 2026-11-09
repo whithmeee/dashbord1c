@@ -88,8 +88,7 @@
 
 `account` для `employee`:
 ```json
-{ "id": 5, "company_id": 1, "name": "Иван", "position": "Бухгалтер", "login": "ivan",
-  "is_online": true, "last_seen_at": "..." }
+{ "id": 5, "company_id": 1, "name": "Иван", "position": "Бухгалтер", X, "last_seen_at": "..." }
 ```
 У сотрудника нет ни `email_verified`, ни `subscription_status` — их берите из `GET /cabinet/dashboard` (`company`).
 
@@ -192,12 +191,14 @@
 - `progress_percent` — доля прошедшего срока (для прогресс-бара).
 
 ### Сотрудники **[владелец]**
-`<employee>`: `{ id, company_id, name, position, login, is_online, last_seen_at, created_at }` (`created_at` — когда добавлен). `is_online` — была активность за последние 5 минут.
+`<employee>`: `{ id, company_id, name, position, login, sections, is_online, last_seen_at, created_at }` (`created_at` — когда добавлен). `is_online` — была активность за последние 5 минут.
 - `GET /cabinet/employees` → `[ <employee> ]`
 - `GET /cabinet/employees/{id}` → `<employee>`
-- `POST /cabinet/employees` `{ name, position, login, password }` → `201 <employee>`. Логин: латиница, цифры, `-`, `_`, уникальный. Пароль ≥ 8, буквы + цифры.
-- `PATCH /cabinet/employees/{id}` `{ name?, position?, login?, password? }` → `<employee>`. Смена пароля завершает сессии сотрудника.
+- `POST /cabinet/employees` `{ name, position, login, password, sections? }` → `201 <employee>`. Логин: латиница, цифры, `-`, `_`, уникальный. Пароль ≥ 8, буквы + цифры.
+- `PATCH /cabinet/employees/{id}` `{ name?, position?, login?, password?, sections? }` → `<employee>`. Смена пароля завершает сессии сотрудника.
 - `DELETE /cabinet/employees/{id}` → `204`
+
+**Доступ сотрудника по разделам.** `sections` — массив из: `finance` (`/cabinet/finance/sales`), `integrations` (`/cabinet/integrations*`), `statistics` (`/cabinet/statistics`), `subscription` (`/cabinet/subscription`), `system_status` (`/cabinet/system-status`), `chat` (`/api/chats*`). Не передан при создании — доступны все разделы. Главная `/cabinet/dashboard` доступна всегда. Если раздела у сотрудника нет — ручка отвечает `404`, а сам список разделов приходит в `account.sections` (`/auth/me`, логин) — по нему прячьте пункты меню. Владелец компании разделами не ограничен.
 
 ### Статистика запросов к боту
 `GET /cabinet/statistics` — см. раздел 4. Владелец видит всю компанию, сотрудник — только свои запросы.

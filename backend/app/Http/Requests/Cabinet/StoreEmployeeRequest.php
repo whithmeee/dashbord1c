@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Cabinet;
 
+use App\Enums\CabinetSection;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class StoreEmployeeRequest extends FormRequest
@@ -19,6 +21,8 @@ class StoreEmployeeRequest extends FormRequest
             'position' => ['required', 'string', 'max:255'],
             'login' => ['required', 'string', 'alpha_dash:ascii', 'max:64', 'unique:employees,login'],
             'password' => ['required', 'string', Password::min(8)->letters()->numbers()],
+            'sections' => ['sometimes', 'array'],
+            'sections.*' => ['string', 'distinct', Rule::in(CabinetSection::values())],
         ];
     }
 }
