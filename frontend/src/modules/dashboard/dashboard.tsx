@@ -8,6 +8,7 @@ import { createDemoDashboardSource } from './adapters/demo/demo-dashboard-source
 import { DemoNotice } from './adapters/demo/demo-controls'
 import { dashboardSectionMotion, getDashboardSectionTransition } from './dashboard-section-motion'
 import './dashboard-section-motion.css'
+import './dashboard-glass.css'
 
 const demoDashboardSource = createDemoDashboardSource('ready')
 
@@ -37,7 +38,7 @@ export function Dashboard({
   })
   return (
     <div
-      className="dashboard-workspace"
+      className="dashboard-workspace dashboard-workspace-glass"
       data-expanded={expanded}
       ref={workspaceRef}
     >
