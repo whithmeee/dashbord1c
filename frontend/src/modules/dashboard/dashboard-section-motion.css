@@ -1,4 +1,5 @@
 .dashboard-section-transition {
+  position: relative;
   display: grid;
   min-width: 0;
 }
@@ -9,5 +10,10 @@
 }
 
 .dashboard-section[aria-hidden='true'] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: clip;
   pointer-events: none;
 }

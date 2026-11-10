@@ -1,0 +1,38 @@
+.dashboard-workspace-glass {
+  position: relative;
+  isolation: isolate;
+  background: #f3f3f6;
+}
+
+.dashboard-workspace-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      ellipse 48% 62% at 5% 75%,
+      rgba(145, 148, 163, 0.58) 0%,
+      transparent 80%
+    ),
+    radial-gradient(
+      ellipse 38% 48% at 97% 22%,
+      rgba(166, 169, 182, 0.50) 0%,
+      transparent 80%
+    ),
+    radial-gradient(
+      ellipse 45% 48% at 55% 100%,
+      rgba(185, 186, 198, 0.42) 0%,
+      transparent 80%
+    ),
+    linear-gradient(115deg, #eeedf1 0%, #fafafa 48%, #e6e7ee 100%);
+  filter: blur(50px);
+  clip-path: inset(0 round 24px);
+}
+
+.dashboard-workspace-glass > * {
+  position: relative;
+  z-index: 1;
+}
