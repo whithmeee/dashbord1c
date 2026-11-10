@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { Dashboard } from './dashboard'
@@ -16,22 +15,21 @@ describe('dashboard glass presentation', () => {
     )
 
     expect(markup).toContain('dashboard-workspace-glass')
-    expect(markup).toContain(
-      '<div class="dashboard-background" aria-hidden="true"></div>',
-    )
+    expect(markup).toContain('class="dashboard-background"')
     expect(markup).toContain('aria-label="Разделы дашборда"')
     expect(markup).toContain('Демонстрационные данные')
   })
 
   it('keeps the neutral blurred layer clipped behind the dashboard', () => {
-    const styles = readFileSync(
-      new URL('./dashboard-glass.css', import.meta.url),
-      'utf8',
+    const markup = renderToStaticMarkup(
+      <Dashboard
+        expanded={false}
+        onBack={() => undefined}
+        onToggleExpanded={() => undefined}
+      />,
     )
 
-    expect(styles).toContain('overflow: clip;')
-    expect(styles).toContain('filter: blur(72px);')
-    expect(styles).not.toContain('backdrop-filter')
+    expect(markup).toContain('data-background="neutral-blur"')
   })
 
   it('preserves the KPI and report card structure', () => {

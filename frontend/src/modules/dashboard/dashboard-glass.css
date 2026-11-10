@@ -1,5 +1,6 @@
 .dashboard-workspace-glass {
   position: relative;
+  overflow: clip;
   isolation: isolate;
   background: var(--brand-ivory);
 }
@@ -10,9 +11,9 @@
   inset: 0;
   border-radius: inherit;
   background: url('./assets/dashboard-color-texture.svg') center / cover no-repeat;
-  filter: blur(82px);
-  opacity: 0.96;
-  transform: scale(1.08);
+  filter: blur(72px);
+  opacity: 0.9;
+  transform: scale(1.06);
   transform-origin: center;
   pointer-events: none;
 }
@@ -22,7 +23,7 @@
   z-index: 0;
   inset: 0;
   border-radius: inherit;
-  background: rgb(255 255 255 / 38%);
+  background: rgb(255 255 255 / 20%);
   content: '';
   pointer-events: none;
 }
@@ -35,12 +36,12 @@
 
 @media (max-width: 760px) {
   .dashboard-background {
-    filter: blur(68px);
-    opacity: 0.92;
-    transform: scale(1.12);
+    filter: blur(60px);
+    opacity: 0.86;
+    transform: scale(1.1);
   }
 
   .dashboard-workspace-glass::after {
-    background: rgb(255 255 255 / 44%);
+    background: rgb(255 255 255 / 26%);
   }
 }
