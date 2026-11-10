@@ -174,3 +174,9 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.report-catalog-filters button[aria-pressed='true'] {
+  color: #ffffff;
+  background: #0a0a0a;
+  border-color: #0a0a0a;
+}

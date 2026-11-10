@@ -39,7 +39,8 @@
 }
 
 .dashboard-navigation button[aria-current='page'] {
-  color: var(--app-accent-text);
+  color: #ffffff;
+  background: #0a0a0a;
 }
 
 .dashboard-navigation-selection {
@@ -47,7 +48,7 @@
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: var(--app-panel);
+  background: #0a0a0a;
   box-shadow: 0 1px 4px rgb(0 0 0 / 6%);
 }
 

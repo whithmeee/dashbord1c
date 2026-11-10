@@ -73,8 +73,8 @@
 }
 
 .dashboard-overview-heading ~ [aria-busy] .dashboard-chart {
-  height: clamp(320px, 48vh, 560px);
-  margin-top: 18px;
+  height: clamp(180px, calc((100dvh - 500px) / 2), 310px);
+  margin-top: 10px;
 }
 
 .dashboard-overview-heading ~ [aria-busy] .dashboard-report {
@@ -117,6 +117,37 @@
 
 .dashboard-debt-center span {
   color: var(--app-muted);
+}
+
+@media (min-width: 1101px) {
+  .dashboard:has(> .dashboard-overview-topbar) {
+    padding: 16px;
+  }
+
+  .dashboard-overview-heading {
+    margin: 8px 0;
+  }
+
+  .dashboard-overview-heading ~ [aria-busy] .dashboard-report {
+    padding: 12px 14px;
+  }
+
+  .dashboard-overview-heading ~ [aria-busy] .dashboard-report h2 {
+    font-size: 15px;
+  }
+
+  .dashboard-overview-heading ~ [aria-busy] .dashboard-metric {
+    padding: 10px 14px;
+    gap: 5px;
+  }
+
+  .dashboard-overview-heading ~ [aria-busy] .dashboard-debt-center strong {
+    font-size: 22px;
+  }
+
+  .dashboard-overview-heading ~ [aria-busy] .dashboard-debt-center span {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 1100px) {

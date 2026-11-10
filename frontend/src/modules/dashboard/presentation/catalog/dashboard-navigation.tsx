@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { LayoutGroup, motion } from 'motion/react'
 import {
   ArrowLeft,
@@ -24,6 +25,7 @@ export function DashboardNavigation({
   onSelect: (view: DashboardView) => void
   onBack: () => void
 }) {
+  const navigationId = useId()
   const { movement } = useInterfaceMotion()
   return (
     <div className="dashboard-navigation-wrap">
@@ -34,7 +36,7 @@ export function DashboardNavigation({
       >
         <ArrowLeft size={16} />В меню
       </button>
-      <LayoutGroup id="dashboard-navigation">
+      <LayoutGroup id={navigationId}>
         <nav className="dashboard-navigation" aria-label="Разделы дашборда">
           {(
             [

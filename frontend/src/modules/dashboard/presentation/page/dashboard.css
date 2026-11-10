@@ -102,7 +102,7 @@
   background: var(--app-accent);
 }
 
-.dashboard button[aria-pressed='true'] {
+.dashboard-periods button[aria-pressed='true'] {
   color: white;
   border-color: var(--app-accent-text);
 }
