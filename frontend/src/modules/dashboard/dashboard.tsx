@@ -42,6 +42,7 @@ export function Dashboard({
       data-expanded={expanded}
       ref={workspaceRef}
     >
+      <div className="dashboard-background" aria-hidden="true" />
       <DashboardNavigation
         expanded={expanded}
         onToggleExpanded={onToggleExpanded}
