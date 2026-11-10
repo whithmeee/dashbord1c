@@ -44,16 +44,16 @@ export function Dashboard({
       ref={workspaceRef}
     >
       <DashboardGlassBackground />
-      <DashboardNavigation
+      <div className="dashboard-section-transition">
+      <motion.div className="dashboard-section" data-dashboard-section="overview" {...sectionProps(view === 'overview')}>
+        <DashboardPage
+          navigation={<DashboardNavigation
         expanded={expanded}
         onToggleExpanded={onToggleExpanded}
         active={view}
         onSelect={selectView}
         onBack={onBack}
-      />
-      <div className="dashboard-section-transition">
-      <motion.div className="dashboard-section" data-dashboard-section="overview" {...sectionProps(view === 'overview')}>
-        <DashboardPage
+      />}
           loadDashboard={demoDashboardSource}
           onBack={onBack}
           notice={<DemoNotice />}
@@ -61,6 +61,13 @@ export function Dashboard({
         />
       </motion.div>
       <motion.div className="dashboard-section" data-dashboard-section="catalog" {...sectionProps(view === 'catalog')}>
+        <DashboardNavigation
+        expanded={expanded}
+        onToggleExpanded={onToggleExpanded}
+        active={view}
+        onSelect={selectView}
+        onBack={onBack}
+      />
         <ReportCatalog onOpenOverview={() => selectView('overview')} />
       </motion.div>
       </div>

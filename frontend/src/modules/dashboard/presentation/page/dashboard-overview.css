@@ -1,0 +1,154 @@
+.dashboard-overview-topbar,
+.dashboard-overview-actions,
+.dashboard-overview-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-overview-topbar .dashboard-navigation-wrap {
+  display: contents;
+}
+
+.dashboard-overview-actions {
+  margin-left: auto;
+}
+
+.dashboard-overview-topbar .dashboard-expand {
+  order: 2;
+  margin-left: 0;
+}
+
+.dashboard-overview-topbar .dashboard-demo {
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.dashboard-overview-topbar button,
+.dashboard-overview-heading button {
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.dashboard-overview-heading {
+  justify-content: space-between;
+  margin: 12px 0;
+}
+
+.dashboard-overview-heading h1,
+.dashboard-overview-heading .dashboard-toolbar,
+.dashboard-overview-heading .dashboard-update-status {
+  margin: 0;
+  min-height: 0;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-reports {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  gap: 12px;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-metric {
+  grid-column: span 3;
+  padding: 14px 16px;
+  gap: 8px;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-metric strong {
+  font-size: clamp(22px, 2.2vw, 32px);
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-report-wide {
+  grid-column: span 8;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-report-half {
+  grid-column: span 4;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-report-balanced {
+  grid-column: span 6;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-chart {
+  height: clamp(320px, 48vh, 560px);
+  margin-top: 18px;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-report {
+  position: relative;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-report header {
+  padding-right: 72px;
+}
+
+.dashboard-overview-heading ~ [aria-busy] .report-details-toggle {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--app-panel);
+}
+
+.dashboard-overview-heading ~ [aria-busy] .dashboard-details {
+  margin-top: 0;
+}
+
+.dashboard-debt-center {
+  position: absolute;
+  inset: 0 0 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-7%);
+  pointer-events: none;
+  gap: 6px;
+}
+
+.dashboard-debt-center strong {
+  font-size: clamp(22px, 2.8vw, 40px);
+  color: var(--app-text);
+}
+
+.dashboard-debt-center span {
+  color: var(--app-muted);
+}
+
+@media (max-width: 1100px) {
+  .dashboard-overview-topbar {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-overview-actions {
+    order: 3;
+    width: 100%;
+  }
+
+  .dashboard-overview-heading ~ [aria-busy] .dashboard-metric {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-overview-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-overview-actions .dashboard-demo {
+    flex: 1;
+  }
+
+  .dashboard-overview-heading ~ [aria-busy] .dashboard-report {
+    grid-column: 1 / -1;
+  }
+
+  .dashboard-overview-heading ~ [aria-busy] .dashboard-chart {
+    height: 300px;
+  }
+}

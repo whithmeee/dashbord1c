@@ -12,7 +12,9 @@ export function ReportDetails({
   label,
   open: controlledOpen,
   onToggle,
+  buttonLabel = 'Посмотреть данные',
 }: {
+  buttonLabel?: string
   points: ReportPoint[]
   label: string
   open?: boolean
@@ -44,7 +46,7 @@ export function ReportDetails({
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={movement}>
           <ChevronDown size={14} />
         </motion.span>
-        Посмотреть данные
+        {buttonLabel}
       </button>
       <motion.div
         id={id}

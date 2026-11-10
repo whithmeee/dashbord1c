@@ -44,6 +44,10 @@ export function RechartsDebtorsDoughnut({ points }: { points: ReportPoint[] }) {
       role="img"
       aria-label="Распределение задолженности пяти крупнейших должников"
     >
+      <div className="dashboard-debt-center">
+        <strong>{new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 2 }).format(points.reduce((sum, point) => sum + point.amount, 0))}</strong>
+        <span>общий долг</span>
+      </div>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie

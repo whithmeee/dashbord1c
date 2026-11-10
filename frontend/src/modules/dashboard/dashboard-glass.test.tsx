@@ -30,6 +30,9 @@ describe('dashboard glass presentation', () => {
 
     expect(markup.match(/class="dashboard-metric"/g)).toHaveLength(4)
     expect(markup.match(/class="dashboard-report /g)).toHaveLength(4)
+    expect(markup).toContain('data-testid="recharts-expenses-chart"')
+    expect(markup).toContain('data-testid="recharts-cash-chart"')
+    expect(markup).toContain('общий долг')
     expect(markup).toContain('Выручка по месяцам')
     expect(markup).toContain('Распределение задолженности')
   })

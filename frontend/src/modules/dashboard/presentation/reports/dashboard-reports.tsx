@@ -75,6 +75,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         </header>
         <RechartsRevenueArea points={report.revenue} />
         <ReportDetails
+          buttonLabel="Данные"
           points={report.revenue}
           label="Выручка по месяцам"
           open={openDetails === 'revenue'}
@@ -88,6 +89,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         </header>
         <RechartsDebtorsDoughnut points={report.debtors} />
         <ReportDetails
+          buttonLabel="Данные"
           points={report.debtors}
           label="Задолженность контрагентов"
           open={openDetails === 'debtors'}
@@ -101,6 +103,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         </header>
         <RechartsExpensesBar points={report.expenses} />
         <ReportDetails
+          buttonLabel="Данные"
           points={report.expenses}
           label="Расходы по месяцам"
           open={openDetails === 'expenses'}
@@ -114,6 +117,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         </header>
         <RechartsCashLine points={report.cashBalance} />
         <ReportDetails
+          buttonLabel="Данные"
           points={report.cashBalance}
           label="Остаток денежных средств"
           open={openDetails === 'cash'}
