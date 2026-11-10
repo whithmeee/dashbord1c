@@ -15,6 +15,9 @@ describe('dashboard glass presentation', () => {
     )
 
     expect(markup).toContain('dashboard-workspace-glass')
+    expect(markup).toContain(
+      '<div class="dashboard-background" aria-hidden="true"></div>',
+    )
     expect(markup).toContain('aria-label="Разделы дашборда"')
     expect(markup).toContain('Демонстрационные данные')
   })
