@@ -10,8 +10,10 @@
   inset: 0;
   border-radius: inherit;
   background: url('./assets/dashboard-color-texture.svg') center / cover no-repeat;
-  filter: blur(88px);
-  opacity: 0.92;
+  filter: blur(82px);
+  opacity: 0.96;
+  transform: scale(1.08);
+  transform-origin: center;
   pointer-events: none;
 }
 
@@ -20,7 +22,7 @@
   z-index: 0;
   inset: 0;
   border-radius: inherit;
-  background: rgb(255 255 255 / 52%);
+  background: rgb(255 255 255 / 38%);
   content: '';
   pointer-events: none;
 }
@@ -33,11 +35,12 @@
 
 @media (max-width: 760px) {
   .dashboard-background {
-    filter: blur(76px);
-    opacity: 0.88;
+    filter: blur(68px);
+    opacity: 0.92;
+    transform: scale(1.12);
   }
 
   .dashboard-workspace-glass::after {
-    background: rgb(255 255 255 / 58%);
+    background: rgb(255 255 255 / 44%);
   }
 }
