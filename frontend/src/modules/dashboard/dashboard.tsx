@@ -6,6 +6,7 @@ import { ReportCatalog } from './presentation/catalog/report-catalog'
 import { DashboardPage } from './presentation/page/dashboard-page'
 import { createDemoDashboardSource } from './adapters/demo/demo-dashboard-source'
 import { DemoNotice } from './adapters/demo/demo-controls'
+import { DashboardGlassBackground } from './dashboard-glass-background'
 import { dashboardSectionMotion, getDashboardSectionTransition } from './dashboard-section-motion'
 import './dashboard-section-motion.css'
 import './dashboard-glass.css'
@@ -42,6 +43,7 @@ export function Dashboard({
       data-expanded={expanded}
       ref={workspaceRef}
     >
+      <DashboardGlassBackground />
       <DashboardNavigation
         expanded={expanded}
         onToggleExpanded={onToggleExpanded}

@@ -5,7 +5,7 @@ import { demoReports } from './adapters/demo/demo-reports'
 import { DashboardReports } from './presentation/reports/dashboard-reports'
 
 describe('dashboard glass presentation', () => {
-  it('marks the dashboard workspace for the aurora glass theme without losing landmarks', () => {
+  it('renders a static decorative background without losing dashboard landmarks', () => {
     const markup = renderToStaticMarkup(
       <Dashboard
         expanded={false}
@@ -15,6 +15,9 @@ describe('dashboard glass presentation', () => {
     )
 
     expect(markup).toContain('dashboard-workspace-glass')
+    expect(markup).toContain('class="dashboard-glass-background" aria-hidden="true"')
+    expect(markup.includes('glass-ui-container')).toBe(false)
+    expect(markup.includes('<feDisplacementMap')).toBe(false)
     expect(markup).not.toContain('class="dashboard-background"')
     expect(markup).toContain('aria-label="Разделы дашборда"')
     expect(markup).toContain('Демонстрационные данные')
