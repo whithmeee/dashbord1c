@@ -1,47 +1,38 @@
 .dashboard-workspace-glass {
   position: relative;
-  overflow: clip;
   isolation: isolate;
-  background: var(--brand-ivory);
+  background: #f3f3f6;
 }
 
-.dashboard-background {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  border-radius: inherit;
-  background: url('./assets/dashboard-color-texture.svg') center / cover no-repeat;
-  filter: blur(72px);
-  opacity: 0.9;
-  transform: scale(1.06);
-  transform-origin: center;
-  pointer-events: none;
-}
-
-.dashboard-workspace-glass::after {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  border-radius: inherit;
-  background: rgb(255 255 255 / 20%);
+.dashboard-workspace-glass::before {
   content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      ellipse 48% 62% at 5% 75%,
+      rgba(145, 148, 163, 0.58) 0%,
+      transparent 80%
+    ),
+    radial-gradient(
+      ellipse 38% 48% at 97% 22%,
+      rgba(166, 169, 182, 0.50) 0%,
+      transparent 80%
+    ),
+    radial-gradient(
+      ellipse 45% 48% at 55% 100%,
+      rgba(185, 186, 198, 0.42) 0%,
+      transparent 80%
+    ),
+    linear-gradient(115deg, #eeedf1 0%, #fafafa 48%, #e6e7ee 100%);
+  filter: blur(50px);
+  clip-path: inset(0 round 24px);
 }
 
-.dashboard-workspace-glass > .dashboard-navigation-wrap,
-.dashboard-workspace-glass > .dashboard-section-transition {
+.dashboard-workspace-glass > * {
   position: relative;
   z-index: 1;
-}
-
-@media (max-width: 760px) {
-  .dashboard-background {
-    filter: blur(60px);
-    opacity: 0.86;
-    transform: scale(1.1);
-  }
-
-  .dashboard-workspace-glass::after {
-    background: rgb(255 255 255 / 26%);
-  }
 }

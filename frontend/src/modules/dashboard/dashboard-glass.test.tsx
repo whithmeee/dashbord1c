@@ -15,21 +15,9 @@ describe('dashboard glass presentation', () => {
     )
 
     expect(markup).toContain('dashboard-workspace-glass')
-    expect(markup).toContain('class="dashboard-background"')
+    expect(markup).not.toContain('class="dashboard-background"')
     expect(markup).toContain('aria-label="Разделы дашборда"')
     expect(markup).toContain('Демонстрационные данные')
-  })
-
-  it('keeps the neutral blurred layer clipped behind the dashboard', () => {
-    const markup = renderToStaticMarkup(
-      <Dashboard
-        expanded={false}
-        onBack={() => undefined}
-        onToggleExpanded={() => undefined}
-      />,
-    )
-
-    expect(markup).toContain('data-background="neutral-blur"')
   })
 
   it('preserves the KPI and report card structure', () => {
