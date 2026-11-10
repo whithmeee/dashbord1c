@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMid slice">
   <rect width="1600" height="1200" fill="#F8F5EF"/>
-  <ellipse cx="170" cy="220" rx="520" ry="410" fill="#AAB8D0"/>
-  <ellipse cx="1370" cy="160" rx="490" ry="390" fill="#D9DFE9"/>
-  <path d="M0 690C300 520 530 530 790 720C1010 880 1260 850 1600 620V1200H0Z" fill="#54856A"/>
-  <path d="M760 0H1600V470C1340 610 1090 570 900 390C790 285 740 150 760 0Z" fill="#101D3B"/>
-  <ellipse cx="820" cy="740" rx="390" ry="300" fill="#D9DFE9"/>
-  <ellipse cx="1480" cy="1050" rx="420" ry="340" fill="#AAB8D0"/>
+  <ellipse cx="170" cy="220" rx="520" ry="410" fill="#D9DFE9"/>
+  <ellipse cx="1370" cy="160" rx="490" ry="390" fill="#FFFFFF"/>
+  <path d="M0 690C300 520 530 530 790 720C1010 880 1260 850 1600 620V1200H0Z" fill="#D9DFE9"/>
+  <path d="M760 0H1600V470C1340 610 1090 570 900 390C790 285 740 150 760 0Z" fill="#AAB8D0" fill-opacity="0.72"/>
+  <ellipse cx="820" cy="740" rx="390" ry="300" fill="#FFFFFF"/>
+  <ellipse cx="1480" cy="1050" rx="420" ry="340" fill="#F8F5EF"/>
 </svg>
