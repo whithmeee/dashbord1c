@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0">
+  <edmx:DataServices>
+    <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="StandardODATA">
+      <EntityType Name="Catalog_Контрагенты">
+        <Property Name="Ref_Key" Type="Edm.Guid"/>
+        <Property Name="Description" Type="Edm.String"/>
+        <Property Name="DeletionMark" Type="Edm.Boolean"/>
+        <Property Name="IsFolder" Type="Edm.Boolean"/>
+        <Property Name="ЮридическоеФизическоеЛицо" Type="Edm.String"/>
+        <Property Name="ИНН" Type="Edm.String"/>
+        <Property Name="КПП" Type="Edm.String"/>
+        <Property Name="ИННВведенКорректно" Type="Edm.Boolean"/>
+        <Property Name="КППВведенКорректно" Type="Edm.Boolean"/>
+      </EntityType>
+      <EntityType Name="Catalog_ДоговорыКонтрагентов">
+        <Property Name="Ref_Key" Type="Edm.Guid"/>
+        <Property Name="Description" Type="Edm.String"/>
+        <Property Name="Owner_Key" Type="Edm.Guid"/>
+        <Property Name="DeletionMark" Type="Edm.Boolean"/>
+      </EntityType>
+      <EntityContainer Name="Container">
+        <EntitySet Name="Catalog_Контрагенты" EntityType="StandardODATA.Catalog_Контрагенты"/>
+        <EntitySet Name="Catalog_ДоговорыКонтрагентов" EntityType="StandardODATA.Catalog_ДоговорыКонтрагентов"/>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
