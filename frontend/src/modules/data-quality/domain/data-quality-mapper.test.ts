@@ -44,6 +44,24 @@ describe('data quality mappers', () => {
     })
   })
 
+  it('accepts Laravel empty fields encoded as a JSON list', () => {
+    const result = mapDataQualityIssues({
+      items: [{
+        id: 'missing_inn:c1',
+        rule: 'missing_inn',
+        severity: 'critical',
+        category: 'tax_details',
+        entity: 'Catalog_Контрагенты',
+        object_id: 'c1',
+        title: 'Альфа',
+        message: 'Не указан ИНН.',
+        fields: [],
+      }],
+    })
+
+    expect(result.items[0].fields).toEqual({})
+  })
+
   it('rejects an unknown severity', () => {
     expect(() => mapDataQualityIssues({ integration_id: 1, checked_at: 'now', items: [{
       id: 'x', rule: 'x', severity: 'urgent', category: 'tax_details', entity: 'x', object_id: 'x', title: 'x', message: 'x', fields: {},

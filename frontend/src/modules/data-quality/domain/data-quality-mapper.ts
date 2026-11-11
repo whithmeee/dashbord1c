@@ -79,6 +79,10 @@ function record(value: unknown, path: string): Record<string, unknown> {
 }
 
 function stringRecord(value: unknown, path: string): Readonly<Record<string, string>> {
+  if (Array.isArray(value)) {
+    if (value.length === 0) return {}
+    throw invalid(`${path} must be an object`)
+  }
   const source = record(value, path)
   if (Object.values(source).some((item) => typeof item !== 'string')) {
     throw invalid(`${path} must contain strings`)

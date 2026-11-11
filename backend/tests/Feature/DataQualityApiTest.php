@@ -41,11 +41,13 @@ class DataQualityApiTest extends TestCase
             ->assertJsonPath('capabilities.contracts', true)
             ->assertJsonMissingPath('password');
 
-        $this->getJson("/cabinet/data-quality/issues?integration_id={$this->integration->id}&severity=warning")
+        $issues = $this->getJson("/cabinet/data-quality/issues?integration_id={$this->integration->id}&severity=warning")
             ->assertOk()
             ->assertJsonCount(3, 'items')
             ->assertJsonPath('items.0.severity', 'warning')
             ->assertJsonMissingPath('items.0.fields.password');
+
+        $this->assertStringContainsString('"fields":{}', $issues->getContent());
     }
 
     public function test_employee_needs_data_quality_section(): void
