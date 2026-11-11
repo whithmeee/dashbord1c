@@ -1,4 +1,4 @@
-export const employeeSections = ['finance', 'integrations', 'analytics', 'subscription', 'system_status', 'chat'] as const
+export const employeeSections = ['finance', 'integrations', 'analytics', 'subscription', 'system_status', 'chat', 'data_quality'] as const
 
 export type EmployeeSection = typeof employeeSections[number]
 

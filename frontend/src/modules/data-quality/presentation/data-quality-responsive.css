@@ -1,0 +1,22 @@
+@media (max-width: 980px) {
+  .data-quality-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .data-quality-heading { align-items: stretch; flex-direction: column; }
+  .data-quality-actions { align-items: stretch; }
+}
+
+@media (max-width: 640px) {
+  .data-quality-page { padding: 20px 16px 96px; }
+  .data-quality-actions, .data-quality-toolbar { align-items: stretch; flex-direction: column; }
+  .data-quality-actions select, .data-quality-toolbar select { width: 100%; min-width: 0; }
+  .data-quality-toolbar time { margin-left: 0; }
+  .data-quality-summary { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .data-quality-card { min-height: 126px; padding: 16px; }
+  .data-quality-issue { grid-template-columns: 1fr; gap: 10px; }
+  .data-quality-category { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .data-quality-issue { transition: none; }
+  .data-quality-issue:hover { transform: none; }
+  .data-quality-spinner { animation-duration: 1ms; }
+}

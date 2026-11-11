@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
 Route::view('/security', 'security')->name('security');
 
 Route::prefix('auth')->group(function () {
@@ -36,6 +35,10 @@ Route::prefix('cabinet')->middleware(['auth:company,employee', 'last.seen', 'com
     Route::get('/statistics', Cabinet\StatisticsController::class)->middleware('section:analytics');
     Route::get('/subscription', Cabinet\SubscriptionController::class)->middleware('section:subscription');
     Route::get('/system-status', Cabinet\SystemStatusController::class)->middleware('section:system_status');
+    Route::middleware('section:data_quality')->group(function () {
+        Route::get('/data-quality/summary', [Cabinet\DataQualityController::class, 'summary']);
+        Route::get('/data-quality/issues', [Cabinet\DataQualityController::class, 'issues']);
+    });
     Route::middleware('company.access:owner')->group(function () {
         Route::get('/settings', [Cabinet\SettingsController::class, 'show']);
         Route::patch('/settings', [Cabinet\SettingsController::class, 'update']);
@@ -74,9 +77,3 @@ Route::prefix('admin-panel')->middleware('admin')->group(function () {
     Route::delete('/users/{user}', [Admin\UserController::class, 'destroy']);
     Route::post('/users/{user}/reset-password', [Admin\UserController::class, 'resetPassword']);
 });
-
-// У компании может быть несколько баз, которые интегрированы с приложением
-// отобразить для компании количество интегрированных баз и их статус - возможность переключаться между его базами из 1с для вопросов
-// к боту
-// базы из 1С привязаны к компаниям
-// статистика запросов к боту от пользователя за месяц неделю день год

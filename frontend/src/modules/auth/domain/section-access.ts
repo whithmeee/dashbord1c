@@ -7,6 +7,7 @@ export const sectionKeys = [
   'subscription',
   'system_status',
   'chat',
+  'data_quality',
 ] as const
 
 export type SectionKey = (typeof sectionKeys)[number]

@@ -11,6 +11,9 @@ import { resetChat } from './modules/chat/chat-runtime'
 import { Dashboard } from './modules/dashboard/dashboard'
 import { Cabinet } from './modules/cabinet/cabinet'
 import { resetCabinetDashboard } from './modules/cabinet/cabinet-runtime'
+import { DataQualityPage } from './modules/data-quality/presentation/data-quality-page'
+import { resetDataQuality } from './modules/data-quality/data-quality-runtime'
+import { resetIntegrations } from './modules/integrations/integrations-runtime'
 import './App.css'
 
 type AppProps = {
@@ -25,6 +28,7 @@ function App({ onLogout, logoutError }: AppProps) {
   const isCabinetActive = sidebar.isSectionActive('cabinet')
   const isChatActive = sidebar.isSectionActive('chat')
   const isDashboardActive = sidebar.isSectionActive('dashboards')
+  const isDataQualityActive = sidebar.isSectionActive('data-quality')
   const chat = useChat(isChatActive)
 
   return (
@@ -41,6 +45,8 @@ function App({ onLogout, logoutError }: AppProps) {
             onLogout={async () => {
               resetCabinetDashboard()
               resetChat()
+              resetDataQuality()
+              resetIntegrations()
               await onLogout()
             }}
             logoutError={logoutError}
@@ -59,6 +65,8 @@ function App({ onLogout, logoutError }: AppProps) {
               expanded={!sidebar.isSidebarOpen}
               onToggleExpanded={sidebar.toggleSidebar}
             />
+          ) : isDataQualityActive ? (
+            <DataQualityPage />
           ) : isCabinetActive ? (
             <Cabinet />
           ) : (

@@ -10,10 +10,8 @@ enum CabinetSection: string
     case Subscription = 'subscription';
     case SystemStatus = 'system_status';
     case Chat = 'chat';
+    case DataQuality = 'data_quality';
 
-    /**
-     * @return array<int, string>
-     */
     public static function values(): array
     {
         return array_map(fn (self $section) => $section->value, self::cases());

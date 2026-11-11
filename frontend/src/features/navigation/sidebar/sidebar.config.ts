@@ -1,6 +1,7 @@
 import {
   Bot,
   ChartNoAxesCombined,
+  ClipboardCheck,
   House,
   MessagesSquare,
   ShieldCheck,
@@ -22,6 +23,7 @@ export const sidebarSections = [
   { id: 'cabinet', label: 'Мой кабинет', screenLabel: undefined, icon: House, ai: false },
   { id: 'chat', label: 'Ассистент', screenLabel: undefined, icon: MessagesSquare, ai: true, section: 'chat' },
   { id: 'dashboards', label: 'Аналитика', screenLabel: undefined, icon: ChartNoAxesCombined, ai: true, section: 'analytics' },
+  { id: 'data-quality', label: 'Контроль данных', screenLabel: undefined, icon: ClipboardCheck, ai: false, section: 'data_quality' },
   { id: 'automation', label: 'Автоматизация', screenLabel: undefined, icon: Workflow, ai: true },
   { id: 'agents', label: 'Агенты', screenLabel: 'Агенты ИИ', icon: Bot, ai: true },
   { id: 'security', label: 'Безопасность', screenLabel: undefined, icon: ShieldCheck, ai: false },
