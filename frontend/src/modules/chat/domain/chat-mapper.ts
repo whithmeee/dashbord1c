@@ -92,7 +92,7 @@ function mapIntegration(value: unknown): ChatIntegration {
   return {
     id: readInteger(integration.id, 'chat.integration.id'),
     name: readString(integration.name, 'chat.integration.name'),
-    configName: readString(integration.config_name, 'chat.integration.config_name'),
+    configName: readNullableString(integration.config_name, 'chat.integration.config_name'),
     isActive: readBoolean(integration.is_active, 'chat.integration.is_active'),
     status,
   }

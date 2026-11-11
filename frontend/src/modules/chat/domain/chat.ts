@@ -3,7 +3,7 @@ export type ChatIntegrationStatus = 'active' | 'inactive'
 export type ChatIntegration = {
   readonly id: number
   readonly name: string
-  readonly configName: string
+  readonly configName: string | null
   readonly isActive: boolean
   readonly status: ChatIntegrationStatus
 }

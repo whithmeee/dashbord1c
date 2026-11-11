@@ -31,6 +31,15 @@ const widget = {
 }
 
 describe('chat mappers', () => {
+  it('keeps a chat whose database has no configuration name', () => {
+    const result = mapChat({
+      ...chat,
+      integration: { ...chat.integration, config_name: null },
+    })
+
+    expect(result.integration?.configName).toBeNull()
+  })
+
   it('maps chat collections and preserves safe integration details', () => {
     expect(mapChats([chat])).toEqual([{
       id: 4,
