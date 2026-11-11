@@ -26,7 +26,102 @@ class SalesReportingTest extends TestCase
         $this->actingAs($this->company, 'company');
     }
 
-    public function test_sales_report_with_unconfirmed_currency_returns_no_aggregates(): void
+    public function test_real_analytics_defaults_to_latest_six_months_and_never_mixes_currencies(): void
+    {
+        Http::fake(function ($request) {
+            $url = urldecode($request->url());
+
+            if (str_contains($url, 'Catalog_Валюты')) {
+                return Http::response(['value' => [
+                    ['Ref_Key' => 'rub', 'Description' => 'руб.'],
+                    ['Ref_Key' => 'eur', 'Description' => 'EUR'],
+                ]]);
+            }
+            if (str_contains($url, 'Catalog_Контрагенты')) {
+                return Http::response(['value' => [
+                    ['Ref_Key' => 'buyer-1', 'Description' => 'Альфа'],
+                    ['Ref_Key' => 'buyer-2', 'Description' => 'Бета'],
+                ]]);
+            }
+            if (str_contains($url, 'Catalog_Организации')) {
+                return Http::response(['value' => [
+                    ['Ref_Key' => 'org-1', 'Description' => 'Основная организация'],
+                ]]);
+            }
+            if (str_contains($url, 'Document_ПоступлениеНаРасчетныйСчет')) {
+                return Http::response(['value' => [
+                    $this->moneyDocument('receipt-1', '2025-08-10T10:00:00', 'rub', 75.25),
+                    $this->moneyDocument('receipt-eur', '2025-08-10T10:00:00', 'eur', 999),
+                ]]);
+            }
+            if (str_contains($url, 'Document_СписаниеСРасчетногоСчета')) {
+                return Http::response(['value' => [
+                    $this->moneyDocument('payment-1', '2025-08-11T10:00:00', 'rub', 25.05),
+                ]]);
+            }
+            if (str_contains($url, 'Document_РеализацияТоваровУслуг')) {
+                return Http::response(['value' => [
+                    $this->salesDocument('sale-2', '2025-08-20T10:00:00', 'rub', 'buyer-2', 200.205),
+                    $this->salesDocument('sale-1', '2025-03-10T10:00:00', 'rub', 'buyer-1', 100.105),
+                    $this->salesDocument('sale-eur', '2025-08-21T10:00:00', 'eur', 'buyer-1', 900),
+                ]]);
+            }
+
+            return Http::response(['value' => []]);
+        });
+
+        $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id)
+            ->assertOk()
+            ->assertJsonPath('period.from', '2025-03-01')
+            ->assertJsonPath('period.to', '2025-08-31')
+            ->assertJsonPath('financial_status', 'available')
+            ->assertJsonPath('money.currency_key', 'rub')
+            ->assertJsonPath('money.currency', 'руб.')
+            ->assertJsonPath('money.unit', 'odata_document_amount')
+            ->assertJsonPath('total_amount', '300.310')
+            ->assertJsonPath('metrics.sales_documents', 2)
+            ->assertJsonPath('metrics.customers', 2)
+            ->assertJsonPath('metrics.organizations', 1)
+            ->assertJsonPath('monthly.0.period', '2025-03')
+            ->assertJsonPath('monthly.0.amount', '100.105')
+            ->assertJsonPath('monthly.5.period', '2025-08')
+            ->assertJsonPath('monthly.5.amount', '200.205')
+            ->assertJsonPath('receipts.5.amount', '75.25')
+            ->assertJsonPath('payments.5.amount', '25.05')
+            ->assertJsonCount(2, 'currencies');
+
+        $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&months=6&currency_key=eur')
+            ->assertOk()
+            ->assertJsonPath('money.currency', 'EUR')
+            ->assertJsonPath('metrics.sales_documents', 1)
+            ->assertJsonPath('total_amount', '900.00')
+            ->assertJsonPath('receipts.5.amount', '999.00')
+            ->assertJsonPath('payments.5.amount', '0.00');
+    }
+
+    /** @return array<string, mixed> */
+    private function salesDocument(string $key, string $date, string $currency, string $customer, float $amount): array
+    {
+        return $this->moneyDocument($key, $date, $currency, $amount) + [
+            'Контрагент_Key' => $customer,
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function moneyDocument(string $key, string $date, string $currency, float $amount): array
+    {
+        return [
+            'Ref_Key' => $key,
+            'Date' => $date,
+            'Организация_Key' => 'org-1',
+            'ВалютаДокумента_Key' => $currency,
+            'СуммаДокумента' => $amount,
+            'Posted' => true,
+            'DeletionMark' => false,
+        ];
+    }
+
+    public function test_documents_without_currency_are_not_aggregated(): void
     {
         Http::fake([
             '*Document_*' => Http::response(['value' => [
@@ -45,18 +140,17 @@ class SalesReportingTest extends TestCase
             ->assertJsonPath('integration_id', $this->integration->id)
             ->assertJsonPath('period.from', '2026-10-01')
             ->assertJsonPath('period.to', '2026-11-30')
-            ->assertJsonPath('financial_status', 'unavailable')
-            ->assertJsonPath('financial_status_code', 'currency_unconfirmed')
+            ->assertJsonPath('financial_status', 'empty')
+            ->assertJsonPath('financial_status_code', null)
             ->assertJsonPath('money.amount_scale', null)
-            ->assertJsonPath('money.unit', null)
+            ->assertJsonPath('money.unit', 'odata_document_amount')
             ->assertJsonPath('money.currency', null)
-            ->assertJsonPath('monthly', [])
+            ->assertJsonPath('monthly.0.amount', '0.00')
             ->assertJsonPath('customers', [])
-            ->assertJsonPath('total_amount_minor', null)
-            ->assertJsonPath('customers_total_amount_minor', null);
+            ->assertJsonPath('total_amount', '0.00');
     }
 
-    public function test_deleted_and_unposted_documents_do_not_change_unavailable_contract(): void
+    public function test_deleted_and_unposted_documents_do_not_enter_analytics(): void
     {
         Http::fake([
             '*Document_*' => Http::response(['value' => [
@@ -71,11 +165,11 @@ class SalesReportingTest extends TestCase
 
         $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
             ->assertOk()
-            ->assertJsonPath('financial_status_code', 'currency_unconfirmed')
-            ->assertJsonPath('total_amount_minor', null);
+            ->assertJsonPath('financial_status', 'empty')
+            ->assertJsonPath('total_amount', '0.00');
     }
 
-    public function test_duplicate_documents_from_pages_do_not_leak_aggregates(): void
+    public function test_duplicate_documents_from_pages_are_deduplicated(): void
     {
         config(['services.onec.page_size' => 2]);
 
@@ -103,9 +197,9 @@ class SalesReportingTest extends TestCase
 
         $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
             ->assertOk()
-            ->assertJsonPath('financial_status', 'unavailable')
-            ->assertJsonPath('monthly', [])
-            ->assertJsonPath('total_amount_minor', null);
+            ->assertJsonPath('financial_status', 'empty')
+            ->assertJsonPath('monthly.0.amount', '0.00')
+            ->assertJsonPath('total_amount', '0.00');
     }
 
     public function test_exhausted_one_c_pagination_returns_an_explicit_error(): void
@@ -153,8 +247,8 @@ class SalesReportingTest extends TestCase
 
         $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
             ->assertOk()
-            ->assertJsonPath('financial_status_code', 'currency_unconfirmed')
-            ->assertJsonPath('total_amount_minor', null);
+            ->assertJsonPath('financial_status', 'empty')
+            ->assertJsonPath('total_amount', '0.00');
     }
 
     public function test_invalid_period_and_one_c_failure_are_reported(): void
@@ -179,10 +273,9 @@ class SalesReportingTest extends TestCase
 
         $this->getJson('/cabinet/finance/sales?integration_id='.$this->integration->id.'&from=2026-10-01&to=2026-10-31')
             ->assertOk()
-            ->assertJsonPath('financial_status', 'unavailable')
-            ->assertJsonPath('monthly', [])
+            ->assertJsonPath('financial_status', 'empty')
+            ->assertJsonPath('monthly.0.amount', '0.00')
             ->assertJsonPath('customers', [])
-            ->assertJsonPath('total_amount_minor', null)
-            ->assertJsonPath('customers_total_amount_minor', null);
+            ->assertJsonPath('total_amount', '0.00');
     }
 }

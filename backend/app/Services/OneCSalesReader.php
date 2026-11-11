@@ -9,11 +9,22 @@ class OneCSalesReader
 {
     private const SALES_DOCUMENT = 'Document_РеализацияТоваровУслуг';
 
+    public function latestDate(OneCClient $client): ?CarbonImmutable
+    {
+        $row = $client->fetchOne(self::SALES_DOCUMENT, [
+            '$select' => 'Date',
+            '$filter' => 'Posted eq true and DeletionMark eq false',
+            '$orderby' => 'Date desc',
+        ]);
+
+        return isset($row['Date']) ? CarbonImmutable::parse((string) $row['Date']) : null;
+    }
+
     /** @return list<array<string, mixed>> */
     public function documents(OneCClient $client, CarbonImmutable $from, CarbonImmutable $to): array
     {
         $rows = $client->fetchAll(self::SALES_DOCUMENT, [
-            '$select' => 'Ref_Key,Date,Контрагент_Key,Организация_Key,СуммаДокумента,Posted,DeletionMark',
+            '$select' => 'Ref_Key,Date,Контрагент_Key,Организация_Key,ВалютаДокумента_Key,СуммаДокумента,Posted,DeletionMark',
             '$filter' => "Date ge datetime'{$from->startOfDay()->format('Y-m-d\\TH:i:s')}'"
                 ." and Date le datetime'{$to->endOfDay()->format('Y-m-d\\TH:i:s')}'"
                 .' and Posted eq true and DeletionMark eq false',
