@@ -27,7 +27,11 @@ readonly class DataQualityIssue
             (string) $value['object_id'],
             (string) $value['title'],
             (string) $value['message'],
-            is_array($value['fields'] ?? null) ? $value['fields'] : [],
+            match (true) {
+                is_array($value['fields'] ?? null) => $value['fields'],
+                is_object($value['fields'] ?? null) => get_object_vars($value['fields']),
+                default => [],
+            },
         );
     }
 
@@ -42,7 +46,7 @@ readonly class DataQualityIssue
             'object_id' => $this->objectId,
             'title' => $this->title,
             'message' => $this->message,
-            'fields' => $this->fields,
+            'fields' => (object) $this->fields,
         ];
     }
 }
