@@ -11,7 +11,9 @@ use App\Models\Integration;
 use App\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+use Tests\Support\FakeOneCBase;
 use Tests\TestCase;
 
 class MessageApiTest extends TestCase
@@ -36,78 +38,123 @@ class MessageApiTest extends TestCase
             ->create();
     }
 
-    public function test_sales_question_returns_safe_state_when_currency_is_unconfirmed(): void
+    private function toolCall(string $name, array $arguments): array
+    {
+        return ['choices' => [['message' => ['content' => null, 'tool_calls' => [[
+            'id' => 'call_1',
+            'type' => 'function',
+            'function' => ['name' => $name, 'arguments' => json_encode($arguments, JSON_UNESCAPED_UNICODE)],
+        ]]]]]];
+    }
+
+    private function salesQuery(): array
+    {
+        return [
+            'entity' => 'Document_РеализацияТоваровУслуг',
+            'period' => ['from' => '2026-10-01', 'to' => '2026-10-31'],
+            'group_by' => ['Контрагент_Key'],
+            'metrics' => [['field' => 'СуммаДокумента', 'operation' => 'sum']],
+            'limit' => 5,
+        ];
+    }
+
+    private function deepSeekCalls(): int
+    {
+        return collect(Http::recorded())->filter(
+            fn (array $record): bool => str_contains($record[0]->url(), 'deepseek'),
+        )->count();
+    }
+
+    public function test_sales_question_reads_documents_and_returns_computed_table(): void
     {
         $chat = $this->chatFor($this->company);
 
         Http::fake([
             'api.deepseek.com/*' => Http::sequence()
-                ->push(['choices' => [['message' => [
-                    'content' => null,
-                    'tool_calls' => [[
-                        'id' => 'call_1',
-                        'type' => 'function',
-                        'function' => [
-                            'name' => 'get_sales_summary',
-                            'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}',
-                        ],
-                    ]],
-                ]]]])
-                ->push(['choices' => [['message' => ['content' => '- Выручка стабильна']]]]),
-            '*Catalog_*' => Http::response(['value' => [
-                ['Ref_Key' => 'org-1', 'Description' => 'ООО "ИЛСЕРВИС"'],
-            ]]),
-            '*Document_*' => Http::response(['value' => [
-                ['Ref_Key' => 'd1', 'Организация_Key' => 'org-1', 'СуммаДокумента' => 100000.10],
-                ['Ref_Key' => 'd2', 'Организация_Key' => 'org-1', 'СуммаДокумента' => 200000.20],
-            ]]),
+                ->push($this->toolCall('query_1c', $this->salesQuery()))
+                ->push(['choices' => [['message' => ['content' => '- Альфа приносит основную выручку']]]]),
+            ...FakeOneCBase::responses([
+                ['Контрагент_Key' => 'buyer-1', 'ВалютаДокумента_Key' => 'cur-rub', 'СуммаДокумента' => 100000.10],
+                ['Контрагент_Key' => 'buyer-1', 'ВалютаДокумента_Key' => 'cur-rub', 'СуммаДокумента' => 200000.20],
+                ['Контрагент_Key' => 'buyer-2', 'ВалютаДокумента_Key' => 'cur-rub', 'СуммаДокумента' => 50],
+            ]),
         ]);
 
-        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Покажи выручку за октябрь'])
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Покажи топ 5 контрагентов за октябрь'])
             ->assertCreated()
             ->assertJsonPath('role', 'assistant')
-            ->assertJsonPath('content', 'Денежные показатели недоступны: валюта документов 1С не подтверждена.')
-            ->assertJsonPath('widget.status', 'unavailable')
-            ->assertJsonPath('widget.code', 'currency_unconfirmed')
-            ->assertJsonMissingPath('widget.rows.0.revenue')
-            ->assertJsonMissingPath('widget.totals.revenue');
+            ->assertJsonPath('content', '- Альфа приносит основную выручку')
+            ->assertJsonPath('widget.rows.0.Контрагент_Key', 'Альфа')
+            ->assertJsonPath('widget.rows.0.sum_СуммаДокумента', 300000.3)
+            ->assertJsonPath('widget.rows.1.Контрагент_Key', 'Бета')
+            ->assertJsonPath('widget.totals.sum_СуммаДокумента', 300050.3);
 
         $this->assertDatabaseCount('messages', 2);
-        $this->assertSame('Покажи выручку за октябрь', $chat->fresh()->title);
-        $this->assertCount(1, collect(Http::recorded())->filter(
-            fn (array $record): bool => str_contains($record[0]->url(), 'deepseek'),
-        ));
+        $this->assertSame('Покажи топ 5 контрагентов за октябрь', $chat->fresh()->title);
+        $this->assertSame(2, $this->deepSeekCalls());
     }
 
-    public function test_top_customers_does_not_expose_unconfirmed_money_to_deepseek(): void
+    public function test_the_model_reads_the_schema_before_querying_and_sees_tool_results(): void
     {
         $chat = $this->chatFor($this->company);
 
         Http::fake([
-            'api.deepseek.com/*' => Http::response(['choices' => [['message' => [
-                'content' => null,
-                'tool_calls' => [[
-                    'function' => [
-                        'name' => 'get_top_customers',
-                        'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}',
-                    ],
-                ]],
-            ]]]]),
-            '*Document_*' => Http::response(['value' => [
-                ['Ref_Key' => 'd1', 'Контрагент_Key' => 'buyer-1', 'СуммаДокумента' => 100.10],
-            ]]),
+            'api.deepseek.com/*' => Http::sequence()
+                ->push($this->toolCall('search_1c_schema', ['query' => 'реализация']))
+                ->push($this->toolCall('query_1c', $this->salesQuery()))
+                ->push(['choices' => [['message' => ['content' => 'Готово']]]]),
+            ...FakeOneCBase::responses([
+                ['Контрагент_Key' => 'buyer-1', 'ВалютаДокумента_Key' => 'cur-rub', 'СуммаДокумента' => 10],
+            ]),
         ]);
 
-        $response = $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Покажи топ покупателей'])
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Топ покупателей'])
             ->assertCreated()
-            ->assertJsonPath('content', 'Денежные показатели недоступны: валюта документов 1С не подтверждена.')
-            ->assertJsonPath('widget.code', 'currency_unconfirmed');
+            ->assertJsonPath('content', 'Готово')
+            ->assertJsonPath('widget.rows.0.Контрагент_Key', 'Альфа');
 
-        $this->assertStringNotContainsString('₽', $response->getContent());
-        $this->assertStringNotContainsString('revenue', $response->getContent());
-        $this->assertCount(1, collect(Http::recorded())->filter(
-            fn (array $record): bool => str_contains($record[0]->url(), 'deepseek'),
-        ));
+        Http::assertSent(function (Request $request): bool {
+            $body = json_encode($request->data(), JSON_UNESCAPED_UNICODE);
+
+            return str_contains($request->url(), 'deepseek')
+                && str_contains($body, '"role":"tool"')
+                && str_contains($body, 'Document_РеализацияТоваровУслуг');
+        });
+        $this->assertSame(3, $this->deepSeekCalls());
+        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 3]);
+    }
+
+    public function test_a_rejected_plan_goes_back_to_the_model_instead_of_failing(): void
+    {
+        $chat = $this->chatFor($this->company);
+
+        Http::fake([
+            'api.deepseek.com/*' => Http::sequence()
+                ->push($this->toolCall('query_1c', ['entity' => 'Catalog_Пользователи']))
+                ->push(['choices' => [['message' => ['content' => 'Эти данные недоступны']]]]),
+            ...FakeOneCBase::responses(),
+        ]);
+
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Покажи пользователей'])
+            ->assertCreated()
+            ->assertJsonPath('content', 'Эти данные недоступны')
+            ->assertJsonPath('widget', null);
+    }
+
+    public function test_the_system_prompt_restricts_the_assistant_to_the_one_c_base(): void
+    {
+        $chat = $this->chatFor($this->company);
+        Http::fake(['api.deepseek.com/*' => Http::response(['choices' => [['message' => ['content' => 'Помогаю только с данными 1С.']]]])]);
+
+        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Какая сегодня погода?'])->assertCreated();
+
+        Http::assertSent(function (Request $request): bool {
+            $system = $request->data()['messages'][0] ?? [];
+
+            return $system['role'] === 'system'
+                && str_contains($system['content'], 'посторонние темы')
+                && str_contains($system['content'], '1С Тест');
+        });
     }
 
     public function test_question_without_tool_call_returns_plain_text(): void
@@ -129,16 +176,8 @@ class MessageApiTest extends TestCase
         $chat = $this->chatFor($this->company);
 
         Http::fake([
-            'api.deepseek.com/*' => Http::response(['choices' => [['message' => [
-                'content' => null,
-                'tool_calls' => [[
-                    'function' => [
-                        'name' => 'get_sales_summary',
-                        'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}',
-                    ],
-                ]],
-            ]]]]),
-            '*Catalog_*' => Http::response('Unauthorized', 401),
+            'api.deepseek.com/*' => Http::response($this->toolCall('query_1c', $this->salesQuery())),
+            '*$metadata*' => Http::response('Unauthorized', 401),
         ]);
 
         $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])
@@ -448,27 +487,23 @@ class MessageApiTest extends TestCase
         ]);
     }
 
-    public function test_financial_safety_response_records_the_single_model_call(): void
+    public function test_every_model_call_of_a_tool_question_is_recorded(): void
     {
         $chat = $this->chatFor($this->company);
+        $toolMessage = $this->toolCall('query_1c', $this->salesQuery());
         Http::fake([
             'api.deepseek.com/*' => Http::sequence()
-                ->push(['id' => 'completion-1', 'model' => 'deepseek-chat', 'choices' => [['message' => [
-                    'content' => null,
-                    'tool_calls' => [[
-                        'function' => ['name' => 'get_sales_summary', 'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}'],
-                    ]],
-                ]]], 'usage' => ['prompt_tokens' => 10, 'completion_tokens' => 4, 'total_tokens' => 14, 'prompt_cache_hit_tokens' => 0, 'prompt_cache_miss_tokens' => 10]])
+                ->push($toolMessage + ['id' => 'completion-1', 'model' => 'deepseek-chat', 'usage' => ['prompt_tokens' => 10, 'completion_tokens' => 4, 'total_tokens' => 14, 'prompt_cache_hit_tokens' => 0, 'prompt_cache_miss_tokens' => 10]])
                 ->push(['id' => 'completion-2', 'model' => 'deepseek-chat', 'choices' => [['message' => ['content' => 'Готово']]], 'usage' => ['prompt_tokens' => 20, 'completion_tokens' => 6, 'total_tokens' => 26, 'prompt_tokens_details' => ['cached_tokens' => 5]]]),
-            '*Catalog_*' => Http::response(['value' => []]),
-            '*Document_*' => Http::response(['value' => []]),
+            ...FakeOneCBase::responses(),
         ]);
 
         $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])->assertCreated();
 
-        $this->assertDatabaseCount('deepseek_usages', 1);
+        $this->assertDatabaseCount('deepseek_usages', 2);
         $this->assertDatabaseHas('deepseek_usages', ['call_index' => 1, 'provider_request_id' => 'completion-1', 'total_tokens' => 14]);
-        Http::assertSentCount(2);
+        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 2, 'provider_request_id' => 'completion-2', 'total_tokens' => 26]);
+        $this->assertSame(2, $this->deepSeekCalls());
     }
 
     public function test_timeout_keeps_usage_unknown_with_null_tokens(): void
@@ -525,27 +560,5 @@ class MessageApiTest extends TestCase
             'completion_tokens' => null,
             'total_tokens' => null,
         ]);
-    }
-
-    public function test_usage_from_financial_safety_response_is_recorded(): void
-    {
-        $chat = $this->chatFor($this->company);
-        Http::fake([
-            'api.deepseek.com/*' => Http::sequence()
-                ->push(['id' => 'first-call', 'choices' => [['message' => [
-                    'content' => null,
-                    'tool_calls' => [[
-                        'function' => ['name' => 'get_sales_summary', 'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}'],
-                    ]],
-                ]]], 'usage' => ['prompt_tokens' => 4, 'completion_tokens' => 2, 'total_tokens' => 6]]),
-            '*Document_*' => Http::response(['value' => []]),
-        ]);
-
-        $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])
-            ->assertCreated()
-            ->assertJsonPath('widget.code', 'currency_unconfirmed');
-
-        $this->assertDatabaseHas('deepseek_usages', ['call_index' => 1, 'status' => DeepSeekUsage::RECORDED, 'total_tokens' => 6]);
-        $this->assertDatabaseCount('deepseek_usages', 1);
     }
 }

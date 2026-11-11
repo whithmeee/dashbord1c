@@ -10,6 +10,7 @@ use App\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+use Tests\Support\FakeOneCBase;
 use Tests\TestCase;
 
 class ChatIntegrationSwitchTest extends TestCase
@@ -110,13 +111,16 @@ class ChatIntegrationSwitchTest extends TestCase
             'api.deepseek.com/*' => Http::sequence()
                 ->push(['choices' => [['message' => ['content' => null, 'tool_calls' => [[
                     'function' => [
-                        'name' => 'get_sales_summary',
-                        'arguments' => '{"date_from":"2026-10-01","date_to":"2026-10-31"}',
+                        'name' => 'query_1c',
+                        'arguments' => json_encode([
+                            'entity' => 'Document_РеализацияТоваровУслуг',
+                            'period' => ['from' => '2026-10-01', 'to' => '2026-10-31'],
+                            'metrics' => [['operation' => 'count']],
+                        ], JSON_UNESCAPED_UNICODE),
                     ],
                 ]]]]]])
                 ->push(['choices' => [['message' => ['content' => 'Готово']]]]),
-            '*Catalog_*' => Http::response(['value' => []]),
-            '*Document_*' => Http::response(['value' => []]),
+            ...FakeOneCBase::responses(),
         ]);
 
         $this->postJson("/api/chats/{$chat->id}/messages", ['content' => 'Выручка'])->assertCreated();

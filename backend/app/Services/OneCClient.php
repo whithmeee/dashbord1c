@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\OneCException;
+use App\Exceptions\OneCRejectedException;
 use App\Models\Integration;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
@@ -28,12 +29,12 @@ class OneCClient
      *
      * @throws OneCException
      */
-    public function fetchAll(string $entity, array $query = []): array
+    public function fetchAll(string $entity, array $query = [], int $maxPages = self::MAX_PAGES): array
     {
         $pageSize = (int) config('services.onec.page_size');
         $rows = [];
 
-        for ($page = 0; $page < self::MAX_PAGES; $page++) {
+        for ($page = 0; $page < $maxPages; $page++) {
             $chunk = $this->fetchPage($entity, $query + [
                 '$top' => $pageSize,
                 '$skip' => $page * $pageSize,
@@ -46,7 +47,34 @@ class OneCClient
             }
         }
 
-        throw new OneCException("1С вернула слишком много записей для {$entity}, сузьте период.");
+        throw new OneCRejectedException("1С вернула слишком много записей для {$entity}, сузьте период или добавьте отбор.");
+    }
+
+    public function integrationId(): int
+    {
+        return $this->integration->id;
+    }
+
+    /**
+     * @throws OneCException
+     */
+    public function downloadMetadata(string $path): void
+    {
+        $url = rtrim($this->integration->odata_url, '/').'/$metadata';
+
+        try {
+            $response = $this->request()
+                ->accept('application/xml')
+                ->timeout((int) config('services.onec.metadata_timeout'))
+                ->withOptions(['sink' => $path])
+                ->get($url);
+        } catch (ConnectionException $exception) {
+            throw new OneCException('Не удалось подключиться к 1С: '.$exception->getMessage(), 0, $exception);
+        }
+
+        if ($response->failed()) {
+            throw new OneCException("1С ответила ошибкой {$response->status()} на запрос описания схемы.");
+        }
     }
 
     /**
@@ -122,10 +150,25 @@ class OneCClient
         }
 
         if ($response->failed()) {
-            throw new OneCException("1С ответила ошибкой {$response->status()} на запрос {$entity}.");
+            $message = "1С ответила ошибкой {$response->status()} на запрос {$entity}.";
+
+            throw in_array($response->status(), [400, 404], true)
+                ? new OneCRejectedException($message)
+                : new OneCException($message);
         }
 
         return $response->json('value') ?? [];
+    }
+
+    /**
+     * @param  array<string, string>  $query
+     * @return list<array<string, mixed>>
+     *
+     * @throws OneCException
+     */
+    public function fetchTop(string $entity, array $query, int $top): array
+    {
+        return $this->fetchPage($entity, $query + ['$top' => $top]);
     }
 
     private function request(): PendingRequest

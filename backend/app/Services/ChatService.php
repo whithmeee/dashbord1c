@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\OneCRejectedException;
 use App\Models\Chat;
 use App\Models\ChatMessageRequest;
 use App\Models\Message;
@@ -12,11 +13,18 @@ class ChatService
 {
     private const HISTORY_LIMIT = 10;
 
+    private const MAX_ROUNDS = 6;
+
+    private const TOOL_RESULT_LIMIT = 12000;
+
     private const DEFAULT_TITLE = 'Новый диалог';
+
+    private const EMPTY_ANSWER = 'Не удалось сформировать ответ. Переформулируйте вопрос.';
 
     public function __construct(
         private readonly DeepSeekService $deepSeek,
         private readonly OneCToolsService $tools,
+        private readonly ChatPrompts $prompts,
     ) {}
 
     /**
@@ -39,18 +47,7 @@ class ChatService
             $chat->update(['title' => mb_substr($question, 0, 60)]);
         }
 
-        $decision = $this->deepSeek->complete([
-            ['role' => 'system', 'content' => $this->dispatcherPrompt($chat)],
-            ...$history,
-            ['role' => 'user', 'content' => $question],
-        ], $this->tools->definitions(), $chat, $request, 1);
-
-        $widget = null;
-        $content = $decision['content'];
-
-        if ($decision['tool_calls'] !== []) {
-            [$widget, $content] = $this->answerWithTool($chat, $question, $decision['tool_calls'][0], $request);
-        }
+        [$content, $widget] = $this->converse($chat, $question, $history, $request);
 
         return DB::transaction(function () use ($chat, $content, $widget, $request): Message {
             $assistant = $chat->messages()->create([
@@ -71,33 +68,62 @@ class ChatService
     }
 
     /**
-     * Run the tool the AI picked, then ask the AI to comment on the computed table.
+     * Let the AI call 1C tools until it has enough data to answer; the last table it read is shown to the user.
+     *
+     * @param  list<array{role: string, content: string}>  $history
+     * @return array{0: string, 1: ?array<string, mixed>}
+     */
+    private function converse(Chat $chat, string $question, array $history, ?ChatMessageRequest $request): array
+    {
+        $messages = [
+            ['role' => 'system', 'content' => $this->prompts->assistant($chat->integration)],
+            ...$history,
+            ['role' => 'user', 'content' => $question],
+        ];
+        $widget = null;
+
+        for ($round = 1; $round <= self::MAX_ROUNDS; $round++) {
+            $tools = $round < self::MAX_ROUNDS ? $this->tools->definitions() : [];
+            $step = $this->deepSeek->complete($messages, $tools, $chat, $request, $round);
+
+            if ($step['tool_calls'] === []) {
+                return [(string) ($step['content'] ?? self::EMPTY_ANSWER), $widget];
+            }
+
+            $messages[] = ['role' => 'assistant', 'content' => $step['content'], 'tool_calls' => $step['tool_calls']];
+
+            foreach ($step['tool_calls'] as $index => $toolCall) {
+                $result = $this->runTool($chat, $toolCall);
+                $widget = $result['widget'] ?? $widget;
+                $messages[] = [
+                    'role' => 'tool',
+                    'tool_call_id' => (string) ($toolCall['id'] ?? "call_{$round}_{$index}"),
+                    'content' => mb_substr($result['text'], 0, self::TOOL_RESULT_LIMIT),
+                ];
+            }
+        }
+
+        return [self::EMPTY_ANSWER, $widget];
+    }
+
+    /**
+     * A tool mistake or a refusal from 1C goes back to the AI so it can correct the call.
      *
      * @param  array<string, mixed>  $toolCall
-     * @return array{0: ?array<string, mixed>, 1: string}
+     * @return array{text: string, widget: ?array<string, mixed>}
      */
-    private function answerWithTool(Chat $chat, string $question, array $toolCall, ?ChatMessageRequest $request): array
+    private function runTool(Chat $chat, array $toolCall): array
     {
         $name = (string) ($toolCall['function']['name'] ?? '');
         $arguments = json_decode((string) ($toolCall['function']['arguments'] ?? '{}'), true);
 
         try {
-            $widget = $this->tools->execute($chat->integration, $name, is_array($arguments) ? $arguments : []);
+            return $this->tools->execute($chat->integration, $name, is_array($arguments) ? $arguments : []);
         } catch (InvalidArgumentException $exception) {
-            return [null, 'Не получилось обработать запрос: '.$exception->getMessage().' Уточните, пожалуйста, вопрос.'];
+            return ['text' => 'Ошибка вызова: '.$exception->getMessage(), 'widget' => null];
+        } catch (OneCRejectedException $exception) {
+            return ['text' => '1С отклонила запрос: '.$exception->getMessage().' Проверь имя объекта и условия отбора.', 'widget' => null];
         }
-
-        if (($widget['status'] ?? null) === 'unavailable') {
-            return [$widget, (string) ($widget['message'] ?? 'Денежный отчёт временно недоступен.')];
-        }
-
-        $summary = $this->deepSeek->complete([
-            ['role' => 'system', 'content' => $this->analystPrompt()],
-            ['role' => 'user', 'content' => "Вопрос директора: {$question}\n\nТочные данные из 1С (посчитаны программно):\n"
-                .json_encode($widget, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)],
-        ], [], $chat, $request, 2);
-
-        return [$widget, (string) $summary['content']];
     }
 
     /**
@@ -117,24 +143,5 @@ class ChatService
             ->map(fn (Message $message): array => ['role' => $message->role, 'content' => $message->content])
             ->values()
             ->all();
-    }
-
-    private function dispatcherPrompt(Chat $chat): string
-    {
-        $today = now()->format('Y-m-d');
-        $base = $chat->integration->name;
-
-        return "Ты ассистент директора, подключённый к базе 1С «{$base}». Сегодня {$today}. "
-            .'Если вопрос требует данных из 1С, вызови подходящий инструмент, сам вычисляя даты периода '
-            .'(например «за октябрь» — с первого по последнее число месяца текущего года). '
-            .'Никогда не считай и не выдумывай цифры. Если инструмента для вопроса нет, коротко скажи, что умеешь: '
-            .'выручка по организациям и топ покупателей за период.';
-    }
-
-    private function analystPrompt(): string
-    {
-        return 'Ты финансовый директор. Напиши для руководителя краткую сводку на русском: 2–3 маркированных пункта '
-            .'с главным, долями, рисками и рекомендацией. Используй только переданные цифры, ничего не пересчитывай и не выдумывай. '
-            .'Таблицу повторять не нужно.';
     }
 }
