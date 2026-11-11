@@ -8,7 +8,6 @@ const chat: Chat = {
   integrationId: 3,
   title: 'Продажи за октябрь',
   createdAt: '2026-11-11T10:00:00Z',
-  updatedAt: '2026-11-11T10:00:00Z',
 }
 
 describe('chat action dialogs', () => {

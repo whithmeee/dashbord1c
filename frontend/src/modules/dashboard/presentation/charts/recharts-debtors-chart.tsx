@@ -35,9 +35,13 @@ function DebtorsTooltip({
 export function RechartsDebtorsDoughnut({
   points,
   masked = false,
+  centerLabel = 'общий долг',
+  ariaLabel = 'Распределение задолженности пяти крупнейших должников',
 }: {
   points: ReportPoint[]
   masked?: boolean
+  centerLabel?: string
+  ariaLabel?: string
 }) {
   const reducedMotion = useReducedMotion()
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
@@ -49,11 +53,11 @@ export function RechartsDebtorsDoughnut({
       className="dashboard-chart dashboard-chart-recharts-doughnut"
       data-testid="recharts-debtors-chart"
       role="img"
-      aria-label="Распределение задолженности пяти крупнейших должников"
+      aria-label={ariaLabel}
     >
       <div className="dashboard-debt-center">
         <strong>{new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 2 }).format(points.reduce((sum, point) => sum + point.amount, 0))}</strong>
-        <span>общий долг</span>
+        <span>{centerLabel}</span>
       </div>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>

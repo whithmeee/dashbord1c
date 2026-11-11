@@ -7,7 +7,11 @@
 }
 
 .dashboard-overview-topbar .dashboard-navigation-wrap {
-  display: contents;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .dashboard-overview-actions {
@@ -15,8 +19,7 @@
 }
 
 .dashboard-overview-topbar .dashboard-expand {
-  order: 2;
-  margin-left: 0;
+  margin-left: auto;
 }
 
 .dashboard-overview-topbar .dashboard-demo {
@@ -155,6 +158,10 @@
     flex-wrap: wrap;
   }
 
+  .dashboard-overview-topbar .dashboard-navigation-wrap {
+    width: 100%;
+  }
+
   .dashboard-overview-actions {
     order: 3;
     width: 100%;
@@ -166,6 +173,10 @@
 }
 
 @media (max-width: 760px) {
+  .dashboard-overview-topbar .dashboard-navigation-wrap {
+    flex-wrap: nowrap;
+  }
+
   .dashboard-overview-heading {
     align-items: flex-start;
     flex-direction: column;
