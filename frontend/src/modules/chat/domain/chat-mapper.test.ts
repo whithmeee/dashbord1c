@@ -31,6 +31,20 @@ const widget = {
 }
 
 describe('chat mappers', () => {
+  it('maps an unavailable widget whose empty totals arrive as an empty list', () => {
+    const result = mapMessage({
+      id: 7,
+      chat_id: 4,
+      integration_id: 9,
+      role: 'assistant',
+      content: 'Денежные показатели недоступны.',
+      widget: { ...widget, columns: [], rows: [], totals: [] },
+      created_at: '2026-11-05T12:01:00Z',
+    })
+
+    expect(result.widget?.totals).toEqual({})
+  })
+
   it('keeps a chat whose database has no configuration name', () => {
     const result = mapChat({
       ...chat,

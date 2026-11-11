@@ -107,7 +107,7 @@ function mapWidget(value: unknown): ChatWidget {
     title: readString(widget.title, 'message.widget.title'),
     columns,
     rows,
-    totals: readRecord(widget.totals, 'message.widget.totals'),
+    totals: readTotals(widget.totals),
   }
 }
 
@@ -119,6 +119,14 @@ function mapColumn(value: unknown): ChatWidgetColumn {
     label: readString(column.label, 'message.widget.columns[].label'),
     type: readString(column.type, 'message.widget.columns[].type'),
   }
+}
+
+function readTotals(value: unknown): Record<string, unknown> {
+  if (Array.isArray(value) && value.length === 0) {
+    return {}
+  }
+
+  return readRecord(value, 'message.widget.totals')
 }
 
 function readRecord(value: unknown, path: string): Record<string, unknown> {
