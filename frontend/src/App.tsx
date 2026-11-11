@@ -53,7 +53,7 @@ function App({ onLogout, logoutError }: AppProps) {
           />
         </SidebarLayout>
         <main
-          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}`}
+          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}${isDataQualityActive ? ' application-content-data-quality' : ''}`}
         >
           {!isActiveSectionVisible ? (
             <SectionNotFound onBack={() => sidebar.selectSection('cabinet')} />

@@ -26,6 +26,9 @@ describe('data quality report view', () => {
     expect(html).toContain('Альфа')
     expect(html).toContain('Нет ИНН')
     expect(html).toContain('Все категории')
+    expect(html.match(/role="combobox"/g)).toHaveLength(3)
+    expect(html).toContain('data-quality-issue-grid')
+    expect(html.match(/data-quality-issue-card/g)).toHaveLength(2)
   })
 
   it('filters issues by severity and category', () => {
