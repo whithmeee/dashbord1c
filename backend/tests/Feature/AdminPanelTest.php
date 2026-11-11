@@ -100,6 +100,16 @@ class AdminPanelTest extends TestCase
         $this->assertCount(2, $company->messengers);
     }
 
+    public function test_verified_flag_marks_new_company_email_as_verified(): void
+    {
+        $this->actAsAdmin();
+        $verified = $this->postJson('/admin-panel/companies', $this->companyPayload() + ['verified' => true])->assertCreated();
+        $plain = $this->postJson('/admin-panel/companies', array_merge($this->companyPayload(), ['email' => 'plain@example.test']))->assertCreated();
+
+        $this->assertNotNull(Company::findOrFail($verified->json('id'))->email_verified_at);
+        $this->assertNull(Company::findOrFail($plain->json('id'))->email_verified_at);
+    }
+
     public function test_company_can_log_in_with_the_issued_password(): void
     {
         $this->actAsAdmin();

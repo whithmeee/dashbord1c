@@ -50,6 +50,11 @@ class CompanyController extends Controller
             $company = Company::create($request->safe()->only(['name', 'email', 'subscription_starts_at', 'subscription_ends_at']) + [
                 'password' => $initialPassword,
             ]);
+
+            if ($request->boolean('verified')) {
+                $company->forceFill(['email_verified_at' => now()])->save();
+            }
+
             $company->replaceContacts($request->validated('phones'), $request->validated('messengers'));
 
             return $company;

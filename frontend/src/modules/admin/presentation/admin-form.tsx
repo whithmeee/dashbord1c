@@ -32,6 +32,7 @@ export function AdminForm({
           email: item?.email ?? '',
           subscription_starts_at: item?.subscription_starts_at ?? '',
           subscription_ends_at: item?.subscription_ends_at ?? '',
+          ...(item ? {} : { verified: false }),
           phones: item?.phones ?? [],
           messengers: item?.messengers ?? [],
         }
@@ -166,6 +167,16 @@ export function AdminForm({
               <option value={2}>Сотрудник администрации</option>
               <option value={1}>Администратор</option>
             </select>
+          </label>
+        )}
+        {resource === 'companies' && !item && (
+          <label className="admin-inline">
+            <input
+              type="checkbox"
+              checked={!!values.verified}
+              onChange={(event) => set('verified', event.target.checked)}
+            />
+            Верифицирован
           </label>
         )}
         {resource === 'companies' && (
