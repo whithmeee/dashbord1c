@@ -43,13 +43,14 @@ Route::prefix('cabinet')->middleware(['auth:company,employee', 'last.seen', 'com
         Route::post('/employees', [Cabinet\EmployeeController::class, 'store']);
         Route::get('/employees/{employee}', [Cabinet\EmployeeController::class, 'show']);
         Route::get('/employees/{employee}/activity', Cabinet\EmployeeActivityController::class);
-        Route::patch('/employees/{employee}',[Cabinet\EmployeeController::class, 'update']);
+        Route::patch('/employees/{employee}', [Cabinet\EmployeeController::class, 'update']);
         Route::delete('/employees/{employee}', [Cabinet\EmployeeController::class, 'destroy']);
     });
 });
 
 Route::prefix('admin-panel')->middleware('admin')->group(function () {
     Route::get('/companies', [Admin\CompanyController::class, 'index']);
+    Route::get('/companies/options', [Admin\CompanyController::class, 'options']);
     Route::post('/companies', [Admin\CompanyController::class, 'store']);
     Route::get('/companies/{company}', [Admin\CompanyController::class, 'show']);
     Route::patch('/companies/{company}', [Admin\CompanyController::class, 'update']);

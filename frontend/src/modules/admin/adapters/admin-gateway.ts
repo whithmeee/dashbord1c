@@ -93,6 +93,18 @@ export function createAdminGateway(client: ApiClient): AdminGateway {
         }
       })
     },
+    async companyOptions(signal?: AbortSignal) {
+      const raw = await client.get<unknown>('/admin-panel/companies/options', {
+        signal,
+      })
+      if (!Array.isArray(raw)) throw new Error('Некорректный список компаний')
+      return raw.map((value) => {
+        const dto = record(value)
+        if (!Number.isInteger(dto.id) || typeof dto.name !== "string")
+          throw new Error('Некорректный список компаний')
+        return { id: dto.id as number, name: dto.name }
+      })
+    },
     async test(id: number) {
       const dto = record(
         await client.get<unknown>(path('integrations', id) + '/test'),

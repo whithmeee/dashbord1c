@@ -1,4 +1,4 @@
-import type { AdminRecord, Input, Page, Resource, Statistics } from './admin'
+import type { AdminRecord, CompanyOption, Input, Page, Resource, Statistics } from './admin'
 
 export interface AdminGateway {
   list(
@@ -19,6 +19,7 @@ export interface AdminGateway {
     id: number,
     signal?: AbortSignal,
   ): Promise<(AdminRecord & { login: string; position: string })[]>
+  companyOptions(signal?: AbortSignal): Promise<CompanyOption[]>
   test(id: number): Promise<void>
   statistics(
     params: Record<string, string>,

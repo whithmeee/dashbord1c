@@ -312,6 +312,7 @@
 - `GET /admin-panel/companies?search=&page=` — постранично, поиск по названию и email.
 - `POST /admin-panel/companies` → `201 <company-admin> + initial_password`. Тело:
   `{ name, email, subscription_starts_at, subscription_ends_at, phones?: [{phone,label?}], messengers?: [{name,contact}] }`. Email уникален среди компаний и администрации; конец подписки ≥ начала.
+- `GET /admin-panel/companies/options` → `[ { id, name } ]` — все компании по алфавиту без пагинации, для выпадающего списка «Компания» в форме добавления базы.
 - `GET /admin-panel/companies/{id}`
 - `PATCH /admin-panel/companies/{id}` — любые поля из `POST`. Продление подписки — `subscription_ends_at`. `phones`/`messengers` заменяют списки целиком. **Смена email сбрасывает подтверждение почты.**
 - `DELETE /admin-panel/companies/{id}` → `204` (удаляются сотрудники, базы, чаты).

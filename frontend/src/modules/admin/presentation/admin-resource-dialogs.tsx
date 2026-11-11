@@ -4,6 +4,7 @@ import type { ResourceController } from './use-admin-resource'
 import { AdminDialog } from './admin-dialog'
 import { AdminError } from './admin-error'
 import { AdminForm } from './admin-form'
+import { useCompanyOptions } from './use-company-options'
 
 export function AdminResourceDialogs({
   controller,
@@ -18,6 +19,12 @@ export function AdminResourceDialogs({
 }) {
   const { state, action, setAction, secret, setSecret, info, setInfo, run } =
     controller
+  const creatingIntegration =
+    resource === 'integrations' && action?.kind === 'create'
+  const { companies, failed } = useCompanyOptions(
+    gateway,
+    creatingIntegration,
+  )
   return (
     <>
       {action && (
@@ -32,6 +39,8 @@ export function AdminResourceDialogs({
               resource={resource}
               item={action.kind === 'edit' ? action.item : undefined}
               currentUserId={currentUserId}
+              companies={companies}
+              companiesFailed={failed}
               busy={state.busy}
               onSubmit={(input) =>
                 void run(

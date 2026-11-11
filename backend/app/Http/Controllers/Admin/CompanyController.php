@@ -28,6 +28,11 @@ class CompanyController extends Controller
         return CompanyResource::collection($companies);
     }
 
+    public function options(): JsonResponse
+    {
+        return response()->json(Company::query()->orderBy('name')->get(['id', 'name']));
+    }
+
     public function show(Company $company): CompanyResource
     {
         return new CompanyResource($company->load(['phones', 'messengers'])->loadCount(['employees', 'integrations']));

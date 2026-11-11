@@ -47,3 +47,21 @@ it('disables self role editing and form submissions while busy', () => {
   expect(html).toContain('<fieldset disabled=""')
   expect(html).toContain('<select disabled=""')
 })
+it('lets the administrator pick a company by name when adding a database', () => {
+  const html = renderToStaticMarkup(
+    <AdminForm
+      resource="integrations"
+      busy={false}
+      onSubmit={vi.fn()}
+      currentUserId={1}
+      companies={[
+        { id: 4, name: 'Альфа' },
+        { id: 9, name: 'Ярмарка' },
+      ]}
+    />,
+  )
+  expect(html).toMatch(/<select name="company_id"/)
+  expect(html).toContain('<option value="4">Альфа</option>')
+  expect(html).toContain('<option value="9">Ярмарка</option>')
+  expect(html).not.toContain('ID компании')
+})

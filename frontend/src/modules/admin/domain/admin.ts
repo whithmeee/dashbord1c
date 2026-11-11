@@ -16,6 +16,7 @@ export type AdminRecord = {
   phones?: { phone: string; label?: string | null }[]
   messengers?: { name: string; contact: string }[]
 }
+export type CompanyOption = { id: number; name: string }
 export type Page = { items: AdminRecord[]; page: number; lastPage: number }
 export type Input = Record<string, unknown>
 export type Statistics = {

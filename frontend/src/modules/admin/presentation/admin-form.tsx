@@ -1,7 +1,12 @@
 import { Contacts } from './admin-contacts'
 import { changedFields } from '../domain/changed-fields'
 import { useState, type FormEvent } from 'react'
-import type { AdminRecord, Input, Resource } from '../domain/admin'
+import type {
+  AdminRecord,
+  CompanyOption,
+  Input,
+  Resource,
+} from '../domain/admin'
 
 export function AdminForm({
   resource,
@@ -9,12 +14,16 @@ export function AdminForm({
   busy,
   onSubmit,
   currentUserId,
+  companies = [],
+  companiesFailed = false,
 }: {
   resource: Resource
   item?: AdminRecord
   busy: boolean
   onSubmit: (input: Input) => void
   currentUserId: number
+  companies?: CompanyOption[]
+  companiesFailed?: boolean
 }) {
   const initial: Input =
     resource === 'companies'
@@ -71,8 +80,7 @@ export function AdminForm({
             ['phone_number', 'Телефон', 'tel'],
           ]
         : [
-            ...(!item ? [['company_id', 'ID компании', 'number']] : []),
-            ['name', 'Название базы', 'text'],
+                        ['name', 'Название базы', 'text'],
             ['config_name', 'Конфигурация', 'text'],
             ['odata_url', 'OData URL', 'url'],
             ['login', 'Логин 1С', 'text'],
@@ -85,6 +93,28 @@ export function AdminForm({
   return (
     <form className="admin-form" onSubmit={submit}>
       <fieldset disabled={busy}>
+        {resource === 'integrations' && !item && (
+          <label>
+            Компания
+            <select
+              name="company_id"
+              value={String(values.company_id ?? '')}
+              onChange={(event) => set('company_id', event.target.value)}
+              required
+            >
+              <option value="" disabled>
+                {companiesFailed
+                  ? 'Не удалось загрузить компании'
+                  : 'Выберите компанию'}
+              </option>
+              {companies.map((company) => (
+                <option key={company.id} value={company.id}>
+                  {company.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         {fields.map(([key, label, type]) => (
           <label key={key}>
             {label}
