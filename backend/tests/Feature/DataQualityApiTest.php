@@ -77,6 +77,27 @@ class DataQualityApiTest extends TestCase
             ->assertJsonPath('code', 'integration_inactive');
     }
 
+    public function test_snapshot_cache_uses_deploy_safe_primitive_data(): void
+    {
+        $this->actingAs($this->company, 'company');
+
+        $this->getJson("/cabinet/data-quality/summary?integration_id={$this->integration->id}")
+            ->assertOk();
+
+        $this->assertIsArray(Cache::get("onec:{$this->integration->id}:data-quality"));
+    }
+
+    public function test_incompatible_cached_snapshot_is_rebuilt(): void
+    {
+        $this->actingAs($this->company, 'company');
+        $incomplete = unserialize('O:20:"RemovedSnapshotClass":0:{}');
+        Cache::put("onec:{$this->integration->id}:data-quality", $incomplete, 300);
+
+        $this->getJson("/cabinet/data-quality/summary?integration_id={$this->integration->id}")
+            ->assertOk()
+            ->assertJsonPath('integration_id', $this->integration->id);
+    }
+
     private function fakeOneC(): void
     {
         $metadata = file_get_contents(base_path('tests/Fixtures/data-quality-metadata.xml'));
