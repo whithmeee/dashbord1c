@@ -58,9 +58,14 @@ export function useChat(enabled = true) {
   const sendMessage = useCallback(async () => {
     const decision = prepareChatDraft(draft)
     if (decision.kind === 'empty') return
+    if (chatStore.getSnapshot().selectedChatId === undefined) {
+      if (selectedIntegrationId === undefined) return
+      await chatStore.createChat({ integrationId: selectedIntegrationId })
+      if (chatStore.getSnapshot().selectedChatId === undefined) return
+    }
     await chatStore.sendMessage({ content: decision.text })
     if (chatStore.getSnapshot().sending.status === 'idle') setDraft('')
-  }, [draft])
+  }, [draft, selectedIntegrationId])
 
   const submitMessage = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -100,7 +105,7 @@ export function useChat(enabled = true) {
     conversationEndRef,
     draft,
     setDraft,
-    isSendDisabled: !chatState.selectedChatId || chatState.sending.status === 'sending' || prepareChatDraft(draft).kind === 'empty',
+    isSendDisabled: (!chatState.selectedChatId && selectedIntegrationId === undefined) || chatState.sending.status === 'sending' || prepareChatDraft(draft).kind === 'empty',
     isSending: chatState.sending.status === 'sending',
     submitMessage,
     submitMessageFromKeyboard,
