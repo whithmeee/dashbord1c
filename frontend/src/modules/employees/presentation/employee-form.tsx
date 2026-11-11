@@ -95,6 +95,7 @@ const sectionLabels: Record<EmployeeSection, string> = {
   subscription: 'Подписка',
   system_status: 'Состояние системы',
   chat: 'ИИ-ассистент',
+  data_quality: 'Контроль данных',
 }
 
 function PermissionCheckbox({ section, checked, onChange }: { section: EmployeeSection; checked: boolean; onChange: (checked: boolean) => void }) {
