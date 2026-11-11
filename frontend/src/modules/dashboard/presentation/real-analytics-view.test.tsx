@@ -25,8 +25,10 @@ describe('real analytics presentation', () => {
     const markup = renderToStaticMarkup(<AnalyticsOverview report={report} />)
     expect(markup).toContain('Проведено реализаций')
     expect(markup).toContain('Сумма документов в выбранной валюте')
+    expect(markup).toContain('общая сумма')
     expect(markup).not.toContain('Демонстрационные данные')
     expect(markup).not.toContain('Долг топ-5')
+    expect(markup).not.toContain('общий долг')
   })
 
   it('renders only confirmed real reports in the all-reports view', () => {
