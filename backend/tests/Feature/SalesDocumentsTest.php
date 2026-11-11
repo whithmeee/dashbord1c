@@ -67,4 +67,19 @@ class SalesDocumentsTest extends TestCase
             'DeletionMark' => false,
         ];
     }
+
+    public function test_foreign_and_inactive_integrations_are_protected(): void
+    {
+        $company = Company::factory()->create();
+        $foreign = Integration::factory()->create();
+        $inactive = Integration::factory()->for($company)->create(['is_active' => false]);
+        $this->actingAs($company, 'company');
+        $query = '&from=2025-08-01&to=2025-08-31&currency_key=rub';
+
+        $this->getJson('/cabinet/finance/sales/documents?integration_id='.$foreign->id.$query)
+            ->assertNotFound();
+        $this->getJson('/cabinet/finance/sales/documents?integration_id='.$inactive->id.$query)
+            ->assertStatus(409)
+            ->assertJsonPath('code', 'integration_inactive');
+    }
 }
