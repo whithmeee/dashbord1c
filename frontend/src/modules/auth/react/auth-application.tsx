@@ -1,5 +1,6 @@
 import { useEffect, useSyncExternalStore, type ReactNode } from 'react'
 import App from '../../../App'
+import { AdminPanel } from '../../admin/admin-panel'
 import type { AuthSessionState } from '../application/auth-session-state'
 import type { AuthSessionStore } from '../application/auth-session-store'
 import { Auth } from '../auth'
@@ -73,14 +74,7 @@ export function AuthStateView({
     case 'authenticated-client':
       return clientContent
     case 'authenticated-admin-unavailable':
-      return (
-        <AuthStatusPage
-          title="Панель администратора готовится"
-          description="Вы вошли как администратор. Интерфейс появится в следующем этапе."
-          actionLabel="Выйти"
-          onAction={() => void store.logout()}
-        />
-      )
+      return <AdminPanel key={state.session.account.id} account={state.session.account} auth={store} error={state.error} />
     case 'unavailable':
       return (
         <AuthStatusPage

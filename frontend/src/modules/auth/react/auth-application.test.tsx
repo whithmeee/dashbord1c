@@ -64,7 +64,8 @@ describe('auth application guard', () => {
       session: adminSession,
     })
 
-    expect(markup).toContain('Панель администратора готовится')
+    expect(markup).toContain('Администрирование')
+    expect(markup).toContain('Компании')
     expect(markup).not.toContain('Защищённый кабинет')
   })
 
