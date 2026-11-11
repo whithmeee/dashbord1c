@@ -37,6 +37,15 @@ export function EmailVerification({ state, store }: EmailVerificationProps) {
     setBusy(false)
   }
 
+  async function logout() {
+    if (busy) {
+      return
+    }
+    setBusy(true)
+    await store.logout().catch(() => undefined)
+    setBusy(false)
+  }
+
   return (
     <main className="auth-page auth-session-page">
       <section className="auth-card auth-session-card">
@@ -64,6 +73,15 @@ export function EmailVerification({ state, store }: EmailVerificationProps) {
             onClick={resend}
           >
             Отправить код повторно
+          </button>
+          <button
+            className="auth-forgot-password"
+            type="button"
+            disabled={busy}
+            onClick={logout}
+            data-testid="verification-logout"
+          >
+            Выйти
           </button>
           <p className="auth-message" role="status">
             {getAuthErrorMessage(state.error) || state.message}

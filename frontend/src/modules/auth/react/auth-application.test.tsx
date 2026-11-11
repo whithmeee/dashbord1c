@@ -80,6 +80,7 @@ describe('auth application guard', () => {
     })
 
     expect(owner).toContain('Введите шестизначный код')
+    expect(owner).toContain('data-testid="verification-logout"')
     expect(employee).toContain('Подтверждение ожидается от владельца')
     expect(employee).not.toContain('Введите шестизначный код')
     expect(owner).not.toContain('Защищённый кабинет')
