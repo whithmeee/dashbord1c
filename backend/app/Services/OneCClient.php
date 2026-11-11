@@ -50,6 +50,17 @@ class OneCClient
     }
 
     /**
+     * Fetch the first row for an explicitly ordered OData query.
+     *
+     * @param  array<string, string>  $query
+     * @return array<string, mixed>|null
+     */
+    public function fetchOne(string $entity, array $query = []): ?array
+    {
+        return $this->fetchPage($entity, $query + ['$top' => 1, '$skip' => 0])[0] ?? null;
+    }
+
+    /**
      * Map of Ref_Key => Description for a catalog, cached between requests.
      *
      * @return array<string, string>

@@ -20,13 +20,9 @@ export function CatalogCard({
           <Icon size={20} />
         </span>
         <span
-          className={
-            report.availability === 'demo'
-              ? 'report-catalog-badge'
-              : 'report-catalog-planned'
-          }
+          className="report-catalog-badge"
         >
-          {report.availability === 'demo' ? 'Демо готово' : 'Запланировано'}
+          Данные 1С
         </span>
       </div>
       <small>
@@ -38,13 +34,9 @@ export function CatalogCard({
         <span>
           {report.format === 'chart' ? 'График и таблица' : 'Таблица'}
         </span>
-        {report.availability === 'demo' ? (
-          <button type="button" onClick={onOpenOverview}>
-            Открыть обзор <ArrowUpRight size={14} />
-          </button>
-        ) : (
-          <span>Моковые данные — позже</span>
-        )}
+        <button type="button" onClick={onOpenOverview}>
+          Открыть обзор <ArrowUpRight size={14} />
+        </button>
       </div>
     </article>
   )

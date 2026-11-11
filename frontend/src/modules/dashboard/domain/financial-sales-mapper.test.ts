@@ -3,66 +3,63 @@ import { InvalidSalesReportError, mapSalesReport } from './financial-sales-mappe
 
 const payload = {
   integration_id: 7,
-  period: { from: '2026-10-01', to: '2026-11-30' },
+  available_period: { to: '2025-08-31' },
+  period: { from: '2025-03-01', to: '2025-08-31' },
   financial_status: 'available',
   financial_status_code: null,
   money: {
-    currency: null,
-    currency_status: 'not_provided_by_current_odata',
-    amount_scale: 2,
-    unit: 'minor_units',
+    currency_key: 'rub',
+    currency: 'руб.',
+    currency_status: 'separated_by_document_currency',
+    amount_scale: null,
+    unit: 'odata_document_amount',
   },
-  monthly: [{ period: '2026-10', amount_minor: 35035 }],
-  total_amount_minor: 35035,
-  customers: [{ name: 'Альфа', amount_minor: 35035 }],
-  customers_total_amount_minor: 35035,
+  currencies: [
+    { key: 'rub', name: 'руб.', document_count: 2 },
+    { key: 'eur', name: 'EUR', document_count: 1 },
+  ],
+  metrics: { sales_documents: 2, customers: 2, organizations: 1 },
+  monthly: [{ period: '2025-03', amount: '100.10', document_count: 1 }],
+  customers: [{ key: 'buyer', name: 'Альфа', amount: '100.10', document_count: 1 }],
+  organizations: [{ key: 'org', name: 'Организация', amount: '100.10', document_count: 1 }],
+  receipts: [{ period: '2025-03', amount: '75.25', document_count: 1 }],
+  payments: [{ period: '2025-03', amount: '25.05', document_count: 1 }],
+  total_amount: '100.10',
 }
 
 describe('financial sales mapper', () => {
-  it('maps the complete Laravel sales contract without calculations', () => {
+  it('maps real currency-separated 1C analytics without relabelling cash flow as expenses', () => {
     expect(mapSalesReport(payload)).toEqual({
       integrationId: 7,
-      period: { from: '2026-10-01', to: '2026-11-30' },
+      availablePeriod: { to: '2025-08-31' },
+      period: { from: '2025-03-01', to: '2025-08-31' },
       financialStatus: 'available',
       financialStatusCode: null,
       money: {
-        currency: null,
-        currencyStatus: 'not_provided_by_current_odata',
-        amountScale: 2,
-        unit: 'minor_units',
+        currencyKey: 'rub',
+        currency: 'руб.',
+        currencyStatus: 'separated_by_document_currency',
+        amountScale: null,
+        unit: 'odata_document_amount',
       },
-      monthly: [{ period: '2026-10', amountMinor: 35035 }],
-      totalAmountMinor: 35035,
-      customers: [{ name: 'Альфа', amountMinor: 35035 }],
-      customersTotalAmountMinor: 35035,
+      currencies: [
+        { key: 'rub', name: 'руб.', documentCount: 2 },
+        { key: 'eur', name: 'EUR', documentCount: 1 },
+      ],
+      metrics: { salesDocuments: 2, customers: 2, organizations: 1 },
+      monthly: [{ period: '2025-03', amount: 100.1, documentCount: 1 }],
+      customers: [{ key: 'buyer', name: 'Альфа', amount: 100.1, documentCount: 1 }],
+      organizations: [{ key: 'org', name: 'Организация', amount: 100.1, documentCount: 1 }],
+      receipts: [{ period: '2025-03', amount: 75.25, documentCount: 1 }],
+      payments: [{ period: '2025-03', amount: 25.05, documentCount: 1 }],
+      totalAmount: 100.1,
     })
   })
 
-  it('maps unavailable financial data without turning null into zero', () => {
-    expect(mapSalesReport({
-      ...payload,
-      financial_status: 'unavailable',
-      financial_status_code: 'currency_unconfirmed',
-      money: { currency: null, currency_status: 'not_provided_by_current_odata', amount_scale: null, unit: null },
-      monthly: [],
-      customers: [],
-      total_amount_minor: null,
-      customers_total_amount_minor: null,
-    })).toMatchObject({
-      financialStatus: 'unavailable',
-      financialStatusCode: 'currency_unconfirmed',
-      money: { currency: null, amountScale: null, unit: null },
-      monthly: [],
-      customers: [],
-      totalAmountMinor: null,
-      customersTotalAmountMinor: null,
-    })
-  })
-
-  it('rejects missing fields and unsafe financial integers', () => {
-    expect(() => mapSalesReport({ ...payload, total_amount_minor: Number.MAX_SAFE_INTEGER + 1 }))
+  it('rejects malformed decimal values and missing currency separation metadata', () => {
+    expect(() => mapSalesReport({ ...payload, total_amount: '100 RUB' }))
       .toThrow(InvalidSalesReportError)
-    expect(() => mapSalesReport({ ...payload, money: { ...payload.money, currency_status: 1 } }))
+    expect(() => mapSalesReport({ ...payload, money: { ...payload.money, currency_key: 1 } }))
       .toThrow(InvalidSalesReportError)
   })
 })

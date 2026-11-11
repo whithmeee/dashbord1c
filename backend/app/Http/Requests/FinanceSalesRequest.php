@@ -13,8 +13,10 @@ class FinanceSalesRequest extends FormRequest
     {
         return [
             'integration_id' => ['required', 'integer'],
-            'from' => ['required', 'date_format:Y-m-d'],
-            'to' => ['required', 'date_format:Y-m-d', 'after_or_equal:from'],
+            'from' => ['nullable', 'required_with:to', 'date_format:Y-m-d'],
+            'to' => ['nullable', 'required_with:from', 'date_format:Y-m-d', 'after_or_equal:from'],
+            'currency_key' => ['nullable', 'string', 'max:64'],
+            'months' => ['nullable', 'integer', 'in:3,6'],
         ];
     }
 }

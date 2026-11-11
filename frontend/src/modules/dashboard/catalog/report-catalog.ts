@@ -17,7 +17,7 @@ export type CatalogReport = {
   description: string
   group: Exclude<ReportGroup, 'all'>
   format: 'chart' | 'table'
-  availability: 'demo' | 'planned'
+  availability: 'real'
   keywords: string
 }
 

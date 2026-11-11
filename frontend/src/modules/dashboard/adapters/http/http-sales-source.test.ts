@@ -4,14 +4,19 @@ import { createHttpSalesSource } from './http-sales-source'
 
 const response = {
   integration_id: 7,
-  period: { from: '2026-10-01', to: '2026-10-31' },
-  financial_status: 'unavailable',
-  financial_status_code: 'currency_unconfirmed',
-  money: { currency: null, currency_status: 'not_provided_by_current_odata', amount_scale: null, unit: null },
+  available_period: { to: '2025-08-31' },
+  period: { from: '2025-03-01', to: '2025-08-31' },
+  financial_status: 'available',
+  financial_status_code: null,
+  money: { currency_key: 'rub', currency: 'руб.', currency_status: 'separated_by_document_currency', amount_scale: null, unit: 'odata_document_amount' },
+  currencies: [{ key: 'rub', name: 'руб.', document_count: 1 }],
+  metrics: { sales_documents: 1, customers: 1, organizations: 1 },
   monthly: [],
-  total_amount_minor: null,
   customers: [],
-  customers_total_amount_minor: null,
+  organizations: [],
+  receipts: [],
+  payments: [],
+  total_amount: '0.00',
 }
 
 describe('financial sales HTTP source', () => {
@@ -20,10 +25,10 @@ describe('financial sales HTTP source', () => {
     const source = createHttpSalesSource({ get } as unknown as ApiClient)
     const signal = new AbortController().signal
 
-    await expect(source.get({ integrationId: 7, from: '2026-10-01', to: '2026-10-31' }, { signal }))
+    await expect(source.get({ integrationId: 7, months: 6, currencyKey: 'rub' }, { signal }))
       .resolves.toMatchObject({ integrationId: 7, monthly: [] })
     expect(get).toHaveBeenCalledWith(
-      '/cabinet/finance/sales?integration_id=7&from=2026-10-01&to=2026-10-31',
+      '/cabinet/finance/sales?integration_id=7&months=6&currency_key=rub',
       { signal },
     )
   })
@@ -33,7 +38,7 @@ describe('financial sales HTTP source', () => {
     const get = vi.fn().mockRejectedValue(error)
     const source = createHttpSalesSource({ get } as unknown as ApiClient)
 
-    await expect(source.get({ integrationId: 7, from: '2026-10-01', to: '2026-10-31' })).rejects.toBe(error)
+    await expect(source.get({ integrationId: 7, months: 6 })).rejects.toBe(error)
     expect(get).toHaveBeenCalledTimes(1)
   })
 })

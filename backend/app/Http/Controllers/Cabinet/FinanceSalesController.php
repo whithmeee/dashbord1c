@@ -24,8 +24,14 @@ class FinanceSalesController extends Controller
         try {
             $report = $reporting->report(
                 $integration,
-                CarbonImmutable::createFromFormat('Y-m-d', $request->string('from')->toString()),
-                CarbonImmutable::createFromFormat('Y-m-d', $request->string('to')->toString()),
+                $request->filled('from')
+                    ? CarbonImmutable::createFromFormat('Y-m-d', $request->string('from')->toString())
+                    : null,
+                $request->filled('to')
+                    ? CarbonImmutable::createFromFormat('Y-m-d', $request->string('to')->toString())
+                    : null,
+                $request->string('currency_key')->toString() ?: null,
+                $request->integer('months', 6),
             );
         } catch (OneCException $exception) {
             return response()->json([
