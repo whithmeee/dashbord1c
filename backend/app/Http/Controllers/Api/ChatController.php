@@ -26,7 +26,7 @@ class ChatController extends Controller
 
     public function store(StoreChatRequest $request): ChatResource
     {
-        $chat = $request->user()->chats()->create($request->validated());
+        $chat = $request->user()->chats()->create($request->validated())->refresh();
 
         return new ChatResource($chat->load('integration'));
     }

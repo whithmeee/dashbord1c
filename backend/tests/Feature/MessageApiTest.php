@@ -182,6 +182,15 @@ class MessageApiTest extends TestCase
         $this->getJson('/api/chats')->assertOk()->assertJsonCount(1);
     }
 
+    public function test_new_chat_without_a_title_answers_with_the_default_title(): void
+    {
+        $integration = Integration::factory()->for($this->company)->create();
+
+        $this->postJson('/api/chats', ['integration_id' => $integration->id])
+            ->assertCreated()
+            ->assertJsonPath('title', 'Новый диалог');
+    }
+
     public function test_chat_can_only_be_created_on_own_companys_integration(): void
     {
         $own = Integration::factory()->for($this->company)->create();
