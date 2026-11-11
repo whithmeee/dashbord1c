@@ -29,6 +29,10 @@ describe('real analytics presentation', () => {
     expect(markup).not.toContain('Демонстрационные данные')
     expect(markup).not.toContain('Долг топ-5')
     expect(markup).not.toContain('общий долг')
+    expect(markup).toContain('Подробнее о сумме реализаций')
+    expect(markup).toContain('Подробнее о проведённых реализациях')
+    expect(markup).toContain('Подробнее о покупателях')
+    expect(markup).toContain('Подробнее об организациях')
   })
 
   it('renders only confirmed real reports in the all-reports view', () => {

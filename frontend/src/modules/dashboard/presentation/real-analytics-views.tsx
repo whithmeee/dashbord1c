@@ -1,28 +1,31 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Building2, FileCheck2, TrendingUp, Users } from 'lucide-react'
 import type { MonthlyAmount, RankedAmount, SalesReport } from '../domain/financial-sales'
 import { RechartsRevenueArea } from './charts/recharts-revenue-chart'
 import { RechartsDebtorsDoughnut } from './charts/recharts-debtors-chart'
 import { FinanceChart } from './charts/finance-chart'
 import { ReportDetails } from './reports/report-details'
+import { AnalyticsDetailsDialog, type AnalyticsDetailKind } from './analytics-details-dialog'
 
 export function AnalyticsOverview({ report }: { report: SalesReport }) {
+  const [detail, setDetail] = useState<AnalyticsDetailKind | null>(null)
   const currency = report.money.currency ?? ''
   const monthly = points(report.monthly)
   const customers = rankedPoints(report.customers)
 
   return (
     <div className="dashboard-reports">
-      <Metric icon={<TrendingUp size={20} />} label="Сумма реализаций" value={`${formatAmount(report.totalAmount)} ${currency}`} note="Сумма документов в выбранной валюте" />
-      <Metric icon={<FileCheck2 size={20} />} label="Проведено реализаций" value={String(report.metrics.salesDocuments)} note="Без помеченных на удаление" />
-      <Metric icon={<Users size={20} />} label="Покупатели" value={String(report.metrics.customers)} note="По проведённым реализациям" />
-      <Metric icon={<Building2 size={20} />} label="Организации" value={String(report.metrics.organizations)} note="В выбранной валюте" />
+      <Metric icon={<TrendingUp size={20} />} label="Сумма реализаций" value={`${formatAmount(report.totalAmount)} ${currency}`} note="Сумма документов в выбранной валюте" ariaLabel="Подробнее о сумме реализаций" onClick={() => setDetail('total')} />
+      <Metric icon={<FileCheck2 size={20} />} label="Проведено реализаций" value={String(report.metrics.salesDocuments)} note="Без помеченных на удаление" ariaLabel="Подробнее о проведённых реализациях" onClick={() => setDetail('documents')} />
+      <Metric icon={<Users size={20} />} label="Покупатели" value={String(report.metrics.customers)} note="По проведённым реализациям" ariaLabel="Подробнее о покупателях" onClick={() => setDetail('customers')} />
+      <Metric icon={<Building2 size={20} />} label="Организации" value={String(report.metrics.organizations)} note="В выбранной валюте" ariaLabel="Подробнее об организациях" onClick={() => setDetail('organizations')} />
       <ReportCard title="Реализации по месяцам" description={`Сумма документов · ${currency}`} className="dashboard-report-wide" points={monthly}>
         <RechartsRevenueArea points={monthly} />
       </ReportCard>
       <ReportCard title="Покупатели по реализациям" description={`Топ покупателей · ${currency}`} className="dashboard-report-half" points={customers}>
         <RechartsDebtorsDoughnut points={customers} centerLabel="общая сумма" ariaLabel="Распределение суммы реализаций по покупателям" />
       </ReportCard>
+      <AnalyticsDetailsDialog kind={detail} report={report} onClose={() => setDetail(null)} />
     </div>
   )
 }
@@ -42,8 +45,8 @@ export function AnalyticsCatalog({ report }: { report: SalesReport }) {
   )
 }
 
-function Metric({ icon, label, value, note }: { icon: ReactNode; label: string; value: string; note: string }) {
-  return <article className="dashboard-metric"><span className="dashboard-metric-icon">{icon}</span><span>{label}</span><strong>{value}</strong><small>{note}</small></article>
+function Metric({ icon, label, value, note, ariaLabel, onClick }: { icon: ReactNode; label: string; value: string; note: string; ariaLabel: string; onClick(): void }) {
+  return <button type="button" className="dashboard-metric dashboard-metric-button" aria-label={ariaLabel} onClick={onClick}><span className="dashboard-metric-icon">{icon}</span><span>{label}</span><strong>{value}</strong><small>{note}</small></button>
 }
 
 function ReportCard({ title, description, points: reportPoints, className = '', children }: { title: string; description: string; points: { label: string; amount: number }[]; className?: string; children: ReactNode }) {

@@ -52,6 +52,24 @@
   overflow-wrap: anywhere;
 }
 
+.dashboard-metric-button {
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dashboard-metric-button:hover {
+  border-color: rgb(16 29 59 / 24%);
+  box-shadow: 0 12px 30px rgb(16 29 59 / 9%);
+}
+
+.dashboard-metric-button:focus-visible {
+  outline: 2px solid var(--brand-deep-navy);
+  outline-offset: 3px;
+}
+
 .financial-sales-page .dashboard-overview-topbar > .dashboard-refresh {
   flex: 0 0 auto;
 }
