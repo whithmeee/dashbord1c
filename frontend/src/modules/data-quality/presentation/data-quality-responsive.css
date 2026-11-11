@@ -7,7 +7,7 @@
 @media (max-width: 640px) {
   .data-quality-page { padding: 20px 16px 96px; }
   .data-quality-actions, .data-quality-toolbar { align-items: stretch; flex-direction: column; }
-  .data-quality-actions select, .data-quality-toolbar select { width: 100%; min-width: 0; }
+  .data-quality-actions .ui-select-trigger, .data-quality-toolbar .ui-select-trigger { width: 100%; min-width: 0; }
   .data-quality-toolbar time { margin-left: 0; }
   .data-quality-summary { grid-template-columns: 1fr 1fr; gap: 10px; }
   .data-quality-card { min-height: 126px; padding: 16px; }
