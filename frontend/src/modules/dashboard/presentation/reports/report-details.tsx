@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import { useInterfaceMotion } from '../../../../shared/motion/use-interface-motion'
 import { getDashboardDetailsTransition } from '../dashboard-filter-motion'
 import type { ReportPoint } from '../../domain/dashboard-report'
-import { formatMoney } from './money-format'
+import { formatMoney, unavailableMark } from './money-format'
 import './report-details.css'
 
 export function ReportDetails({
@@ -13,7 +13,9 @@ export function ReportDetails({
   open: controlledOpen,
   onToggle,
   buttonLabel = 'Посмотреть данные',
+  masked = false,
 }: {
+  masked?: boolean
   buttonLabel?: string
   points: ReportPoint[]
   label: string
@@ -69,7 +71,7 @@ export function ReportDetails({
             {points.map((point) => (
               <tr key={point.label}>
                 <th scope="row">{point.label}</th>
-                <td>{formatMoney(point.amount)}</td>
+                <td>{masked ? unavailableMark : formatMoney(point.amount)}</td>
               </tr>
             ))}
           </tbody>

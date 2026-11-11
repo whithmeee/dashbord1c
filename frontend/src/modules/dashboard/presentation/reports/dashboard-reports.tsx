@@ -5,6 +5,7 @@ import { RechartsDebtorsDoughnut } from '../charts/recharts-debtors-chart'
 import { RechartsCashLine, RechartsExpensesBar } from '../charts/recharts-finance-charts'
 import { RechartsRevenueArea } from '../charts/recharts-revenue-chart'
 import type { DashboardReport } from '../../domain/dashboard-report'
+import { unavailableMark } from './money-format'
 import { ReportDetails } from './report-details'
 import './dashboard-reports.css'
 import { dashboardCardMotion, getDashboardCardTransition } from './dashboard-motion'
@@ -42,9 +43,13 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
         </span>
         <span>Долг топ-5 контрагентов</span>
         <strong data-testid="debt-total">
-          <AnimatedMetricValue amount={report.topFiveDebt} reducedMotion={Boolean(reducedMotion)} />
+          <AnimatedMetricValue
+            amount={report.topFiveDebt}
+            reducedMotion={Boolean(reducedMotion)}
+            masked
+          />
         </strong>
-        <small>На {report.debtAsOf} · не зависит от периода выручки</small>
+        <small>На {unavailableMark} · не зависит от периода выручки</small>
       </motion.article>
       <motion.article className="dashboard-metric" {...cardProps(2)}>
         <span className="dashboard-metric-icon"><ArrowDownToLine size={20} /></span>
@@ -53,6 +58,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <AnimatedMetricValue
             amount={report.expenses.reduce((sum, point) => sum + point.amount, 0)}
             reducedMotion={Boolean(reducedMotion)}
+            masked
           />
         </strong>
         <small>Операционные затраты</small>
@@ -64,6 +70,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <AnimatedMetricValue
             amount={report.cashBalance.at(-1)?.amount ?? 0}
             reducedMotion={Boolean(reducedMotion)}
+            masked
           />
         </strong>
         <small>На конец выбранного периода</small>
@@ -87,10 +94,11 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <h2>Распределение задолженности</h2>
           <p>Топ-5 контрагентов · ₽</p>
         </header>
-        <RechartsDebtorsDoughnut points={report.debtors} />
+        <RechartsDebtorsDoughnut points={report.debtors} masked />
         <ReportDetails
           buttonLabel="Данные"
           points={report.debtors}
+          masked
           label="Задолженность контрагентов"
           open={openDetails === 'debtors'}
           onToggle={(open) => setOpenDetails(open ? 'debtors' : null)}
@@ -101,10 +109,11 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <h2>Расходы по месяцам</h2>
           <p>Операционные затраты · ₽</p>
         </header>
-        <RechartsExpensesBar points={report.expenses} />
+        <RechartsExpensesBar points={report.expenses} masked />
         <ReportDetails
           buttonLabel="Данные"
           points={report.expenses}
+          masked
           label="Расходы по месяцам"
           open={openDetails === 'expenses'}
           onToggle={(open) => setOpenDetails(open ? 'expenses' : null)}
@@ -115,10 +124,11 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <h2>Остаток денежных средств</h2>
           <p>На конец месяца · ₽</p>
         </header>
-        <RechartsCashLine points={report.cashBalance} />
+        <RechartsCashLine points={report.cashBalance} masked />
         <ReportDetails
           buttonLabel="Данные"
           points={report.cashBalance}
+          masked
           label="Остаток денежных средств"
           open={openDetails === 'cash'}
           onToggle={(open) => setOpenDetails(open ? 'cash' : null)}

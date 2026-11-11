@@ -1,3 +1,5 @@
+export const unavailableMark = '$'
+
 export const formatMoney = (amount: number) =>
   new Intl.NumberFormat('ru-RU', {
     style: 'currency',

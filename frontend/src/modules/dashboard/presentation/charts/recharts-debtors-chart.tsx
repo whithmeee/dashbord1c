@@ -10,7 +10,7 @@ import {
   type TooltipContentProps,
 } from 'recharts'
 import type { ReportPoint } from '../../domain/dashboard-report'
-import { formatMoney } from '../reports/money-format'
+import { formatMoney, unavailableMark } from '../reports/money-format'
 import {
   createDebtorsDoughnutData,
   getDebtorsDoughnutAnimation,
@@ -20,18 +20,25 @@ import './report-charts.css'
 function DebtorsTooltip({
   active,
   payload,
-}: TooltipContentProps) {
+  masked,
+}: TooltipContentProps & { masked: boolean }) {
   if (!active || !payload?.length) return null
   const item = payload[0]
   return (
     <div className="dashboard-recharts-tooltip">
       <span>{item.name}</span>
-      <strong>{formatMoney(Number(item.value ?? 0))}</strong>
+      <strong>{masked ? unavailableMark : formatMoney(Number(item.value ?? 0))}</strong>
     </div>
   )
 }
 
-export function RechartsDebtorsDoughnut({ points }: { points: ReportPoint[] }) {
+export function RechartsDebtorsDoughnut({
+  points,
+  masked = false,
+}: {
+  points: ReportPoint[]
+  masked?: boolean
+}) {
   const reducedMotion = useReducedMotion()
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const data = createDebtorsDoughnutData(points)
@@ -73,7 +80,7 @@ export function RechartsDebtorsDoughnut({ points }: { points: ReportPoint[] }) {
               />
             ))}
           </Pie>
-          <Tooltip content={DebtorsTooltip} />
+          <Tooltip content={(props) => <DebtorsTooltip {...props} masked={masked} />} />
           <Legend
             verticalAlign="bottom"
             height={32}
