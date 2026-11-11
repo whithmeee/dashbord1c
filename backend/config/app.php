@@ -81,6 +81,12 @@ return [
         'password' => env('ADMIN_PASSWORD'),
     ],
 
+    'client' => [
+        'name' => env('CLIENT_NAME'),
+        'email' => env('CLIENT_EMAIL'),
+        'password' => env('CLIENT_PASSWORD'),
+    ],
+
     'demo_company' => [
         'name' => env('DEMO_COMPANY_NAME'),
         'email' => env('DEMO_COMPANY_EMAIL'),

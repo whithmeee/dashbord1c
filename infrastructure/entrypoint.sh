@@ -9,6 +9,7 @@ if [ "${RUN_DB_SEED:-false}" = "true" ]; then
 else
     php /var/www/artisan db:seed --class=RoleSeeder --force
     php /var/www/artisan db:seed --class=AdminSeeder --force
+    php /var/www/artisan db:seed --class=ClientSeeder --force
 fi
 
 exec "$@"
