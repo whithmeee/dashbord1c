@@ -1,0 +1,55 @@
+.chat-action-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.chat-action-form label {
+  color: var(--app-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chat-action-form input {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  background: var(--app-panel);
+  color: var(--app-text);
+  font-size: 14px;
+}
+
+.chat-action-form input:focus-visible {
+  border-color: var(--brand-focus);
+  outline: 3px solid rgb(170 184 208 / 35%);
+}
+
+.chat-dialog-button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--app-border);
+  border-radius: 11px;
+  background: var(--app-panel);
+  color: var(--app-text);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chat-dialog-primary {
+  border-color: var(--brand-navy);
+  background: var(--brand-navy);
+  color: var(--brand-white);
+}
+
+.chat-dialog-danger {
+  border-color: var(--brand-error);
+  background: var(--brand-error);
+  color: var(--brand-white);
+}
+
+.chat-dialog-button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
