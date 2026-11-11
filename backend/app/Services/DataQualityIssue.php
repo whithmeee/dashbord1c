@@ -16,6 +16,21 @@ readonly class DataQualityIssue
         public array $fields = [],
     ) {}
 
+    public static function fromArray(array $value): self
+    {
+        return new self(
+            (string) $value['id'],
+            (string) $value['rule'],
+            (string) $value['severity'],
+            (string) $value['category'],
+            (string) $value['entity'],
+            (string) $value['object_id'],
+            (string) $value['title'],
+            (string) $value['message'],
+            is_array($value['fields'] ?? null) ? $value['fields'] : [],
+        );
+    }
+
     public function toArray(): array
     {
         return [
