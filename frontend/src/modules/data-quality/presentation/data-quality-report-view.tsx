@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AlertTriangle, CircleAlert, Database, RefreshCw, ScanSearch } from 'lucide-react'
+import { AlertTriangle, ChevronRight, CircleAlert, Database, RefreshCw, ScanSearch } from 'lucide-react'
 import { Select } from '../../../shared/ui/select'
 import type { DataQualityIssue, DataQualityReport } from '../domain/data-quality'
 import { filterDataQualityIssues, type CategoryFilter, type SeverityFilter } from './data-quality-filter'
@@ -65,7 +65,20 @@ function SummaryCard({ icon, label, value, tone = 'neutral' }: { icon: React.Rea
 function IssueList({ issues, onSelect }: { issues: readonly DataQualityIssue[]; onSelect: (issue: DataQualityIssue) => void }) {
   if (issues.length === 0) return <div className="data-quality-empty"><ScanSearch size={28} /><h2>Проблем не обнаружено</h2><p>Для выбранных фильтров список пуст.</p></div>
 
-  return <div className="data-quality-list">{issues.map((issue) => <button type="button" key={issue.id} className="data-quality-issue" onClick={() => onSelect(issue)}><span className={`data-quality-severity data-quality-severity-${issue.severity}`}>{severityLabels[issue.severity]}</span><span><strong>{issue.title}</strong><small>{issue.message}</small></span><span className="data-quality-category">{categoryLabels[issue.category]}</span></button>)}</div>
+  return (
+    <div className="data-quality-issue-grid">
+      {issues.map((issue) => (
+        <button type="button" key={issue.id} className="data-quality-issue-card" onClick={() => onSelect(issue)}>
+          <span className="data-quality-issue-meta">
+            <span className={`data-quality-severity data-quality-severity-${issue.severity}`}>{severityLabels[issue.severity]}</span>
+            <span className="data-quality-category">{categoryLabels[issue.category]}</span>
+          </span>
+          <span className="data-quality-issue-content"><strong>{issue.title}</strong><small>{issue.message}</small></span>
+          <span className="data-quality-issue-action">Подробнее<ChevronRight size={16} /></span>
+        </button>
+      ))}
+    </div>
+  )
 }
 
 function formatDate(value: string): string {
