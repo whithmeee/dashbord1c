@@ -70,51 +70,6 @@
   outline-offset: 3px;
 }
 
-.analytics-details-body {
-  margin-top: 20px;
-}
-
-.analytics-details-count {
-  margin: 0 0 12px;
-  color: var(--app-muted);
-}
-
-.analytics-details-list {
-  display: grid;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.analytics-details-list li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--app-border);
-}
-
-.analytics-details-list li:last-child {
-  border-bottom: 0;
-}
-
-.analytics-details-list div {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.analytics-details-list span {
-  color: var(--app-muted);
-  font-size: 13px;
-}
-
-.analytics-details-list b {
-  flex: 0 0 auto;
-}
-
 .financial-sales-page .dashboard-overview-topbar > .dashboard-refresh {
   flex: 0 0 auto;
 }

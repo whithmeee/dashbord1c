@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { ApiError } from '../../../shared/api'
+import { authSessionStore } from '../../auth/react/auth-runtime'
 import { salesDocumentsSource, type SalesDocumentsQuery } from '../adapters/http/http-sales-documents-source'
 import type { SalesDocumentsPage } from '../domain/sales-document'
 
@@ -26,7 +28,13 @@ export function useSalesDocuments(query?: SalesDocumentsQuery): SalesDocumentsSt
     void salesDocumentsSource.get({ integrationId, from, to, currencyKey, customerKey, organizationKey, page, perPage }, { signal: controller.signal })
       .then((page) => { if (!controller.signal.aborted) setState({ status: 'success', page }) })
       .catch((error: unknown) => {
-        if (!controller.signal.aborted) setState({ status: 'error', error: error instanceof Error ? error : new Error('Request failed') })
+        if (controller.signal.aborted) return
+        if (error instanceof ApiError && error.status === 401) {
+          authSessionStore.expireSession()
+          setState({ status: 'idle' })
+          return
+        }
+        setState({ status: 'error', error: error instanceof Error ? error : new Error('Request failed') })
       })
     return () => controller.abort()
   }, [integrationId, from, to, currencyKey, customerKey, organizationKey, page, perPage])
