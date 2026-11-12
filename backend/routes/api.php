@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DocumentDraftController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\MonthCloseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,4 +28,7 @@ Route::middleware(['auth:sanctum', 'last.seen', 'company.access:subscription', '
     Route::post('/documents/{document}/retry', [DocumentDraftController::class, 'retry'])->middleware('throttle:10,1');
     Route::post('/documents/{document}/write', [DocumentDraftController::class, 'write'])->middleware('throttle:10,1');
     Route::delete('/documents/{document}', [DocumentDraftController::class, 'destroy']);
+
+    Route::get('/month-close', [MonthCloseController::class, 'summary']);
+    Route::get('/month-close/checks/{check}', [MonthCloseController::class, 'details']);
 });
