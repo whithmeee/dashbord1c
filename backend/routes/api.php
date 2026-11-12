@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\DocumentDraftController;
 use App\Http\Controllers\Api\MessageController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,4 +19,12 @@ Route::middleware(['auth:sanctum', 'last.seen', 'company.access:subscription', '
     Route::get('/chats/{chat}/messages', [MessageController::class, 'index']);
     Route::post('/chats/{chat}/messages', [MessageController::class, 'store'])->middleware('throttle:20,1');
     Route::get('/chats/{chat}/message-requests/{requestId}', [MessageController::class, 'status']);
+
+    Route::get('/documents', [DocumentDraftController::class, 'index']);
+    Route::post('/documents', [DocumentDraftController::class, 'store'])->middleware('throttle:10,1');
+    Route::get('/documents/{document}', [DocumentDraftController::class, 'show']);
+    Route::patch('/documents/{document}', [DocumentDraftController::class, 'update']);
+    Route::post('/documents/{document}/retry', [DocumentDraftController::class, 'retry'])->middleware('throttle:10,1');
+    Route::post('/documents/{document}/write', [DocumentDraftController::class, 'write'])->middleware('throttle:10,1');
+    Route::delete('/documents/{document}', [DocumentDraftController::class, 'destroy']);
 });

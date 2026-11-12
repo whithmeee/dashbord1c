@@ -42,6 +42,14 @@ return [
         'timeout' => (int) env('DEEPSEEK_TIMEOUT', 60),
     ],
 
+    'ocr' => [
+        'api_key' => env('OCR_API_KEY'),
+        'folder_id' => env('OCR_FOLDER_ID'),
+        'url' => env('OCR_URL', 'https://ocr.api.cloud.yandex.net/ocr/v1/recognizeText'),
+        'timeout' => (int) env('OCR_TIMEOUT', 60),
+        'max_kilobytes' => (int) env('OCR_MAX_KILOBYTES', 10240),
+    ],
+
     'onec' => [
         'timeout' => (int) env('ONEC_TIMEOUT', 30),
         'page_size' => (int) env('ONEC_PAGE_SIZE', 1000),

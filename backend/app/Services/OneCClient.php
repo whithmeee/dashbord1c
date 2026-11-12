@@ -182,6 +182,35 @@ class OneCClient
         return $this->fetchPage($entity, $query + ['$top' => $top]);
     }
 
+    /**
+     * Create a document or catalog item and return the stored row.
+     *
+     * @param  array<string, mixed>  $body
+     * @return array<string, mixed>
+     *
+     * @throws OneCException
+     */
+    public function create(string $entity, array $body): array
+    {
+        $url = rtrim($this->integration->odata_url, '/').'/'.rawurlencode($entity).'?$format=json';
+
+        try {
+            $response = $this->request()->asJson()->post($url, $body);
+        } catch (ConnectionException $exception) {
+            throw new OneCException('Не удалось подключиться к 1С: '.$exception->getMessage(), 0, $exception);
+        }
+
+        if ($response->failed()) {
+            $reason = (string) ($response->json('odata.error.message.value') ?? $response->json('error.message.value') ?? $response->status());
+
+            throw $response->status() < 500 && $response->status() !== 401 && $response->status() !== 403
+                ? new OneCRejectedException("1С отклонила запись: {$reason}")
+                : new OneCException("1С ответила ошибкой {$response->status()} при записи {$entity}.");
+        }
+
+        return (array) $response->json();
+    }
+
     private function request(): PendingRequest
     {
         return Http::withBasicAuth($this->integration->login, $this->integration->password)
