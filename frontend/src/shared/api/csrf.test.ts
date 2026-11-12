@@ -16,6 +16,7 @@ describe('Sanctum CSRF', () => {
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
       .mockResolvedValueOnce(Response.json({ id: 1 }))
     const client = createApiClient({
+      baseUrl: '',
       fetcher,
       readCookie: () => 'token%3Dvalue',
     })
@@ -42,7 +43,7 @@ describe('Sanctum CSRF', () => {
 
       return Promise.resolve(Response.json({ saved: true }))
     })
-    const client = createApiClient({ fetcher, readCookie: () => 'token' })
+    const client = createApiClient({ baseUrl: '', fetcher, readCookie: () => 'token' })
 
     const first = client.post('/api/first')
     const second = client.patch('/api/second')
@@ -59,7 +60,7 @@ describe('Sanctum CSRF', () => {
       .mockResolvedValueOnce(Response.json({ message: 'CSRF mismatch' }, { status: 419 }))
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
       .mockResolvedValueOnce(Response.json({ message: 'CSRF mismatch' }, { status: 419 }))
-    const client = createApiClient({ fetcher, readCookie: () => 'token' })
+    const client = createApiClient({ baseUrl: '', fetcher, readCookie: () => 'token' })
 
     await expect(client.delete('/api/chats/1')).rejects.toMatchObject({ status: 419 })
     expect(fetcher).toHaveBeenCalledTimes(4)
@@ -72,7 +73,7 @@ describe('Sanctum CSRF', () => {
         ? bootstrap.promise
         : Promise.resolve(Response.json({ saved: true })),
     )
-    const client = createApiClient({ fetcher, readCookie: () => 'token' })
+    const client = createApiClient({ baseUrl: '', fetcher, readCookie: () => 'token' })
     const controller = new AbortController()
 
     const cancelled = client.post('/api/cancelled', undefined, {
@@ -92,7 +93,7 @@ describe('Sanctum CSRF', () => {
       .mockResolvedValueOnce(Response.json({ message: 'Unavailable' }, { status: 503 }))
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
       .mockResolvedValueOnce(Response.json({ saved: true }))
-    const client = createApiClient({ fetcher, readCookie: () => 'token' })
+    const client = createApiClient({ baseUrl: '', fetcher, readCookie: () => 'token' })
 
     const results = await Promise.allSettled([
       client.post('/api/first'),

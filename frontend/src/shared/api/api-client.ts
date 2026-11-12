@@ -10,6 +10,7 @@ export type RequestOptions = {
 export type ApiClient = {
   get<Response>(path: string, options?: RequestOptions): Promise<Response>
   post<Response>(path: string, body?: unknown, options?: RequestOptions): Promise<Response>
+  postForm<Response>(path: string, body: FormData, options?: RequestOptions): Promise<Response>
   patch<Response>(path: string, body?: unknown, options?: RequestOptions): Promise<Response>
   delete<Response = undefined>(path: string, options?: RequestOptions): Promise<Response>
 }
@@ -73,7 +74,9 @@ export function createApiClient(options: ApiClientOptions = {}): ApiClient {
       signal: requestOptions.signal,
     }
 
-    if (body !== undefined) {
+    if (body instanceof FormData) {
+      init.body = body
+    } else if (body !== undefined) {
       headers['Content-Type'] = 'application/json'
       init.body = JSON.stringify(body)
     }
@@ -105,6 +108,8 @@ export function createApiClient(options: ApiClientOptions = {}): ApiClient {
     get: (path, requestOptions = {}) =>
       request('GET', path, undefined, requestOptions),
     post: (path, body, requestOptions = {}) =>
+      request('POST', path, body, requestOptions),
+    postForm: (path, body, requestOptions = {}) =>
       request('POST', path, body, requestOptions),
     patch: (path, body, requestOptions = {}) =>
       request('PATCH', path, body, requestOptions),

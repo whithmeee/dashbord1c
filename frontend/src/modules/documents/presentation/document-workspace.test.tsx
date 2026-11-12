@@ -1,19 +1,18 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import type { DocumentDraft } from '../domain/document-draft'
+import { mapDocumentDraft } from '../domain/document-draft-mapper'
+import { draftResponse } from '../testing/document-draft-fixture'
+import { DocumentDraftDialog } from './document-draft-dialog'
 import { DocumentWorkspace } from './document-workspace'
 
-const draft = {
-  id: 12,
-  fileName: 'upd-418.pdf',
-  status: 'draft',
-  ready: true,
-  issues: [],
-  data: { type: 'receipt', number: '418', total: 45630, counterparty: { name: 'ООО Ромашка' } },
-} as DocumentDraft
+const draft = mapDocumentDraft({
+  ...draftResponse,
+  file_name: 'upd-418.pdf',
+  data: { ...draftResponse.data, total: 45630 },
+})
 
 describe('document workspace', () => {
-  it('renders upload, verified document details and safe 1C action', () => {
+  it('renders upload and verified document details', () => {
     const html = renderToStaticMarkup(
       <DocumentWorkspace
         documents={[draft]}
@@ -34,6 +33,22 @@ describe('document workspace', () => {
     expect(html).toContain('УПД № 418')
     expect(html).toContain('ООО Ромашка')
     expect(html).toContain('45 630')
+    expect(html).not.toContain('Провести')
+  })
+
+  it('offers writing a checked draft without posting it', () => {
+    const html = renderToStaticMarkup(
+      <DocumentDraftDialog
+        document={draft}
+        pending={undefined}
+        onClose={() => undefined}
+        onUpdate={() => undefined}
+        onRetry={() => undefined}
+        onWrite={() => undefined}
+        onRemove={() => undefined}
+      />,
+    )
+
     expect(html).toContain('Записать в 1С')
     expect(html).not.toContain('Провести')
   })

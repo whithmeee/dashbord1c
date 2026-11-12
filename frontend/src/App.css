@@ -42,6 +42,14 @@
   background: var(--app-background);
 }
 
+.application-content-documents {
+  display: block;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  background: var(--app-background);
+}
+
 
 .application-heading {
   @apply text-center;
