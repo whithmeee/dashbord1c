@@ -1,0 +1,22 @@
+export const draftResponse = {
+  id: 12,
+  integration_id: 7,
+  file_name: 'upd.pdf',
+  profile: 'accounting',
+  status: 'draft',
+  ready: true,
+  data: {
+    type: 'receipt',
+    number: '418',
+    date: '2026-11-10',
+    counterparty: { name: 'ООО Ромашка', inn: '7701234567', kpp: '', ref_key: 'supplier-1', match: 'found', catalog_name: 'Ромашка' },
+    buyer: { name: 'ООО Осминог', inn: '7799999999', kpp: '', ref_key: 'buyer-1', match: 'found', catalog_name: 'Осминог' },
+    contract: { ref_key: 'contract-1', match: 'found' },
+    items: [{ name: 'Болт М8', quantity: 10, price: 100, amount: 1000, vat_rate: '20%', ref_key: 'item-1', match: 'found' }],
+    total: 1000,
+  },
+  issues: [{ level: 'warning', field: 'contract', message: 'Проверьте договор.' }],
+  onec_number: null,
+  written_at: null,
+  created_at: '2026-11-12T12:00:00Z',
+}

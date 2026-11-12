@@ -1,0 +1,42 @@
+.document-dialog-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--app-muted);
+}
+
+.document-issues {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.document-issue,
+.document-written {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.document-issue-error {
+  background: #f9e5e3;
+  color: #8e3935;
+}
+
+.document-issue-warning {
+  background: #fff1cc;
+  color: #79500d;
+}
+
+.document-written {
+  background: #e4f3ea;
+  color: #397057;
+}
+
+.document-delete {
+  color: #a24540;
+}

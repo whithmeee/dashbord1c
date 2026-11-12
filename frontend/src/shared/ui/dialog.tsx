@@ -10,12 +10,14 @@ export function DialogContent({
   title,
   description,
   role = 'dialog',
+  size = 'default',
   testId,
   children,
 }: {
   title: string
   description: string
   role?: 'dialog' | 'alertdialog'
+  size?: 'default' | 'wide'
   testId?: string
   children: ReactNode
 }) {
@@ -23,7 +25,7 @@ export function DialogContent({
     <>
       <DialogPrimitive.Overlay className="ui-dialog-overlay" />
       <DialogPrimitive.Content
-        className="ui-dialog-content"
+        className={`ui-dialog-content ui-dialog-content-${size}`}
         data-testid={testId}
         role={role}
         aria-modal="true"

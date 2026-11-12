@@ -14,6 +14,8 @@ import { resetCabinetDashboard } from './modules/cabinet/cabinet-runtime'
 import { DataQualityPage } from './modules/data-quality/presentation/data-quality-page'
 import { resetDataQuality } from './modules/data-quality/data-quality-runtime'
 import { resetIntegrations } from './modules/integrations/integrations-runtime'
+import { DocumentsPage } from './modules/documents/presentation/documents-page'
+import { resetDocuments } from './modules/documents/documents-runtime'
 import './App.css'
 
 type AppProps = {
@@ -29,6 +31,7 @@ function App({ onLogout, logoutError }: AppProps) {
   const isChatActive = sidebar.isSectionActive('chat')
   const isDashboardActive = sidebar.isSectionActive('dashboards')
   const isDataQualityActive = sidebar.isSectionActive('data-quality')
+  const isDocumentsActive = sidebar.isSectionActive('documents')
   const chat = useChat(isChatActive)
 
   return (
@@ -47,13 +50,14 @@ function App({ onLogout, logoutError }: AppProps) {
               resetChat()
               resetDataQuality()
               resetIntegrations()
+              resetDocuments()
               await onLogout()
             }}
             logoutError={logoutError}
           />
         </SidebarLayout>
         <main
-          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}${isDataQualityActive ? ' application-content-data-quality' : ''}`}
+          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}${isDataQualityActive ? ' application-content-data-quality' : ''}${isDocumentsActive ? ' application-content-documents' : ''}`}
         >
           {!isActiveSectionVisible ? (
             <SectionNotFound onBack={() => sidebar.selectSection('cabinet')} />
@@ -67,6 +71,8 @@ function App({ onLogout, logoutError }: AppProps) {
             />
           ) : isDataQualityActive ? (
             <DataQualityPage />
+          ) : isDocumentsActive ? (
+            <DocumentsPage />
           ) : isCabinetActive ? (
             <Cabinet />
           ) : (
