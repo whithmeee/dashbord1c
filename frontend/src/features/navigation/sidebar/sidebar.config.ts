@@ -1,5 +1,6 @@
 import {
   Bot,
+  CalendarCheck2,
   ChartNoAxesCombined,
   ClipboardCheck,
   Files,
@@ -26,6 +27,7 @@ export const sidebarSections = [
   { id: 'dashboards', label: 'Аналитика', screenLabel: undefined, icon: ChartNoAxesCombined, ai: true, section: 'analytics' },
   { id: 'data-quality', label: 'Контроль данных', screenLabel: undefined, icon: ClipboardCheck, ai: false, section: 'data_quality' },
   { id: 'documents', label: 'Документы', screenLabel: 'Входящие документы', icon: Files, ai: true, section: 'chat' },
+  { id: 'month-close', label: 'Закрытие месяца', screenLabel: 'Помощник закрытия месяца', icon: CalendarCheck2, ai: false, section: 'chat' },
   { id: 'automation', label: 'Автоматизация', screenLabel: undefined, icon: Workflow, ai: true },
   { id: 'agents', label: 'Агенты', screenLabel: 'Агенты ИИ', icon: Bot, ai: true },
   { id: 'security', label: 'Безопасность', screenLabel: undefined, icon: ShieldCheck, ai: false },

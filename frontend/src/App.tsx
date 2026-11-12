@@ -16,6 +16,8 @@ import { resetDataQuality } from './modules/data-quality/data-quality-runtime'
 import { resetIntegrations } from './modules/integrations/integrations-runtime'
 import { DocumentsPage } from './modules/documents/presentation/documents-page'
 import { resetDocuments } from './modules/documents/documents-runtime'
+import { MonthClosePage } from './modules/month-close/presentation/month-close-page'
+import { resetMonthClose } from './modules/month-close/month-close-runtime'
 import './App.css'
 
 type AppProps = {
@@ -32,6 +34,7 @@ function App({ onLogout, logoutError }: AppProps) {
   const isDashboardActive = sidebar.isSectionActive('dashboards')
   const isDataQualityActive = sidebar.isSectionActive('data-quality')
   const isDocumentsActive = sidebar.isSectionActive('documents')
+  const isMonthCloseActive = sidebar.isSectionActive('month-close')
   const chat = useChat(isChatActive)
 
   return (
@@ -51,13 +54,14 @@ function App({ onLogout, logoutError }: AppProps) {
               resetDataQuality()
               resetIntegrations()
               resetDocuments()
+              resetMonthClose()
               await onLogout()
             }}
             logoutError={logoutError}
           />
         </SidebarLayout>
         <main
-          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}${isDataQualityActive ? ' application-content-data-quality' : ''}${isDocumentsActive ? ' application-content-documents' : ''}`}
+          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}${isDataQualityActive ? ' application-content-data-quality' : ''}${isDocumentsActive ? ' application-content-documents' : ''}${isMonthCloseActive ? ' application-content-month-close' : ''}`}
         >
           {!isActiveSectionVisible ? (
             <SectionNotFound onBack={() => sidebar.selectSection('cabinet')} />
@@ -73,6 +77,8 @@ function App({ onLogout, logoutError }: AppProps) {
             <DataQualityPage />
           ) : isDocumentsActive ? (
             <DocumentsPage />
+          ) : isMonthCloseActive ? (
+            <MonthClosePage />
           ) : isCabinetActive ? (
             <Cabinet />
           ) : (
