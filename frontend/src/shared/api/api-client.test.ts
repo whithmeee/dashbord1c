@@ -22,7 +22,7 @@ describe('API client transport', () => {
 
   it('sends GET requests with cookies and parses JSON', async () => {
     const fetcher = vi.fn().mockResolvedValue(Response.json({ id: 7 }))
-    const client = createApiClient({ fetcher })
+    const client = createApiClient({ baseUrl: '', fetcher })
 
     await expect(client.get<{ id: number }>('/api/chats/7')).resolves.toEqual({
       id: 7,
@@ -38,7 +38,7 @@ describe('API client transport', () => {
   it('returns undefined for a 204 response', async () => {
     const fetcher = vi.fn()
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
-    const client = createApiClient({ fetcher })
+    const client = createApiClient({ baseUrl: '', fetcher })
 
     await expect(client.get('/api/empty')).resolves.toBeUndefined()
   })
@@ -51,6 +51,7 @@ describe('API client transport', () => {
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
       .mockResolvedValueOnce(Response.json({ saved: true }))
     const client = createApiClient({
+      baseUrl: '',
       fetcher,
       readCookie: () => 'csrf-token',
     })
@@ -72,7 +73,7 @@ describe('API client transport', () => {
 
   it('passes AbortSignal to fetch', async () => {
     const fetcher = vi.fn().mockResolvedValue(Response.json({ ok: true }))
-    const client = createApiClient({ fetcher })
+    const client = createApiClient({ baseUrl: '', fetcher })
     const controller = new AbortController()
 
     await client.get('/api/chats', { signal: controller.signal })
@@ -80,9 +81,31 @@ describe('API client transport', () => {
     expect(fetcher.mock.calls[0][1].signal).toBe(controller.signal)
   })
 
+  it('sends multipart forms without overriding the browser content type', async () => {
+    const fetcher = vi.fn()
+      .mockResolvedValueOnce(new Response(null, { status: 204 }))
+      .mockResolvedValueOnce(Response.json({ id: 12 }))
+    const client = createApiClient({ baseUrl: '', fetcher, readCookie: () => 'csrf-token' })
+    const form = new FormData()
+    form.set('integration_id', '7')
+
+    await client.postForm('/api/documents', form)
+
+    expect(fetcher).toHaveBeenLastCalledWith('/api/documents', {
+      body: form,
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'X-XSRF-TOKEN': 'csrf-token',
+      },
+      method: 'POST',
+      signal: undefined,
+    })
+  })
+
   it('merges custom headers into requests', async () => {
     const fetcher = vi.fn().mockResolvedValue(Response.json({ ok: true }))
-    const client = createApiClient({ fetcher })
+    const client = createApiClient({ baseUrl: '', fetcher })
 
     await client.get('/api/chats', { headers: { 'Idempotency-Key': 'request-id' } })
 
@@ -94,7 +117,7 @@ describe('API client transport', () => {
 
   it('wraps network failures without retrying', async () => {
     const fetcher = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'))
-    const client = createApiClient({ fetcher })
+    const client = createApiClient({ baseUrl: '', fetcher })
 
     await expect(client.get('/api/chats')).rejects.toBeInstanceOf(ApiError)
     expect(fetcher).toHaveBeenCalledTimes(1)
@@ -104,7 +127,7 @@ describe('API client transport', () => {
     const fetcher = vi.fn().mockResolvedValue(
       Response.json({ message: 'Unauthenticated.' }, { status: 401 }),
     )
-    const client = createApiClient({ fetcher })
+    const client = createApiClient({ baseUrl: '', fetcher })
 
     await expect(client.get('/auth/me')).rejects.toMatchObject({
       kind: 'http',
