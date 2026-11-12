@@ -45,4 +45,20 @@ describe('month close store', () => {
     await request
     expect(stale.getSnapshot()).toEqual({ status: 'idle' })
   })
+
+  it('replaces an in-flight request when the selected period changes', async () => {
+    let finish: (value: MonthCloseSummary) => void = () => undefined
+    const pending = new Promise<MonthCloseSummary>((resolve) => { finish = resolve })
+    const november = { ...summary, integrationId: 8, month: '2026-11' }
+    const source = gateway({ summary: vi.fn().mockReturnValueOnce(pending).mockResolvedValueOnce(november) })
+    const store = createMonthCloseStore(source, { expireSession: vi.fn() })
+
+    const octoberRequest = store.load(7, '2026-10')
+    const novemberRequest = store.load(8, '2026-11')
+    finish(summary)
+    await Promise.all([octoberRequest, novemberRequest])
+
+    expect(source.summary).toHaveBeenCalledTimes(2)
+    expect(store.getSnapshot()).toMatchObject({ status: 'success', summary: november })
+  })
 })
