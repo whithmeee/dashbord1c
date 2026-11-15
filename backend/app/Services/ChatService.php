@@ -19,6 +19,8 @@ class ChatService
 
     private const DEFAULT_TITLE = 'Новый диалог';
 
+    private const NO_TOOLS_NOTICE = 'Вызывать инструменты больше нельзя. Ответь пользователю обычным текстом по уже полученным данным. Если данных не хватает, скажи об этом и предложи уточнить вопрос. Не пиши разметку вызовов.';
+
     private const EMPTY_ANSWER = 'Не удалось сформировать ответ. Переформулируйте вопрос.';
 
     public function __construct(
@@ -83,11 +85,23 @@ class ChatService
         $widget = null;
 
         for ($round = 1; $round <= self::MAX_ROUNDS; $round++) {
-            $tools = $round < self::MAX_ROUNDS ? $this->tools->definitions() : [];
+            $lastRound = $round === self::MAX_ROUNDS;
+            $tools = $lastRound ? [] : $this->tools->definitions();
+
+            if ($lastRound) {
+                $messages[] = ['role' => 'system', 'content' => self::NO_TOOLS_NOTICE];
+            }
+
             $step = $this->deepSeek->complete($messages, $tools, $chat, $request, $round);
 
             if ($step['tool_calls'] === []) {
-                return [(string) ($step['content'] ?? self::EMPTY_ANSWER), $widget];
+                $answer = (string) ($step['content'] ?? '');
+
+                if ($this->containsToolMarkup($answer)) {
+                    $answer = $this->answerWithoutTools($messages, $chat, $request);
+                }
+
+                return [$answer === '' ? self::EMPTY_ANSWER : $answer, $widget];
             }
 
             $messages[] = ['role' => 'assistant', 'content' => $step['content'], 'tool_calls' => $step['tool_calls']];
@@ -104,6 +118,25 @@ class ChatService
         }
 
         return [self::EMPTY_ANSWER, $widget];
+    }
+
+    private function containsToolMarkup(string $content): bool
+    {
+        return preg_match('/DSML|<\s*\/?\s*invoke\b|<\s*\/?\s*function_calls\b/iu', $content) === 1;
+    }
+
+    /**
+     * The model tried to call a tool as plain text, so it is asked to answer from the data already collected.
+     *
+     * @param  list<array<string, mixed>>  $messages
+     */
+    private function answerWithoutTools(array $messages, Chat $chat, ?ChatMessageRequest $request): string
+    {
+        $messages[] = ['role' => 'system', 'content' => self::NO_TOOLS_NOTICE];
+        $step = $this->deepSeek->complete($messages, [], $chat, $request, self::MAX_ROUNDS + 1);
+        $answer = (string) ($step['content'] ?? '');
+
+        return $this->containsToolMarkup($answer) ? '' : $answer;
     }
 
     /**
