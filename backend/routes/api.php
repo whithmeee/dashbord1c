@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DocumentDraftController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\MonthCloseController;
+use App\Http\Controllers\Api\ReceivablesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,4 +32,7 @@ Route::middleware(['auth:sanctum', 'last.seen', 'company.access:subscription', '
 
     Route::get('/month-close', [MonthCloseController::class, 'summary']);
     Route::get('/month-close/checks/{check}', [MonthCloseController::class, 'details']);
+
+    Route::get('/receivables', [ReceivablesController::class, 'summary']);
+    Route::get('/receivables/checks/{check}', [ReceivablesController::class, 'details']);
 });

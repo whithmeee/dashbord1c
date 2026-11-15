@@ -18,6 +18,8 @@ import { DocumentsPage } from './modules/documents/presentation/documents-page'
 import { resetDocuments } from './modules/documents/documents-runtime'
 import { MonthClosePage } from './modules/month-close/presentation/month-close-page'
 import { resetMonthClose } from './modules/month-close/month-close-runtime'
+import { ReceivablesPage } from './modules/receivables/presentation/receivables-page'
+import { resetReceivables } from './modules/receivables/receivables-runtime'
 import './App.css'
 
 type AppProps = {
@@ -35,6 +37,7 @@ function App({ onLogout, logoutError }: AppProps) {
   const isDataQualityActive = sidebar.isSectionActive('data-quality')
   const isDocumentsActive = sidebar.isSectionActive('documents')
   const isMonthCloseActive = sidebar.isSectionActive('month-close')
+  const isReceivablesActive = sidebar.isSectionActive('receivables')
   const chat = useChat(isChatActive)
 
   return (
@@ -55,13 +58,14 @@ function App({ onLogout, logoutError }: AppProps) {
               resetIntegrations()
               resetDocuments()
               resetMonthClose()
+              resetReceivables()
               await onLogout()
             }}
             logoutError={logoutError}
           />
         </SidebarLayout>
         <main
-          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}${isDataQualityActive ? ' application-content-data-quality' : ''}${isDocumentsActive ? ' application-content-documents' : ''}${isMonthCloseActive ? ' application-content-month-close' : ''}`}
+          className={`application-content${isChatActive ? ' application-content-chat' : ''}${isDashboardActive ? ' application-content-dashboard' : ''}${isCabinetActive ? ' application-content-cabinet' : ''}${isDataQualityActive ? ' application-content-data-quality' : ''}${isDocumentsActive ? ' application-content-documents' : ''}${isMonthCloseActive || isReceivablesActive ? ' application-content-month-close' : ''}`}
         >
           {!isActiveSectionVisible ? (
             <SectionNotFound onBack={() => sidebar.selectSection('cabinet')} />
@@ -79,6 +83,8 @@ function App({ onLogout, logoutError }: AppProps) {
             <DocumentsPage />
           ) : isMonthCloseActive ? (
             <MonthClosePage />
+          ) : isReceivablesActive ? (
+            <ReceivablesPage />
           ) : isCabinetActive ? (
             <Cabinet />
           ) : (
