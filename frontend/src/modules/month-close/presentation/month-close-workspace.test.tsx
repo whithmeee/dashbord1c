@@ -29,5 +29,7 @@ describe('month close workspace', () => {
     expect(html).toContain('Сканируем 64%')
     expect(html).toContain('Не проведены')
     expect(html).toContain('3')
+    expect(html).toContain('Месяц закрытия')
+    expect(html).not.toContain('type="month"')
   })
 })
