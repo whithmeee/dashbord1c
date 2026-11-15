@@ -56,7 +56,9 @@ class OcrClient
         }
 
         if ($response->failed()) {
-            throw new DocumentException("Сервис распознавания ответил ошибкой {$response->status()}.");
+            $reason = (string) ($response->json('error.message') ?? $response->json('message') ?? '');
+
+            throw new DocumentException(trim("Сервис распознавания ответил ошибкой {$response->status()}. {$reason}"));
         }
 
         $text = trim((string) $response->json('result.textAnnotation.fullText'));

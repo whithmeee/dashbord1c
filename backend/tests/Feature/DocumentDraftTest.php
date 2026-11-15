@@ -7,6 +7,7 @@ use App\Models\DocumentDraft;
 use App\Models\Integration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\TestResponse;
 use Tests\Support\FakeAccountingBase;
@@ -131,5 +132,21 @@ class DocumentDraftTest extends TestCase
             'integration_id' => Integration::factory()->create()->id,
             'file' => FakeAccountingBase::file(),
         ], ['Accept' => 'application/json'])->assertUnprocessable();
+    }
+
+    public function test_ocr_rejection_reason_is_returned_to_the_user(): void
+    {
+        config(['services.ocr.api_key' => 'key', 'services.ocr.folder_id' => 'folder']);
+        Http::fake([
+            'ocr.api.cloud.yandex.net/*' => Http::response(['error' => ['message' => 'too many pages']], 400),
+            'base.test/*' => Http::response(FakeAccountingBase::METADATA),
+        ]);
+
+        $this->post('/api/documents', [
+            'integration_id' => $this->integration->id,
+            'file' => UploadedFile::fake()->create('invoice.pdf', 10, 'application/pdf'),
+        ], ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJsonPath('message', 'Сервис распознавания ответил ошибкой 400. too many pages');
     }
 }
