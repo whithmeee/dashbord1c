@@ -19,17 +19,13 @@
   height: 220px;
 }
 
-.dashboard-chart-doughnut {
-  height: 220px;
-}
-
 .dashboard-chart-recharts {
   height: 180px;
   margin-top: 16px;
 }
 
-.dashboard-chart-recharts-doughnut {
-  height: 180px;
+.dashboard-chart-recharts-ranked {
+  min-height: 180px;
   margin-top: 16px;
 }
 
@@ -39,7 +35,7 @@
 }
 
 .dashboard-chart-recharts :focus,
-.dashboard-chart-recharts-doughnut :focus,
+.dashboard-chart-recharts-ranked :focus,
 .dashboard-chart-recharts-compact :focus {
   outline: none;
 }
@@ -74,16 +70,12 @@
     height: 220px;
   }
 
-  .dashboard-chart-doughnut {
-    height: 190px;
-  }
-
   .dashboard-chart-recharts {
     height: 170px;
   }
 
-  .dashboard-chart-recharts-doughnut {
-    height: 170px;
+  .dashboard-chart-recharts-ranked {
+    min-height: 180px;
   }
 
   .dashboard-chart-recharts-compact {

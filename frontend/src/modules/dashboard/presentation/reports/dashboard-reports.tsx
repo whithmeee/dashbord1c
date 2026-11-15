@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
 import { ArrowDownToLine, Landmark, TrendingUp, Wallet } from 'lucide-react'
-import { RechartsDebtorsDoughnut } from '../charts/recharts-debtors-chart'
+import { RechartsRankedBars } from '../charts/recharts-ranked-bars'
 import { RechartsCashLine, RechartsExpensesBar } from '../charts/recharts-finance-charts'
 import { RechartsRevenueArea } from '../charts/recharts-revenue-chart'
 import type { DashboardReport } from '../../domain/dashboard-report'
@@ -94,7 +94,7 @@ export function DashboardReports({ report }: { report: DashboardReport }) {
           <h2>Распределение задолженности</h2>
           <p>Топ-5 контрагентов · ₽</p>
         </header>
-        <RechartsDebtorsDoughnut points={report.debtors} masked />
+        <RechartsRankedBars points={report.debtors} masked ariaLabel="Задолженность по контрагентам" />
         <ReportDetails
           buttonLabel="Данные"
           points={report.debtors}

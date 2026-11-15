@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { Building2, FileCheck2, TrendingUp, Users } from 'lucide-react'
 import type { MonthlyAmount, RankedAmount, SalesReport } from '../domain/financial-sales'
 import { RechartsRevenueArea } from './charts/recharts-revenue-chart'
-import { RechartsDebtorsDoughnut } from './charts/recharts-debtors-chart'
+import { RechartsRankedBars } from './charts/recharts-ranked-bars'
 import { FinanceChart } from './charts/finance-chart'
 import { ReportDetails } from './reports/report-details'
 import { AnalyticsDetailsDialog, type AnalyticsDetailKind } from './analytics-details-dialog'
@@ -23,7 +23,7 @@ export function AnalyticsOverview({ report }: { report: SalesReport }) {
         <RechartsRevenueArea points={monthly} />
       </ReportCard>
       <ReportCard title="Покупатели по реализациям" description={`Топ покупателей · ${currency}`} className="dashboard-report-half" points={customers}>
-        <RechartsDebtorsDoughnut points={customers} centerLabel="общая сумма" ariaLabel="Распределение суммы реализаций по покупателям" />
+        <RechartsRankedBars points={customers} ariaLabel="Суммы реализаций по покупателям" />
       </ReportCard>
       <AnalyticsDetailsDialog kind={detail} report={report} onClose={() => setDetail(null)} />
     </div>
