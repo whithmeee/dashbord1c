@@ -134,6 +134,20 @@ class DocumentDraftTest extends TestCase
         ], ['Accept' => 'application/json'])->assertUnprocessable();
     }
 
+    public function test_pdf_with_a_text_layer_is_read_without_the_paid_ocr_service(): void
+    {
+        config(['services.ocr.api_key' => 'key', 'services.ocr.folder_id' => 'folder']);
+        FakeAccountingBase::fake(FakeAccountingBase::DOCUMENT, $this->fullCatalogs());
+
+        $this->post('/api/documents', [
+            'integration_id' => $this->integration->id,
+            'file' => FakeAccountingBase::textPdf('Invoice 418 from 10.11.2026 supplier Romashka LLC total 1000 RUB'),
+        ], ['Accept' => 'application/json'])->assertCreated();
+
+        Http::assertNotSent(fn (Request $request): bool => str_contains($request->url(), 'ocr.api.cloud.yandex.net'));
+        $this->assertStringContainsString('Invoice 418', DocumentDraft::firstOrFail()->source_text);
+    }
+
     public function test_ocr_rejection_reason_is_returned_to_the_user(): void
     {
         config(['services.ocr.api_key' => 'key', 'services.ocr.folder_id' => 'folder']);

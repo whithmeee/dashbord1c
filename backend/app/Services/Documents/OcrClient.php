@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Http;
 
 class OcrClient
 {
+    public function __construct(private readonly PdfTextReader $pdfText) {}
+
     private const MIME_TYPES = [
         'pdf' => 'application/pdf',
         'jpg' => 'image/jpeg',
@@ -29,6 +31,10 @@ class OcrClient
 
         if (! isset(self::MIME_TYPES[$extension])) {
             throw new DocumentException('Поддерживаются PDF, JPG, PNG и TXT.');
+        }
+
+        if ($extension === 'pdf' && ($text = $this->pdfText->read($file->getRealPath())) !== null) {
+            return $text;
         }
 
         if (! config('services.ocr.api_key') || ! config('services.ocr.folder_id')) {
