@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { DatePicker } from '../../../shared/ui/calendar-field'
 import './document-editor.css'
 import type { DocumentData, DocumentItem, DocumentParty } from '../domain/document-draft'
 
@@ -33,7 +34,7 @@ export function DocumentEditor({ data, disabled, onSave }: {
     <form className="document-editor" onSubmit={submit}>
       <div className="document-editor-grid">
         <Field label="Номер"><input value={value.number} onChange={(event) => setValue({ ...value, number: event.target.value })} /></Field>
-        <Field label="Дата"><input type="date" value={value.date} onChange={(event) => setValue({ ...value, date: event.target.value })} /></Field>
+        <Field label="Дата"><DatePicker ariaLabel="Дата документа" value={value.date} onValueChange={(date) => setValue({ ...value, date })} /></Field>
         <Field label="Сумма"><input type="number" min="0" step="0.01" value={value.total} onChange={(event) => setValue({ ...value, total: numeric(event.target.value) })} /></Field>
       </div>
       <PartyFields title="Поставщик" party={value.counterparty} onChange={(field, next) => party('counterparty', field, next)} />

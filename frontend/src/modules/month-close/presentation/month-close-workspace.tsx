@@ -1,5 +1,6 @@
 import { CalendarCheck2, Database, FileWarning, RefreshCw } from 'lucide-react'
 import type { CSSProperties } from 'react'
+import { MonthPicker } from '../../../shared/ui/calendar-field'
 import { Select } from '../../../shared/ui/select'
 import type { MonthCloseDetailsState } from '../application/month-close-store'
 import type { MonthCloseSummary } from '../domain/month-close'
@@ -31,7 +32,7 @@ export function MonthCloseWorkspace({ summary, integrations, integrationId, mont
         <div><span>1С · КОНТРОЛЬ ПЕРИОДА</span><h1>Помощник закрытия месяца</h1><p>Проверяем документы и заранее показываем, что требует внимания.</p></div>
         <div className="month-close-filters">
           <label>База 1С<Select ariaLabel="База 1С" value={String(integrationId)} options={integrations.map((item) => ({ value: String(item.id), label: item.name }))} onValueChange={(value) => onIntegrationChange(Number(value))} /></label>
-          <label>Месяц<input type="month" value={month} onChange={(event) => onMonthChange(event.target.value)} /></label>
+          <label>Месяц<MonthPicker ariaLabel="Месяц закрытия" value={month} onValueChange={onMonthChange} /></label>
           <button className="cabinet-button cabinet-button-primary" type="button" disabled={scanning} onClick={onScan}><RefreshCw className={scanning ? 'month-close-spinner' : ''} size={17} />{scanning ? `Сканируем ${progress}%` : 'Сканировать'}</button>
         </div>
       </header>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ApiError } from '../../../shared/api'
+import { DatePicker } from '../../../shared/ui/calendar-field'
 import type { AdminGateway } from '../domain/admin-gateway'
 import type { Statistics } from '../domain/admin'
 import { AdminError } from './admin-error'
@@ -14,6 +15,8 @@ export function AdminStatistics({
   const [params, setParams] = useState<Record<string, string>>({
     period: 'month',
   })
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
   const [state, setState] = useState<{
     data?: Statistics
     error?: Error
@@ -63,11 +66,11 @@ export function AdminStatistics({
           </select>
         </label>
         <label>
-          С<input name="from" type="date" />
+          С<DatePicker ariaLabel="Дата начала" name="from" value={from} onValueChange={setFrom} />
         </label>
         <label>
           По
-          <input name="to" type="date" />
+          <DatePicker ariaLabel="Дата окончания" name="to" value={to} onValueChange={setTo} />
         </label>
         <label>
           Группировка
