@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { PackagePlus } from 'lucide-react'
 import { Checkbox } from '../../../shared/ui/checkbox'
 import { DialogFooter } from '../../../shared/ui/dialog'
@@ -61,9 +61,11 @@ export function NomenclatureForm({ options, onCreate, onClose }: {
               <Checkbox checked={row.selected} aria-label={`Создать позицию ${row.index + 1}`} onCheckedChange={(value) => change(row.index, { selected: value === true })} />
               <span>{row.name}</span>
             </label>
-            <Select ariaLabel={`Вид номенклатуры, позиция ${row.index + 1}`} value={row.kindKey} options={kinds} onValueChange={(kindKey) => change(row.index, { kindKey })} />
-            <Select ariaLabel={`Единица измерения, позиция ${row.index + 1}`} value={row.unitKey} options={units} onValueChange={(unitKey) => change(row.index, { unitKey })} />
-            <Select ariaLabel={`Ставка НДС, позиция ${row.index + 1}`} value={row.vatRate} options={vatRates} onValueChange={(vatRate) => change(row.index, { vatRate })} />
+            <div className="nomenclature-fields">
+              <Labeled label="Вид номенклатуры"><Select ariaLabel={`Вид номенклатуры, позиция ${row.index + 1}`} value={row.kindKey} options={kinds} onValueChange={(kindKey) => change(row.index, { kindKey })} /></Labeled>
+              <Labeled label="Единица измерения"><Select ariaLabel={`Единица измерения, позиция ${row.index + 1}`} value={row.unitKey} options={units} onValueChange={(unitKey) => change(row.index, { unitKey })} /></Labeled>
+              <Labeled label="Ставка НДС"><Select ariaLabel={`Ставка НДС, позиция ${row.index + 1}`} value={row.vatRate} options={vatRates} onValueChange={(vatRate) => change(row.index, { vatRate })} /></Labeled>
+            </div>
           </div>
         ))}
       </div>
@@ -76,6 +78,10 @@ export function NomenclatureForm({ options, onCreate, onClose }: {
       </DialogFooter>
     </>
   )
+}
+
+function Labeled({ label, children }: { label: string; children: ReactNode }) {
+  return <div className="nomenclature-field"><span>{label}</span>{children}</div>
 }
 
 function choices(options: readonly SelectOption[]): readonly SelectOption[] {

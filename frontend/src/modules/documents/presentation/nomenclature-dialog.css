@@ -6,15 +6,27 @@
 
 .nomenclature-row {
   display: grid;
-  grid-template-columns: minmax(160px, 2fr) repeat(3, minmax(120px, 1fr));
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
+  gap: 12px;
+  padding: 14px;
   border: 1px solid var(--app-border);
   border-radius: 12px;
 }
 
-.nomenclature-row .ui-select-trigger {
+.nomenclature-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.nomenclature-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.nomenclature-field .ui-select-trigger {
   width: 100%;
   min-width: 0;
 }
@@ -46,7 +58,7 @@
 }
 
 @media (max-width: 720px) {
-  .nomenclature-row {
+  .nomenclature-fields {
     grid-template-columns: minmax(0, 1fr);
   }
 }
