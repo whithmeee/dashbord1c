@@ -99,7 +99,7 @@ class DocumentResolver
     /**
      * @return array{ref_key: ?string, match: string}
      */
-    private function nomenclature(OneCClient $client, string $name): array
+    public function nomenclature(OneCClient $client, string $name): array
     {
         if ($name === '') {
             return ['ref_key' => null, 'match' => 'missing'];

@@ -1,12 +1,16 @@
 import { api, type ApiClient, type RequestOptions } from '../../../shared/api'
 import type { DocumentData, DocumentDraft } from '../domain/document-draft'
 import { mapDocumentDraft, mapDocumentDrafts } from '../domain/document-draft-mapper'
+import type { NomenclatureOptions, NomenclatureSpec } from '../domain/nomenclature'
+import { mapNomenclatureOptions } from '../domain/nomenclature-mapper'
 
 export interface DocumentGateway {
   list(integrationId: number, options?: RequestOptions): Promise<readonly DocumentDraft[]>
   upload(integrationId: number, file: File, options?: RequestOptions): Promise<DocumentDraft>
   update(id: number, data: DocumentData, options?: RequestOptions): Promise<DocumentDraft>
   retry(id: number, options?: RequestOptions): Promise<DocumentDraft>
+  nomenclatureOptions(id: number, options?: RequestOptions): Promise<NomenclatureOptions>
+  createNomenclature(id: number, specs: readonly NomenclatureSpec[], options?: RequestOptions): Promise<DocumentDraft>
   write(id: number, options?: RequestOptions): Promise<DocumentDraft>
   remove(id: number, options?: RequestOptions): Promise<void>
 }
@@ -27,6 +31,12 @@ export function createHttpDocumentGateway(client: ApiClient): DocumentGateway {
     },
     async retry(id, options = {}) {
       return mapDocumentDraft(await client.post<unknown>(`/api/documents/${id}/retry`, undefined, options))
+    },
+    async nomenclatureOptions(id, options = {}) {
+      return mapNomenclatureOptions(await client.get<unknown>(`/api/documents/${id}/nomenclature-options`, options))
+    },
+    async createNomenclature(id, specs, options = {}) {
+      return mapDocumentDraft(await client.post<unknown>(`/api/documents/${id}/nomenclature`, { items: specs.map(toSpecRequest) }, options))
     },
     async write(id, options = {}) {
       return mapDocumentDraft(await client.post<unknown>(`/api/documents/${id}/write`, undefined, options))
@@ -51,8 +61,13 @@ function toRequest(data: DocumentData): Record<string, unknown> {
       price: item.price,
       amount: item.amount,
       vat_rate: item.vatRate,
+      unit: item.unit,
     })),
   }
+}
+
+function toSpecRequest(spec: NomenclatureSpec): Record<string, unknown> {
+  return { index: spec.index, kind_key: spec.kindKey, unit_key: spec.unitKey, vat_rate: spec.vatRate }
 }
 
 function toParty(party: DocumentData['counterparty']): Record<string, string> {

@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { ApiClient } from '../../../shared/api'
 import { mapDocumentDraft } from '../domain/document-draft-mapper'
-import { draftResponse } from '../testing/document-draft-fixture'
+import { draftResponse, nomenclatureOptionsResponse } from '../testing/document-draft-fixture'
 import { createHttpDocumentGateway } from './http-document-gateway'
 
 describe('document HTTP gateway', () => {
   it('uses every document endpoint and preserves multipart upload', async () => {
-    const get = vi.fn().mockResolvedValue([draftResponse])
+    const get = vi.fn().mockResolvedValueOnce([draftResponse]).mockResolvedValueOnce(nomenclatureOptionsResponse)
     const postForm = vi.fn().mockResolvedValue(draftResponse)
     const post = vi.fn().mockResolvedValue(draftResponse)
     const patch = vi.fn().mockResolvedValue(draftResponse)
@@ -19,6 +19,8 @@ describe('document HTTP gateway', () => {
     await gateway.upload(7, file, { signal })
     await gateway.update(12, mapDocumentDraft(draftResponse).data, { signal })
     await gateway.retry(12, { signal })
+    const options = await gateway.nomenclatureOptions(12, { signal })
+    await gateway.createNomenclature(12, [{ index: 0, kindKey: 'kind-goods', unitKey: null, vatRate: 'НДС20' }], { signal })
     await gateway.write(12, { signal })
     await gateway.remove(12, { signal })
 
@@ -32,11 +34,16 @@ describe('document HTTP gateway', () => {
         total: 1000,
         counterparty: { name: 'ООО Ромашка', inn: '7701234567', kpp: '' },
         buyer: { name: 'ООО Осминог', inn: '7799999999', kpp: '' },
-        items: [{ name: 'Болт М8', quantity: 10, price: 100, amount: 1000, vat_rate: '20%' }],
+        items: [{ name: 'Болт М8', quantity: 10, price: 100, amount: 1000, vat_rate: '20%', unit: '' }],
       },
     }, { signal })
     expect(post).toHaveBeenNthCalledWith(1, '/api/documents/12/retry', undefined, { signal })
-    expect(post).toHaveBeenNthCalledWith(2, '/api/documents/12/write', undefined, { signal })
+    expect(get).toHaveBeenCalledWith('/api/documents/12/nomenclature-options', { signal })
+    expect(options.items[1]).toEqual({ index: 2, name: 'Конфеты "Барбарис"', kindKey: null, unitKey: null, vatRate: null })
+    expect(post).toHaveBeenNthCalledWith(2, '/api/documents/12/nomenclature', {
+      items: [{ index: 0, kind_key: 'kind-goods', unit_key: null, vat_rate: 'НДС20' }],
+    }, { signal })
+    expect(post).toHaveBeenNthCalledWith(3, '/api/documents/12/write', undefined, { signal })
     expect(remove).toHaveBeenCalledWith('/api/documents/12', { signal })
   })
 })

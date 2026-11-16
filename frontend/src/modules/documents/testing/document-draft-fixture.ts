@@ -20,3 +20,13 @@ export const draftResponse = {
   written_at: null,
   created_at: '2026-11-12T12:00:00Z',
 }
+
+export const nomenclatureOptionsResponse = {
+  kinds: [{ key: 'kind-goods', name: 'Товары' }, { key: 'kind-services', name: 'Услуги' }],
+  units: [{ key: 'unit-pcs', name: 'шт' }, { key: 'unit-kg', name: 'кг' }],
+  vat_rates: [{ value: 'НДС20', label: '20%' }, { value: 'БезНДС', label: 'Без НДС' }],
+  items: [
+    { index: 0, name: 'Конфеты "Ассорти"', kind_key: 'kind-goods', unit_key: 'unit-pcs', vat_rate: 'НДС20' },
+    { index: 2, name: 'Конфеты "Барбарис"', kind_key: null, unit_key: null, vat_rate: null },
+  ],
+}

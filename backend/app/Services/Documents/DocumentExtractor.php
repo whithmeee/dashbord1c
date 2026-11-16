@@ -14,8 +14,9 @@ class DocumentExtractor
 {"type":"receipt|invoice","number":"","date":"YYYY-MM-DD",
 "counterparty":{"name":"","inn":"","kpp":""},
 "buyer":{"name":"","inn":"","kpp":""},
-"items":[{"name":"","quantity":0,"price":0,"amount":0,"vat_rate":""}],
+"items":[{"name":"","quantity":0,"price":0,"amount":0,"unit":"","vat_rate":""}],
 "total":0}
+unit — единица измерения позиции как в документе (шт, кг, упак).
 type=invoice для счёта на оплату, receipt для УПД, накладной и акта.
 counterparty — поставщик (продавец), buyer — покупатель (наша организация).
 amount и price — с учётом НДС: если в документе есть колонки без налога и с налогом, бери стоимость с налогом. total — итого с НДС.

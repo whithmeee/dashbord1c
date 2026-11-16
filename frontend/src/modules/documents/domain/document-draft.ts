@@ -23,6 +23,7 @@ export type DocumentItem = {
   readonly price: number
   readonly amount: number
   readonly vatRate: string
+  readonly unit: string
   readonly refKey: string | null
   readonly match: DocumentMatch
 }

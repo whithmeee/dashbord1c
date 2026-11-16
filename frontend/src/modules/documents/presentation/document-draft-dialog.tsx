@@ -1,21 +1,28 @@
-import { AlertTriangle, CheckCircle2, RotateCcw, Send, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { AlertTriangle, CheckCircle2, PackagePlus, RotateCcw, Send, Trash2 } from 'lucide-react'
 import './document-dialog.css'
 import { Dialog, DialogContent, DialogFooter } from '../../../shared/ui/dialog'
 import type { DocumentData, DocumentDraft } from '../domain/document-draft'
 import type { DocumentOperation } from '../application/document-store'
+import type { NomenclatureOptions, NomenclatureSpec } from '../domain/nomenclature'
 import { DocumentEditor } from './document-editor'
+import { NomenclatureDialog } from './nomenclature-dialog'
 import { documentStatus, documentTitle } from './document-status'
 
-export function DocumentDraftDialog({ document, pending, onClose, onUpdate, onRetry, onWrite, onRemove }: {
+export function DocumentDraftDialog({ document, pending, onClose, onUpdate, onRetry, onLoadNomenclature, onCreateNomenclature, onWrite, onRemove }: {
   document: DocumentDraft | undefined
   pending: DocumentOperation | undefined
   onClose: () => void
   onUpdate: (id: number, data: DocumentData) => void
   onRetry: (id: number) => void
+  onLoadNomenclature: (id: number, signal: AbortSignal) => Promise<NomenclatureOptions>
+  onCreateNomenclature: (id: number, specs: readonly NomenclatureSpec[]) => void
   onWrite: (id: number) => void
   onRemove: (id: number) => void
 }) {
+  const [creatingNomenclature, setCreatingNomenclature] = useState(false)
   const busy = document !== undefined && pending?.id === document.id
+  const missingItems = document?.data.items.filter((item) => item.match === 'missing' && item.name !== '').length ?? 0
   const status = document ? documentStatus(document) : undefined
 
   return (
@@ -42,6 +49,9 @@ export function DocumentDraftDialog({ document, pending, onClose, onUpdate, onRe
             <div className="document-written"><CheckCircle2 size={20} />Документ записан в 1С{document.onecNumber ? ` под номером ${document.onecNumber}` : ''}.</div>
           )}
           <DialogFooter>
+            {document.status === 'draft' && missingItems > 0 && (
+              <button className="cabinet-button" type="button" disabled={busy} onClick={() => setCreatingNomenclature(true)}><PackagePlus size={16} />Создать номенклатуру ({missingItems})</button>
+            )}
             {document.status === 'draft' && (
               <button className="cabinet-button" type="button" disabled={busy} onClick={() => onRetry(document.id)}><RotateCcw size={16} />Распознать снова</button>
             )}
@@ -51,6 +61,15 @@ export function DocumentDraftDialog({ document, pending, onClose, onUpdate, onRe
             )}
           </DialogFooter>
         </DialogContent>
+      )}
+      {document && (
+        <NomenclatureDialog
+          documentId={document.id}
+          open={creatingNomenclature}
+          load={onLoadNomenclature}
+          onCreate={(specs) => onCreateNomenclature(document.id, specs)}
+          onClose={() => setCreatingNomenclature(false)}
+        />
       )}
     </Dialog>
   )

@@ -67,6 +67,7 @@ function mapItem(value: unknown, index: number): DocumentItem {
     price: number(source.price, `${path}.price`),
     amount: number(source.amount, `${path}.amount`),
     vatRate: string(source.vat_rate, `${path}.vat_rate`),
+    unit: source.unit === undefined ? '' : string(source.unit, `${path}.unit`),
     refKey: nullableString(source.ref_key, `${path}.ref_key`),
     match: mapMatch(source.match, `${path}.match`),
   }

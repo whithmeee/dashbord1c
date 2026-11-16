@@ -23,6 +23,8 @@ describe('document workspace', () => {
         onUpload={() => undefined}
         onUpdate={() => undefined}
         onRetry={() => undefined}
+        onLoadNomenclature={() => Promise.resolve({ kinds: [], units: [], vatRates: [], items: [] })}
+        onCreateNomenclature={() => undefined}
         onWrite={() => undefined}
         onRemove={() => undefined}
       />,
@@ -44,6 +46,8 @@ describe('document workspace', () => {
         onClose={() => undefined}
         onUpdate={() => undefined}
         onRetry={() => undefined}
+        onLoadNomenclature={() => Promise.resolve({ kinds: [], units: [], vatRates: [], items: [] })}
+        onCreateNomenclature={() => undefined}
         onWrite={() => undefined}
         onRemove={() => undefined}
       />,
@@ -51,5 +55,28 @@ describe('document workspace', () => {
 
     expect(html).toContain('Записать в 1С')
     expect(html).not.toContain('Провести')
+  })
+
+  it('offers creating nomenclature only while items are missing in 1C', () => {
+    const missing = mapDocumentDraft({
+      ...draftResponse,
+      data: { ...draftResponse.data, items: [{ ...draftResponse.data.items[0], ref_key: null, match: 'missing' }] },
+    })
+    const render = (document: typeof draft) => renderToStaticMarkup(
+      <DocumentDraftDialog
+        document={document}
+        pending={undefined}
+        onClose={() => undefined}
+        onUpdate={() => undefined}
+        onRetry={() => undefined}
+        onLoadNomenclature={() => Promise.resolve({ kinds: [], units: [], vatRates: [], items: [] })}
+        onCreateNomenclature={() => undefined}
+        onWrite={() => undefined}
+        onRemove={() => undefined}
+      />,
+    )
+
+    expect(render(missing)).toContain('Создать номенклатуру (1)')
+    expect(render(draft)).not.toContain('Создать номенклатуру')
   })
 })

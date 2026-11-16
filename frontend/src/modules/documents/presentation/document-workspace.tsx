@@ -2,13 +2,14 @@ import { useRef, useState, type ChangeEvent } from 'react'
 import { FilePlus2, Upload } from 'lucide-react'
 import { Select } from '../../../shared/ui/select'
 import type { DocumentData, DocumentDraft } from '../domain/document-draft'
+import type { NomenclatureOptions, NomenclatureSpec } from '../domain/nomenclature'
 import type { DocumentOperation } from '../application/document-store'
 import { DocumentDraftDialog } from './document-draft-dialog'
 import { DocumentList } from './document-list'
 
 type IntegrationOption = { readonly id: number; readonly name: string }
 
-export function DocumentWorkspace({ documents, integrations, integrationId, pending, mutationError, onIntegrationChange, onUpload, onUpdate, onRetry, onWrite, onRemove }: {
+export function DocumentWorkspace({ documents, integrations, integrationId, pending, mutationError, onIntegrationChange, onUpload, onUpdate, onRetry, onLoadNomenclature, onCreateNomenclature, onWrite, onRemove }: {
   documents: readonly DocumentDraft[]
   integrations: readonly IntegrationOption[]
   integrationId: number
@@ -18,6 +19,8 @@ export function DocumentWorkspace({ documents, integrations, integrationId, pend
   onUpload: (file: File) => void
   onUpdate: (id: number, data: DocumentData) => void
   onRetry: (id: number) => void
+  onLoadNomenclature: (id: number, signal: AbortSignal) => Promise<NomenclatureOptions>
+  onCreateNomenclature: (id: number, specs: readonly NomenclatureSpec[]) => void
   onWrite: (id: number) => void
   onRemove: (id: number) => void
 }) {
@@ -47,7 +50,7 @@ export function DocumentWorkspace({ documents, integrations, integrationId, pend
       <div className="documents-note"><Upload size={20} /><span>PDF, JPG, PNG или TXT до 10 МБ. Документ попадёт в 1С только после вашей проверки.</span></div>
       {mutationError && <p className="documents-error" role="alert">{mutationError.message}</p>}
       <DocumentList documents={documents} onSelect={setSelectedId} />
-      <DocumentDraftDialog document={selected} pending={pending} onClose={() => setSelectedId(undefined)} onUpdate={onUpdate} onRetry={onRetry} onWrite={onWrite} onRemove={onRemove} />
+      <DocumentDraftDialog document={selected} pending={pending} onClose={() => setSelectedId(undefined)} onUpdate={onUpdate} onRetry={onRetry} onLoadNomenclature={onLoadNomenclature} onCreateNomenclature={onCreateNomenclature} onWrite={onWrite} onRemove={onRemove} />
     </section>
   )
 }

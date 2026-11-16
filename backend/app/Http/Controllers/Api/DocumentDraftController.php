@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\DocumentException;
 use App\Exceptions\OneCRejectedException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateNomenclatureRequest;
 use App\Http\Requests\StoreDocumentDraftRequest;
 use App\Http\Requests\UpdateDocumentDraftRequest;
 use App\Http\Resources\DocumentDraftResource;
@@ -68,6 +69,24 @@ class DocumentDraftController extends Controller
         Gate::authorize('view', $document);
 
         return $this->respond(fn (): DocumentDraft => $this->drafts->write($document));
+    }
+
+    public function nomenclatureOptions(DocumentDraft $document): JsonResponse
+    {
+        Gate::authorize('view', $document);
+
+        try {
+            return response()->json($this->drafts->nomenclatureOptions($document));
+        } catch (DocumentException|OneCRejectedException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function createNomenclature(CreateNomenclatureRequest $request, DocumentDraft $document): DocumentDraftResource|JsonResponse
+    {
+        Gate::authorize('view', $document);
+
+        return $this->respond(fn (): DocumentDraft => $this->drafts->createNomenclature($document, $request->validated('items')));
     }
 
     public function destroy(DocumentDraft $document): Response

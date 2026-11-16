@@ -22,6 +22,7 @@ class DocumentDraftService
         private readonly DraftValidator $validator,
         private readonly OneCSchemaIndex $schemaIndex,
         private readonly ConfigurationProfiles $profiles,
+        private readonly NomenclatureCreator $nomenclature,
     ) {}
 
     public function create(Company|Employee $author, Integration $integration, UploadedFile $file): DocumentDraft
@@ -58,6 +59,28 @@ class DocumentDraftService
         $this->assertEditable($draft);
 
         return $this->fill($draft, new OneCClient($draft->integration), $this->extractor->extract($draft->source_text));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function nomenclatureOptions(DocumentDraft $draft): array
+    {
+        $this->assertEditable($draft);
+
+        return $this->nomenclature->options(new OneCClient($draft->integration), $draft->data);
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $specs
+     */
+    public function createNomenclature(DocumentDraft $draft, array $specs): DocumentDraft
+    {
+        $this->assertEditable($draft);
+        $client = new OneCClient($draft->integration);
+        $this->nomenclature->create($client, $draft->data, $specs);
+
+        return $this->fill($draft, $client, $draft->data);
     }
 
     /**

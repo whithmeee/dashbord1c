@@ -1,17 +1,20 @@
 import type { ApiError, RequestOptions } from '../../../shared/api'
 import type { DocumentData, DocumentDraft } from '../domain/document-draft'
+import type { NomenclatureOptions, NomenclatureSpec } from '../domain/nomenclature'
 
 export interface DocumentGateway {
   list(integrationId: number, options?: RequestOptions): Promise<readonly DocumentDraft[]>
   upload(integrationId: number, file: File, options?: RequestOptions): Promise<DocumentDraft>
   update(id: number, data: DocumentData, options?: RequestOptions): Promise<DocumentDraft>
   retry(id: number, options?: RequestOptions): Promise<DocumentDraft>
+  nomenclatureOptions(id: number, options?: RequestOptions): Promise<NomenclatureOptions>
+  createNomenclature(id: number, specs: readonly NomenclatureSpec[], options?: RequestOptions): Promise<DocumentDraft>
   write(id: number, options?: RequestOptions): Promise<DocumentDraft>
   remove(id: number, options?: RequestOptions): Promise<void>
 }
 
 export type DocumentOperation = {
-  readonly kind: 'upload' | 'update' | 'retry' | 'write' | 'remove'
+  readonly kind: 'upload' | 'update' | 'retry' | 'nomenclature' | 'write' | 'remove'
   readonly id?: number
 }
 
@@ -36,6 +39,8 @@ export interface DocumentStore {
   upload(integrationId: number, file: File): Promise<void>
   update(id: number, data: DocumentData): Promise<void>
   retry(id: number): Promise<void>
+  loadNomenclatureOptions(id: number, signal?: AbortSignal): Promise<NomenclatureOptions>
+  createNomenclature(id: number, specs: readonly NomenclatureSpec[]): Promise<void>
   write(id: number): Promise<void>
   remove(id: number): Promise<void>
   reset(): void
@@ -128,6 +133,8 @@ export function createDocumentStore(gateway: DocumentGateway, session: { expireS
     upload: (integrationId, file) => mutate({ kind: 'upload' }, (signal) => gateway.upload(integrationId, file, { signal }), (items, result) => result ? [result, ...items.filter((item) => item.id !== result.id)] : items),
     update: (id, data) => mutate({ kind: 'update', id }, (signal) => gateway.update(id, data, { signal }), replace),
     retry: (id) => mutate({ kind: 'retry', id }, (signal) => gateway.retry(id, { signal }), replace),
+    loadNomenclatureOptions: (id, signal) => gateway.nomenclatureOptions(id, { signal }),
+    createNomenclature: (id, specs) => mutate({ kind: 'nomenclature', id }, (signal) => gateway.createNomenclature(id, specs, { signal }), replace),
     write: (id) => mutate({ kind: 'write', id }, (signal) => gateway.write(id, { signal }), replace),
     remove: (id) => mutate({ kind: 'remove', id }, (signal) => gateway.remove(id, { signal }), (items) => items.filter((item) => item.id !== id)),
     reset() {

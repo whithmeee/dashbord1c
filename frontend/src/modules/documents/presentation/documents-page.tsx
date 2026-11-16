@@ -43,6 +43,8 @@ export function DocumentsPage() {
       onUpload={(file) => void documentStore.upload(integrationId, file)}
       onUpdate={(id, data) => void documentStore.update(id, data)}
       onRetry={(id) => void documentStore.retry(id)}
+      onLoadNomenclature={documentStore.loadNomenclatureOptions}
+      onCreateNomenclature={(id, specs) => void documentStore.createNomenclature(id, specs)}
       onWrite={(id) => void documentStore.write(id)}
       onRemove={(id) => void documentStore.remove(id)}
     />

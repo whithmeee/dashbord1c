@@ -58,6 +58,7 @@ class DocumentNormalizer
             'quantity' => $this->number($item['quantity'] ?? null),
             'price' => $this->number($item['price'] ?? null),
             'amount' => $this->number($item['amount'] ?? null),
+            'unit' => $this->text($item['unit'] ?? null),
             'vat_rate' => $this->text($item['vat_rate'] ?? null),
             'ref_key' => null,
             'match' => 'missing',

@@ -12,6 +12,8 @@ function gateway(overrides: Partial<DocumentGateway> = {}): DocumentGateway {
     upload: vi.fn().mockResolvedValue(draft),
     update: vi.fn().mockResolvedValue(draft),
     retry: vi.fn().mockResolvedValue(draft),
+    nomenclatureOptions: vi.fn().mockResolvedValue({ kinds: [], units: [], vatRates: [], items: [] }),
+    createNomenclature: vi.fn().mockResolvedValue(draft),
     write: vi.fn().mockResolvedValue(written),
     remove: vi.fn().mockResolvedValue(undefined),
     ...overrides,
@@ -30,6 +32,20 @@ describe('document store', () => {
     expect(store.getSnapshot()).toMatchObject({ status: 'success', items: [written] })
     await store.remove(12)
     expect(store.getSnapshot()).toMatchObject({ status: 'success', items: [] })
+  })
+
+  it('creates missing nomenclature and replaces the draft with the rechecked one', async () => {
+    const rechecked = { ...draft, ready: true, issues: [] } as unknown as DocumentDraft
+    const source = gateway({ list: vi.fn().mockResolvedValue([{ ...draft, ready: false }]), createNomenclature: vi.fn().mockResolvedValue(rechecked) })
+    const store = createDocumentStore(source, { expireSession: vi.fn() })
+    const specs = [{ index: 0, kindKey: null, unitKey: null, vatRate: 'НДС20' }]
+
+    await store.load(7)
+    await store.loadNomenclatureOptions(12)
+    await store.createNomenclature(12, specs)
+
+    expect(source.createNomenclature).toHaveBeenCalledWith(12, specs, expect.anything())
+    expect(store.getSnapshot()).toMatchObject({ status: 'success', items: [rechecked] })
   })
 
   it('blocks a duplicate mutation and keeps an actionable error', async () => {

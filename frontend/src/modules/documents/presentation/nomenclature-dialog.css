@@ -1,0 +1,52 @@
+.nomenclature-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.nomenclature-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 2fr) repeat(3, minmax(120px, 1fr));
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+}
+
+.nomenclature-row .ui-select-trigger {
+  width: 100%;
+  min-width: 0;
+}
+
+.nomenclature-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.nomenclature-hint {
+  margin: 14px 0 0;
+  color: var(--app-muted);
+  font-size: 13px;
+}
+
+.nomenclature-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0 0;
+  color: var(--app-muted);
+}
+
+.nomenclature-state-error {
+  color: #8e3935;
+}
+
+@media (max-width: 720px) {
+  .nomenclature-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
