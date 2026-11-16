@@ -6,6 +6,7 @@ import type { DocumentData, DocumentDraft } from '../domain/document-draft'
 import type { DocumentOperation } from '../application/document-store'
 import type { NomenclatureOptions, NomenclatureSpec } from '../domain/nomenclature'
 import { DocumentEditor } from './document-editor'
+import { DocumentPreview } from './document-preview'
 import { NomenclatureDialog } from './nomenclature-dialog'
 import { documentStatus, documentTitle } from './document-status'
 
@@ -21,6 +22,7 @@ export function DocumentDraftDialog({ document, pending, onClose, onUpdate, onRe
   onRemove: (id: number) => void
 }) {
   const [creatingNomenclature, setCreatingNomenclature] = useState(false)
+  const [view, setView] = useState<'edit' | 'preview'>('edit')
   const busy = document !== undefined && pending?.id === document.id
   const missingIndexes = document?.data.items.flatMap((item, index) => item.match === 'missing' && item.name !== '' ? [index] : []) ?? []
   const missingItems = missingIndexes.length
@@ -45,9 +47,21 @@ export function DocumentDraftDialog({ document, pending, onClose, onUpdate, onRe
             </div>
           )}
           {document.status === 'draft' ? (
-            <DocumentEditor data={document.data} disabled={busy} onSave={(data) => onUpdate(document.id, data)} />
+            <>
+              <div className="document-view-switch" role="tablist" aria-label="Режим документа">
+                <button type="button" role="tab" aria-selected={view === 'edit'} className={view === 'edit' ? 'active' : ''} onClick={() => setView('edit')}>Редактирование</button>
+                <button type="button" role="tab" aria-selected={view === 'preview'} className={view === 'preview' ? 'active' : ''} onClick={() => setView('preview')}>Предпросмотр</button>
+              </div>
+              <div hidden={view !== 'edit'}>
+                <DocumentEditor data={document.data} disabled={busy} onSave={(data) => onUpdate(document.id, data)} />
+              </div>
+              {view === 'preview' && <DocumentPreview data={document.data} />}
+            </>
           ) : (
-            <div className="document-written"><CheckCircle2 size={20} />Документ записан в 1С{document.onecNumber ? ` под номером ${document.onecNumber}` : ''}.</div>
+            <>
+              <div className="document-written"><CheckCircle2 size={20} />Документ записан в 1С{document.onecNumber ? ` под номером ${document.onecNumber}` : ''}.</div>
+              <DocumentPreview data={document.data} />
+            </>
           )}
           <DialogFooter>
             {document.status === 'draft' && missingItems > 0 && (

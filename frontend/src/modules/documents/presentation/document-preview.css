@@ -1,0 +1,129 @@
+.document-preview {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  background: var(--app-panel);
+}
+
+.document-preview header span,
+.document-preview-parties section > span,
+.document-preview-note,
+.document-preview-parties small {
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.document-preview header h3 {
+  margin: 4px 0 0;
+  font-size: 20px;
+}
+
+.document-preview-parties {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.document-preview-parties section {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--app-soft);
+}
+
+.document-preview-contract {
+  margin: 0;
+  font-size: 13px;
+}
+
+.document-preview-table {
+  display: grid;
+  overflow-x: auto;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+}
+
+.document-preview-row {
+  display: grid;
+  grid-template-columns: 32px minmax(160px, 2.4fr) 70px 80px 90px 60px minmax(110px, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 640px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--app-border);
+  font-size: 13px;
+}
+
+.document-preview-head {
+  border-top: 0;
+  background: var(--app-soft);
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.document-preview footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.document-preview-note {
+  margin: 0;
+}
+
+.document-preview-match {
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.document-preview-match-found {
+  color: #397057;
+}
+
+.document-preview-match-matched {
+  color: #79500d;
+}
+
+.document-preview-match-missing {
+  color: #8e3935;
+}
+
+.document-view-switch {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--app-soft);
+}
+
+.document-view-switch button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--app-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.document-view-switch button.active {
+  background: var(--app-panel-solid);
+  color: var(--app-text);
+  box-shadow: 0 1px 4px rgb(16 29 59 / 12%);
+}
+
+@media (max-width: 720px) {
+  .document-preview-parties {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.document-written {
+  margin-bottom: 16px;
+}
