@@ -22,7 +22,8 @@ export function DocumentDraftDialog({ document, pending, onClose, onUpdate, onRe
 }) {
   const [creatingNomenclature, setCreatingNomenclature] = useState(false)
   const busy = document !== undefined && pending?.id === document.id
-  const missingItems = document?.data.items.filter((item) => item.match === 'missing' && item.name !== '').length ?? 0
+  const missingIndexes = document?.data.items.flatMap((item, index) => item.match === 'missing' && item.name !== '' ? [index] : []) ?? []
+  const missingItems = missingIndexes.length
   const status = document ? documentStatus(document) : undefined
 
   return (
@@ -66,6 +67,8 @@ export function DocumentDraftDialog({ document, pending, onClose, onUpdate, onRe
         <NomenclatureDialog
           documentId={document.id}
           open={creatingNomenclature}
+          missing={missingIndexes}
+          busy={busy}
           load={onLoadNomenclature}
           onCreate={(specs) => onCreateNomenclature(document.id, specs)}
           onClose={() => setCreatingNomenclature(false)}

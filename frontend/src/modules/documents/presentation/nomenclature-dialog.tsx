@@ -11,9 +11,11 @@ type LoadState =
   | { readonly status: 'error'; readonly message: string }
   | { readonly status: 'ready'; readonly options: NomenclatureOptions }
 
-export function NomenclatureDialog({ documentId, open, load, onCreate, onClose }: {
+export function NomenclatureDialog({ documentId, open, missing, busy, load, onCreate, onClose }: {
   documentId: number
   open: boolean
+  missing: readonly number[]
+  busy: boolean
   load: (id: number, signal: AbortSignal) => Promise<NomenclatureOptions>
   onCreate: (specs: readonly NomenclatureSpec[]) => void
   onClose: () => void
@@ -27,15 +29,17 @@ export function NomenclatureDialog({ documentId, open, load, onCreate, onClose }
           description="Проверьте вид, единицу измерения и ставку НДС. Эти значения попадут в справочник вашей базы."
           testId="nomenclature-dialog"
         >
-          <NomenclatureLoader documentId={documentId} load={load} onCreate={onCreate} onClose={onClose} />
+          <NomenclatureLoader documentId={documentId} missing={missing} busy={busy} load={load} onCreate={onCreate} onClose={onClose} />
         </DialogContent>
       )}
     </Dialog>
   )
 }
 
-function NomenclatureLoader({ documentId, load, onCreate, onClose }: {
+function NomenclatureLoader({ documentId, missing, busy, load, onCreate, onClose }: {
   documentId: number
+  missing: readonly number[]
+  busy: boolean
   load: (id: number, signal: AbortSignal) => Promise<NomenclatureOptions>
   onCreate: (specs: readonly NomenclatureSpec[]) => void
   onClose: () => void
@@ -58,5 +62,5 @@ function NomenclatureLoader({ documentId, load, onCreate, onClose }: {
   if (state.status === 'error') {
     return <p className="nomenclature-state nomenclature-state-error" role="alert"><AlertCircle size={18} />{state.message}</p>
   }
-  return <NomenclatureForm options={state.options} onCreate={onCreate} onClose={onClose} />
+  return <NomenclatureForm options={state.options} missing={missing} busy={busy} onCreate={onCreate} onClose={onClose} />
 }

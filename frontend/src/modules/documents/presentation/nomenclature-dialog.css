@@ -62,3 +62,23 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.nomenclature-select-all {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  color: var(--app-muted);
+  font-size: 13px;
+}
+
+.nomenclature-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nomenclature-create-one {
+  flex: 0 0 auto;
+}
