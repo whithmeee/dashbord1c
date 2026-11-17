@@ -23,6 +23,8 @@ class DocumentDraftService
         private readonly OneCSchemaIndex $schemaIndex,
         private readonly ConfigurationProfiles $profiles,
         private readonly NomenclatureCreator $nomenclature,
+        private readonly CounterpartyCreator $counterparties,
+        private readonly VatAmountCorrector $vat,
     ) {}
 
     public function create(Company|Employee $author, Integration $integration, UploadedFile $file): DocumentDraft
@@ -69,6 +71,15 @@ class DocumentDraftService
         $this->assertEditable($draft);
 
         return $this->nomenclature->options(new OneCClient($draft->integration), $draft->data);
+    }
+
+    public function createCounterparty(DocumentDraft $draft): DocumentDraft
+    {
+        $this->assertEditable($draft);
+        $client = new OneCClient($draft->integration);
+        $this->counterparties->create($client, $draft->data['counterparty']);
+
+        return $this->fill($draft, $client, $draft->data);
     }
 
     /**
@@ -130,7 +141,7 @@ class DocumentDraftService
      */
     private function fill(DocumentDraft $draft, OneCClient $client, array $data): DocumentDraft
     {
-        $resolved = $this->resolver->resolve($client, $data);
+        $resolved = $this->resolver->resolve($client, $this->vat->correct($data));
         $draft->fill(['data' => $resolved, 'issues' => $this->validator->validate($resolved)])->save();
 
         return $draft;

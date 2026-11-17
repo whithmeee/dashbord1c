@@ -1,0 +1,25 @@
+.counterparty-details {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 0;
+}
+
+.counterparty-details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--app-soft);
+}
+
+.counterparty-details dt {
+  color: var(--app-muted);
+}
+
+.counterparty-details dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}

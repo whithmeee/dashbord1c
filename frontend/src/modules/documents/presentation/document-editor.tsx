@@ -1,7 +1,9 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { DatePicker } from '../../../shared/ui/calendar-field'
 import './document-editor.css'
+import { addVat, amountsDifference, itemsSum } from '../domain/document-amounts'
 import type { DocumentData, DocumentItem, DocumentParty } from '../domain/document-draft'
+import { DocumentAmountsFix } from './document-amounts-fix'
 
 export function DocumentEditor({ data, disabled, onSave }: {
   data: DocumentData
@@ -23,6 +25,14 @@ export function DocumentEditor({ data, disabled, onSave }: {
         ? { ...entry, [field]: field === 'name' ? next : numeric(next) }
         : entry),
     }))
+  }
+
+  function raiseWithVat(rate: number) {
+    setValue((current) => ({ ...current, items: addVat(current.items, rate) }))
+  }
+
+  function matchTotalToItems() {
+    setValue((current) => ({ ...current, total: itemsSum(current.items) }))
   }
 
   function submit(event: FormEvent) {
@@ -51,6 +61,9 @@ export function DocumentEditor({ data, disabled, onSave }: {
             </div>
           ))}
         </section>
+      )}
+      {value.type === 'receipt' && value.items.length > 0 && amountsDifference(value.items, value.total) !== 0 && (
+        <DocumentAmountsFix itemsSum={itemsSum(value.items)} total={value.total} onAddVat={raiseWithVat} onMatchTotal={matchTotalToItems} />
       )}
       <button className="cabinet-button" type="submit" disabled={disabled}>Сохранить и проверить</button>
     </form>

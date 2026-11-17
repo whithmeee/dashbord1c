@@ -14,6 +14,7 @@ function gateway(overrides: Partial<DocumentGateway> = {}): DocumentGateway {
     retry: vi.fn().mockResolvedValue(draft),
     nomenclatureOptions: vi.fn().mockResolvedValue({ kinds: [], units: [], vatRates: [], items: [] }),
     createNomenclature: vi.fn().mockResolvedValue(draft),
+    createCounterparty: vi.fn().mockResolvedValue(draft),
     write: vi.fn().mockResolvedValue(written),
     remove: vi.fn().mockResolvedValue(undefined),
     ...overrides,
@@ -45,6 +46,18 @@ describe('document store', () => {
     await store.createNomenclature(12, specs)
 
     expect(source.createNomenclature).toHaveBeenCalledWith(12, specs, expect.anything())
+    expect(store.getSnapshot()).toMatchObject({ status: 'success', items: [rechecked] })
+  })
+
+  it('creates the supplier and replaces the draft with the rechecked one', async () => {
+    const rechecked = { ...draft, ready: true, issues: [] } as unknown as DocumentDraft
+    const source = gateway({ createCounterparty: vi.fn().mockResolvedValue(rechecked) })
+    const store = createDocumentStore(source, { expireSession: vi.fn() })
+
+    await store.load(7)
+    await store.createCounterparty(12)
+
+    expect(source.createCounterparty).toHaveBeenCalledWith(12, expect.anything())
     expect(store.getSnapshot()).toMatchObject({ status: 'success', items: [rechecked] })
   })
 

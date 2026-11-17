@@ -11,6 +11,7 @@ export interface DocumentGateway {
   retry(id: number, options?: RequestOptions): Promise<DocumentDraft>
   nomenclatureOptions(id: number, options?: RequestOptions): Promise<NomenclatureOptions>
   createNomenclature(id: number, specs: readonly NomenclatureSpec[], options?: RequestOptions): Promise<DocumentDraft>
+  createCounterparty(id: number, options?: RequestOptions): Promise<DocumentDraft>
   write(id: number, options?: RequestOptions): Promise<DocumentDraft>
   remove(id: number, options?: RequestOptions): Promise<void>
 }
@@ -37,6 +38,9 @@ export function createHttpDocumentGateway(client: ApiClient): DocumentGateway {
     },
     async createNomenclature(id, specs, options = {}) {
       return mapDocumentDraft(await client.post<unknown>(`/api/documents/${id}/nomenclature`, { items: specs.map(toSpecRequest) }, options))
+    },
+    async createCounterparty(id, options = {}) {
+      return mapDocumentDraft(await client.post<unknown>(`/api/documents/${id}/counterparty`, undefined, options))
     },
     async write(id, options = {}) {
       return mapDocumentDraft(await client.post<unknown>(`/api/documents/${id}/write`, undefined, options))

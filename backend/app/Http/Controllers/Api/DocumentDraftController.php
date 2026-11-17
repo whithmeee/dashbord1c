@@ -89,6 +89,13 @@ class DocumentDraftController extends Controller
         return $this->respond(fn (): DocumentDraft => $this->drafts->createNomenclature($document, $request->validated('items')));
     }
 
+    public function createCounterparty(DocumentDraft $document): DocumentDraftResource|JsonResponse
+    {
+        Gate::authorize('view', $document);
+
+        return $this->respond(fn (): DocumentDraft => $this->drafts->createCounterparty($document));
+    }
+
     public function destroy(DocumentDraft $document): Response
     {
         Gate::authorize('view', $document);

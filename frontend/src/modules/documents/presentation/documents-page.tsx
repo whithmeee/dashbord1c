@@ -45,6 +45,7 @@ export function DocumentsPage() {
       onRetry={(id) => void documentStore.retry(id)}
       onLoadNomenclature={documentStore.loadNomenclatureOptions}
       onCreateNomenclature={(id, specs) => void documentStore.createNomenclature(id, specs)}
+      onCreateCounterparty={(id) => void documentStore.createCounterparty(id)}
       onWrite={(id) => void documentStore.write(id)}
       onRemove={(id) => void documentStore.remove(id)}
     />

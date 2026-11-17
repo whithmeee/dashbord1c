@@ -28,6 +28,10 @@ class DraftValidator
             ...$this->items($data),
         );
 
+        if (isset($data['vat_adjusted'])) {
+            $issues[] = ['level' => 'warning', 'field' => 'total', 'message' => "Суммы позиций в документе были без НДС: пересчитаны с НДС {$data['vat_adjusted']}. Проверьте."];
+        }
+
         if (($data['contract']['match'] ?? 'missing') === 'missing') {
             $issues[] = ['level' => 'warning', 'field' => 'contract', 'message' => 'Договор не найден: в 1С его нужно указать вручную.'];
         }

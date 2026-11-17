@@ -21,6 +21,7 @@ describe('document HTTP gateway', () => {
     await gateway.retry(12, { signal })
     const options = await gateway.nomenclatureOptions(12, { signal })
     await gateway.createNomenclature(12, [{ index: 0, kindKey: 'kind-goods', unitKey: null, vatRate: 'НДС20' }], { signal })
+    await gateway.createCounterparty(12, { signal })
     await gateway.write(12, { signal })
     await gateway.remove(12, { signal })
 
@@ -43,7 +44,8 @@ describe('document HTTP gateway', () => {
     expect(post).toHaveBeenNthCalledWith(2, '/api/documents/12/nomenclature', {
       items: [{ index: 0, kind_key: 'kind-goods', unit_key: null, vat_rate: 'НДС20' }],
     }, { signal })
-    expect(post).toHaveBeenNthCalledWith(3, '/api/documents/12/write', undefined, { signal })
+    expect(post).toHaveBeenNthCalledWith(3, '/api/documents/12/counterparty', undefined, { signal })
+    expect(post).toHaveBeenNthCalledWith(4, '/api/documents/12/write', undefined, { signal })
     expect(remove).toHaveBeenCalledWith('/api/documents/12', { signal })
   })
 })

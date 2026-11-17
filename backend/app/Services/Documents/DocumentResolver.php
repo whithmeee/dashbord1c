@@ -34,7 +34,7 @@ class DocumentResolver
      * @param  array<string, mixed>  $party
      * @return array<string, mixed>
      */
-    private function counterparty(OneCClient $client, array $party): array
+    public function counterparty(OneCClient $client, array $party): array
     {
         $found = $party['inn'] !== ''
             ? $this->rows($client, 'Catalog_Контрагенты', "ИНН eq {$this->literal($party['inn'])} and DeletionMark eq false")

@@ -29,6 +29,7 @@ Route::middleware(['auth:sanctum', 'last.seen', 'company.access:subscription', '
     Route::post('/documents/{document}/retry', [DocumentDraftController::class, 'retry'])->middleware('throttle:10,1');
     Route::get('/documents/{document}/nomenclature-options', [DocumentDraftController::class, 'nomenclatureOptions']);
     Route::post('/documents/{document}/nomenclature', [DocumentDraftController::class, 'createNomenclature'])->middleware('throttle:10,1');
+    Route::post('/documents/{document}/counterparty', [DocumentDraftController::class, 'createCounterparty'])->middleware('throttle:10,1');
     Route::post('/documents/{document}/write', [DocumentDraftController::class, 'write'])->middleware('throttle:10,1');
     Route::delete('/documents/{document}', [DocumentDraftController::class, 'destroy']);
 

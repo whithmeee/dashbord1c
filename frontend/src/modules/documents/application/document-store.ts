@@ -9,12 +9,13 @@ export interface DocumentGateway {
   retry(id: number, options?: RequestOptions): Promise<DocumentDraft>
   nomenclatureOptions(id: number, options?: RequestOptions): Promise<NomenclatureOptions>
   createNomenclature(id: number, specs: readonly NomenclatureSpec[], options?: RequestOptions): Promise<DocumentDraft>
+  createCounterparty(id: number, options?: RequestOptions): Promise<DocumentDraft>
   write(id: number, options?: RequestOptions): Promise<DocumentDraft>
   remove(id: number, options?: RequestOptions): Promise<void>
 }
 
 export type DocumentOperation = {
-  readonly kind: 'upload' | 'update' | 'retry' | 'nomenclature' | 'write' | 'remove'
+  readonly kind: 'upload' | 'update' | 'retry' | 'nomenclature' | 'counterparty' | 'write' | 'remove'
   readonly id?: number
 }
 
@@ -41,6 +42,7 @@ export interface DocumentStore {
   retry(id: number): Promise<void>
   loadNomenclatureOptions(id: number, signal?: AbortSignal): Promise<NomenclatureOptions>
   createNomenclature(id: number, specs: readonly NomenclatureSpec[]): Promise<void>
+  createCounterparty(id: number): Promise<void>
   write(id: number): Promise<void>
   remove(id: number): Promise<void>
   reset(): void
@@ -135,6 +137,7 @@ export function createDocumentStore(gateway: DocumentGateway, session: { expireS
     retry: (id) => mutate({ kind: 'retry', id }, (signal) => gateway.retry(id, { signal }), replace),
     loadNomenclatureOptions: (id, signal) => gateway.nomenclatureOptions(id, { signal }),
     createNomenclature: (id, specs) => mutate({ kind: 'nomenclature', id }, (signal) => gateway.createNomenclature(id, specs, { signal }), replace),
+    createCounterparty: (id) => mutate({ kind: 'counterparty', id }, (signal) => gateway.createCounterparty(id, { signal }), replace),
     write: (id) => mutate({ kind: 'write', id }, (signal) => gateway.write(id, { signal }), replace),
     remove: (id) => mutate({ kind: 'remove', id }, (signal) => gateway.remove(id, { signal }), (items) => items.filter((item) => item.id !== id)),
     reset() {

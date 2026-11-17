@@ -9,16 +9,6 @@ use App\Services\OneCSchemaIndex;
 
 class NomenclatureCreator
 {
-    public const VAT_RATES = [
-        'НДС22' => '22%',
-        'НДС20' => '20%',
-        'НДС10' => '10%',
-        'НДС7' => '7%',
-        'НДС5' => '5%',
-        'НДС0' => '0%',
-        'БезНДС' => 'Без НДС',
-    ];
-
     private const ENTITY = 'Catalog_Номенклатура';
 
     private const KINDS = 'Catalog_ВидыНоменклатуры';
@@ -30,6 +20,7 @@ class NomenclatureCreator
     public function __construct(
         private readonly OneCSchemaIndex $schemaIndex,
         private readonly DocumentResolver $resolver,
+        private readonly NomenclatureDefaults $defaults,
     ) {}
 
     /**
@@ -52,9 +43,9 @@ class NomenclatureCreator
                 $items[] = [
                     'index' => $index,
                     'name' => $item['name'],
-                    'kind_key' => $this->suggestKind($kinds),
-                    'unit_key' => $this->suggestUnit($units, (string) ($item['unit'] ?? '')),
-                    'vat_rate' => $this->vatValue((string) ($item['vat_rate'] ?? '')),
+                    'kind_key' => $this->defaults->kind($kinds),
+                    'unit_key' => $this->defaults->unit($units, (string) ($item['unit'] ?? '')),
+                    'vat_rate' => $this->defaults->vat((string) ($item['vat_rate'] ?? '')),
                 ];
             }
         }
@@ -64,8 +55,8 @@ class NomenclatureCreator
             'units' => $units,
             'vat_rates' => array_map(
                 fn (string $value, string $label): array => ['value' => $value, 'label' => $label],
-                array_keys(self::VAT_RATES),
-                self::VAT_RATES,
+                array_keys(NomenclatureDefaults::VAT_RATES),
+                NomenclatureDefaults::VAT_RATES,
             ),
             'items' => $items,
         ];
@@ -158,53 +149,5 @@ class NomenclatureCreator
             fn (array $row): array => ['key' => (string) $row['Ref_Key'], 'name' => (string) ($row['Description'] ?? '')],
             array_filter($rows, fn (array $row): bool => isset($row['Ref_Key'])),
         ));
-    }
-
-    /**
-     * @param  list<array{key: string, name: string}>  $kinds
-     */
-    private function suggestKind(array $kinds): ?string
-    {
-        foreach ($kinds as $kind) {
-            if (str_contains(mb_strtolower($kind['name']), 'товар')) {
-                return $kind['key'];
-            }
-        }
-
-        return $kinds[0]['key'] ?? null;
-    }
-
-    /**
-     * @param  list<array{key: string, name: string}>  $units
-     */
-    private function suggestUnit(array $units, string $unit): ?string
-    {
-        $wanted = [$this->unitName($unit), 'шт'];
-
-        foreach ($wanted as $name) {
-            foreach ($units as $candidate) {
-                if ($name !== '' && $this->unitName($candidate['name']) === $name) {
-                    return $candidate['key'];
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private function unitName(string $unit): string
-    {
-        return rtrim(mb_strtolower(trim($unit)), '.');
-    }
-
-    private function vatValue(string $rate): ?string
-    {
-        if (preg_match('/без/iu', $rate) === 1) {
-            return 'БезНДС';
-        }
-
-        return preg_match('/\d+/', $rate, $digits) === 1 && isset(self::VAT_RATES["НДС{$digits[0]}"])
-            ? "НДС{$digits[0]}"
-            : null;
     }
 }

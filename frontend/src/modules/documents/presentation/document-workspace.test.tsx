@@ -25,6 +25,7 @@ describe('document workspace', () => {
         onRetry={() => undefined}
         onLoadNomenclature={() => Promise.resolve({ kinds: [], units: [], vatRates: [], items: [] })}
         onCreateNomenclature={() => undefined}
+        onCreateCounterparty={() => undefined}
         onWrite={() => undefined}
         onRemove={() => undefined}
       />,
@@ -48,6 +49,7 @@ describe('document workspace', () => {
         onRetry={() => undefined}
         onLoadNomenclature={() => Promise.resolve({ kinds: [], units: [], vatRates: [], items: [] })}
         onCreateNomenclature={() => undefined}
+        onCreateCounterparty={() => undefined}
         onWrite={() => undefined}
         onRemove={() => undefined}
       />,
@@ -71,6 +73,7 @@ describe('document workspace', () => {
         onRetry={() => undefined}
         onLoadNomenclature={() => Promise.resolve({ kinds: [], units: [], vatRates: [], items: [] })}
         onCreateNomenclature={() => undefined}
+        onCreateCounterparty={() => undefined}
         onWrite={() => undefined}
         onRemove={() => undefined}
       />,

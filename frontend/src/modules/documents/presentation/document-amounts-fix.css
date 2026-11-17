@@ -1,0 +1,33 @@
+.document-amounts-fix {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #fff1cc;
+  color: #79500d;
+}
+
+.document-amounts-fix p {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.document-amounts-fix svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.document-amounts-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.document-amounts-actions .ui-select-trigger {
+  min-width: 140px;
+}
