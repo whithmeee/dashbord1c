@@ -31,3 +31,28 @@
 .document-amounts-actions .ui-select-trigger {
   min-width: 140px;
 }
+
+.document-amounts-all,
+.document-amounts-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.document-amounts-items {
+  display: grid;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.document-amounts-item span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.document-amounts-fix small {
+  font-size: 12px;
+}

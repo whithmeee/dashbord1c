@@ -27,8 +27,8 @@ export function DocumentEditor({ data, disabled, onSave }: {
     }))
   }
 
-  function raiseWithVat(rate: number) {
-    setValue((current) => ({ ...current, items: addVat(current.items, rate) }))
+  function raiseWithVat(rate: number, indexes: readonly number[]) {
+    setValue((current) => ({ ...current, items: addVat(current.items, rate, indexes) }))
   }
 
   function matchTotalToItems() {
@@ -63,7 +63,7 @@ export function DocumentEditor({ data, disabled, onSave }: {
         </section>
       )}
       {value.type === 'receipt' && value.items.length > 0 && amountsDifference(value.items, value.total) !== 0 && (
-        <DocumentAmountsFix itemsSum={itemsSum(value.items)} total={value.total} onAddVat={raiseWithVat} onMatchTotal={matchTotalToItems} />
+        <DocumentAmountsFix items={value.items} total={value.total} onAddVat={raiseWithVat} onMatchTotal={matchTotalToItems} />
       )}
       <button className="cabinet-button" type="submit" disabled={disabled}>Сохранить и проверить</button>
     </form>

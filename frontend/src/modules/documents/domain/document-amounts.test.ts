@@ -31,4 +31,11 @@ describe('document amounts', () => {
     expect(raised.map((item) => item.price)).toEqual([200, 200])
     expect(raised[0].name).toBe(items[0].name)
   })
+
+  it('adds VAT only to the chosen items', () => {
+    const raised = addVat(items, 20, [1])
+
+    expect(raised.map((item) => item.amount)).toEqual([29333.33, 600])
+    expect(raised[0]).toBe(items[0])
+  })
 })

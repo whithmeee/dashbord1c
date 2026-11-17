@@ -13,9 +13,11 @@ export function amountsDifference(items: readonly DocumentItem[], total: number)
   return Math.abs(difference) > CENT ? difference : 0
 }
 
-export function addVat(items: readonly DocumentItem[], rate: number): readonly DocumentItem[] {
+export function addVat(items: readonly DocumentItem[], rate: number, indexes?: readonly number[]): readonly DocumentItem[] {
   const factor = 1 + rate / 100
-  return items.map((item) => ({ ...item, price: round(item.price * factor), amount: round(item.amount * factor) }))
+  return items.map((item, index) => indexes === undefined || indexes.includes(index)
+    ? { ...item, price: round(item.price * factor), amount: round(item.amount * factor) }
+    : item)
 }
 
 function round(value: number): number {
