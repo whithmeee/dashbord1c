@@ -8,6 +8,7 @@ describe('dashboard liquid glass background', () => {
 
     expect(markup).toContain('dashboard-liquid-glass-filter')
     expect(markup).toContain('<feGaussianBlur')
+    expect(markup).toContain('<feTurbulence')
     expect(markup).toContain('<feDisplacementMap')
     expect(markup).toContain('dashboard-glass-wall')
     expect(markup).toContain('dashboard-glass-refraction')
