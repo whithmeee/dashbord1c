@@ -1,8 +1,11 @@
 import type { ApiError, RequestOptions } from '../../../shared/api'
 import type { DataQualityReport } from '../domain/data-quality'
+import { resolvedRules, type CounterpartyChange } from '../domain/data-quality-resolution'
+import { withoutResolvedIssues } from '../domain/data-quality-report'
 
 export interface DataQualityGateway {
   load(integrationId: number, refresh: boolean, options?: RequestOptions): Promise<DataQualityReport>
+  fixCounterparty(integrationId: number, objectId: string, change: CounterpartyChange, options?: RequestOptions): Promise<void>
 }
 
 export interface DataQualitySessionDependency {
@@ -20,6 +23,7 @@ export interface DataQualityStore {
   subscribe(listener: () => void): () => void
   load(integrationId: number): Promise<void>
   refresh(): Promise<void>
+  fixCounterparty(objectId: string, change: CounterpartyChange): Promise<void>
   reset(): void
 }
 
@@ -69,6 +73,26 @@ export function createDataQualityStore(
     return operation
   }
 
+  async function fixCounterparty(objectId: string, change: CounterpartyChange): Promise<void> {
+    if (state.status !== 'success') return
+    const { report } = state
+    const operationRevision = revision
+
+    try {
+      await gateway.fixCounterparty(report.summary.integrationId, objectId, change)
+    } catch (error: unknown) {
+      if ((error as ApiError | undefined)?.status === 401) {
+        publish({ status: 'idle' })
+        session.expireSession()
+      }
+      throw error
+    }
+
+    if (operationRevision === revision && state.status === 'success') {
+      publish({ status: 'success', report: withoutResolvedIssues(state.report, objectId, resolvedRules(change)) })
+    }
+  }
+
   return {
     getSnapshot: () => state,
     subscribe(listener) {
@@ -79,6 +103,7 @@ export function createDataQualityStore(
     refresh: () => currentIntegrationId === undefined
       ? Promise.resolve()
       : execute(currentIntegrationId, true),
+    fixCounterparty,
     reset() {
       revision += 1
       controller?.abort()

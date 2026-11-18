@@ -37,18 +37,19 @@ class DataQualityRules
     {
         $id = (string) ($row['Ref_Key'] ?? '');
         $title = trim((string) ($row['Description'] ?? '')) ?: 'Контрагент без наименования';
+        $fields = $this->taxFields($row);
         $issues = [];
 
         if ($capabilities['tax_details'] && trim((string) ($row['ИНН'] ?? '')) === '') {
-            $issues[] = $this->issue('missing_inn', 'critical', 'tax_details', $id, $title, 'Не указан ИНН.');
+            $issues[] = $this->issue('missing_inn', 'critical', 'tax_details', $id, $title, 'Не указан ИНН.', $fields);
         } elseif ($capabilities['inn_validation'] && ($row['ИННВведенКорректно'] ?? true) === false) {
-            $issues[] = $this->issue('invalid_inn', 'critical', 'tax_details', $id, $title, 'ИНН не прошёл проверку 1С.');
+            $issues[] = $this->issue('invalid_inn', 'critical', 'tax_details', $id, $title, 'ИНН не прошёл проверку 1С.', $fields);
         }
 
         if ($this->isLegalEntity($row, $capabilities) && trim((string) ($row['КПП'] ?? '')) === '') {
-            $issues[] = $this->issue('missing_kpp', 'warning', 'tax_details', $id, $title, 'У юридического лица не указан КПП.');
+            $issues[] = $this->issue('missing_kpp', 'warning', 'tax_details', $id, $title, 'У юридического лица не указан КПП.', $fields);
         } elseif ($capabilities['kpp_validation'] && trim((string) ($row['КПП'] ?? '')) !== '' && ($row['КППВведенКорректно'] ?? true) === false) {
-            $issues[] = $this->issue('invalid_kpp', 'warning', 'tax_details', $id, $title, 'КПП не прошёл проверку 1С.');
+            $issues[] = $this->issue('invalid_kpp', 'warning', 'tax_details', $id, $title, 'КПП не прошёл проверку 1С.', $fields);
         }
 
         if ($capabilities['contracts'] && ! isset($contractOwners[$id])) {
@@ -68,7 +69,7 @@ class DataQualityRules
         foreach ($rows as $row) {
             $inn = trim((string) ($row['ИНН'] ?? ''));
             if ($inn !== '') {
-                $groups[$inn][] = $row;
+                $groups[$inn.'|'.trim((string) ($row['КПП'] ?? ''))][] = $row;
             }
         }
         $issues = [];
@@ -79,7 +80,7 @@ class DataQualityRules
             foreach ($rowsWithSameInn as $row) {
                 $id = (string) $row['Ref_Key'];
                 $title = trim((string) $row['Description']) ?: 'Контрагент без наименования';
-                $issues[] = $this->issue('duplicate_inn', 'critical', 'duplicates', $id, $title, 'ИНН совпадает ещё у '.(count($rowsWithSameInn) - 1).' контрагента.');
+                $issues[] = $this->issue('duplicate_inn', 'critical', 'duplicates', $id, $title, 'ИНН и КПП совпадают ещё у '.(count($rowsWithSameInn) - 1).' контрагента.');
             }
         }
 
@@ -93,9 +94,18 @@ class DataQualityRules
             && ($row['ЮридическоеФизическоеЛицо'] ?? '') === 'ЮридическоеЛицо';
     }
 
-    private function issue(string $rule, string $severity, string $category, string $id, string $title, string $message): DataQualityIssue
+    private function issue(string $rule, string $severity, string $category, string $id, string $title, string $message, array $fields = []): DataQualityIssue
     {
-        return new DataQualityIssue("{$rule}:{$id}", $rule, $severity, $category, self::COUNTERPARTY, $id, $title, $message);
+        return new DataQualityIssue("{$rule}:{$id}", $rule, $severity, $category, self::COUNTERPARTY, $id, $title, $message, $fields);
+    }
+
+    private function taxFields(array $row): array
+    {
+        return [
+            'inn' => trim((string) ($row['ИНН'] ?? '')),
+            'kpp' => trim((string) ($row['КПП'] ?? '')),
+            'legal_type' => ($row['ЮридическоеФизическоеЛицо'] ?? '') === 'ЮридическоеЛицо' ? 'legal' : 'other',
+        ];
     }
 
     private function severityOrder(string $severity): int

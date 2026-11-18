@@ -1,0 +1,117 @@
+.data-quality-issue-item {
+  position: relative;
+}
+
+.data-quality-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  background: var(--app-panel-solid);
+  color: var(--app-muted);
+  cursor: pointer;
+}
+
+.data-quality-hint:hover {
+  border-color: var(--brand-focus);
+  color: var(--app-text);
+}
+
+.data-quality-hint-content {
+  z-index: 100;
+  width: min(360px, calc(100vw - 32px));
+  padding: 16px;
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  background: var(--app-panel-solid);
+  box-shadow: 0 18px 50px rgb(16 29 59 / 18%);
+  color: var(--app-text);
+}
+
+.data-quality-hint-content p {
+  margin: 8px 0 0;
+  color: var(--app-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.data-quality-advice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #fff1cc;
+  color: #79500d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.data-quality-advice svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.data-quality-advice p {
+  margin: 0;
+}
+
+.data-quality-fix {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--app-border);
+}
+
+.data-quality-fix label {
+  display: grid;
+  gap: 6px;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.data-quality-fix input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  background: var(--app-panel);
+  color: var(--app-text);
+  font: inherit;
+  outline: none;
+}
+
+.data-quality-fix input:focus {
+  border-color: #aab8d0;
+  box-shadow: 0 0 0 3px rgb(170 184 208 / 20%);
+}
+
+.data-quality-fix-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f9e5e3;
+  color: #8e3935;
+  font-size: 14px;
+}
+
+.data-quality-fix-note {
+  margin: 0;
+  color: var(--app-muted);
+  font-size: 13px;
+}
+
+.data-quality-fix-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

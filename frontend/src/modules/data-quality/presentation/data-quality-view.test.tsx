@@ -19,7 +19,7 @@ const report: DataQualityReport = {
 
 describe('data quality report view', () => {
   it('renders summary, filters and concrete issues', () => {
-    const html = renderToStaticMarkup(<DataQualityReportView report={report} integrations={[{ id: 1, name: 'База 1С' }]} selectedIntegrationId={1} onSelect={() => undefined} onRefresh={() => undefined} />)
+    const html = renderToStaticMarkup(<DataQualityReportView report={report} integrations={[{ id: 1, name: 'База 1С' }]} selectedIntegrationId={1} onSelect={() => undefined} onRefresh={() => undefined} onFix={() => Promise.resolve()} />)
 
     expect(html).toContain('Критические')
     expect(html).toContain('Проверено объектов')

@@ -211,6 +211,32 @@ class OneCClient
         return (array) $response->json();
     }
 
+    /**
+     * Change fields of an existing catalog item or document.
+     *
+     * @param  array<string, mixed>  $body
+     *
+     * @throws OneCException
+     */
+    public function update(string $entity, string $refKey, array $body): void
+    {
+        $url = rtrim($this->integration->odata_url, '/').'/'.rawurlencode($entity)."(guid'{$refKey}')?\$format=json";
+
+        try {
+            $response = $this->request()->asJson()->patch($url, $body);
+        } catch (ConnectionException $exception) {
+            throw new OneCException('Не удалось подключиться к 1С: '.$exception->getMessage(), 0, $exception);
+        }
+
+        if ($response->failed()) {
+            $reason = (string) ($response->json('odata.error.message.value') ?? $response->json('error.message.value') ?? $response->status());
+
+            throw $response->status() < 500 && $response->status() !== 401 && $response->status() !== 403
+                ? new OneCRejectedException("1С отклонила изменение: {$reason}")
+                : new OneCException("1С ответила ошибкой {$response->status()} при изменении {$entity}.");
+        }
+    }
+
     private function request(): PendingRequest
     {
         return Http::withBasicAuth($this->integration->login, $this->integration->password)

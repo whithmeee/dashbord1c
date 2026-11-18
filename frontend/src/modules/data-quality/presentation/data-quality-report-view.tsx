@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { AlertTriangle, ChevronRight, CircleAlert, Database, RefreshCw, ScanSearch } from 'lucide-react'
 import { Select } from '../../../shared/ui/select'
 import type { DataQualityIssue, DataQualityReport } from '../domain/data-quality'
+import { resolutionOf, type CounterpartyChange } from '../domain/data-quality-resolution'
 import { filterDataQualityIssues, type CategoryFilter, type SeverityFilter } from './data-quality-filter'
+import { DataQualityHint } from './data-quality-hint'
 import { DataQualityIssueDialog } from './data-quality-issue-dialog'
 import { categoryLabels, severityLabels } from './data-quality-labels'
 
@@ -20,12 +22,13 @@ const categoryOptions = [
   ...Object.entries(categoryLabels).map(([value, label]) => ({ value, label })),
 ]
 
-export function DataQualityReportView({ report, integrations, selectedIntegrationId, onSelect, onRefresh }: {
+export function DataQualityReportView({ report, integrations, selectedIntegrationId, onSelect, onRefresh, onFix }: {
   report: DataQualityReport
   integrations: readonly IntegrationOption[]
   selectedIntegrationId: number
   onSelect: (id: number) => void
   onRefresh: () => void
+  onFix: (objectId: string, change: CounterpartyChange) => Promise<void>
 }) {
   const [severity, setSeverity] = useState<SeverityFilter>('all')
   const [category, setCategory] = useState<CategoryFilter>('all')
@@ -53,7 +56,7 @@ export function DataQualityReportView({ report, integrations, selectedIntegratio
         <time dateTime={report.summary.checkedAt}>Проверено {formatDate(report.summary.checkedAt)}</time>
       </div>
       <IssueList issues={issues} onSelect={setSelectedIssue} />
-      <DataQualityIssueDialog issue={selectedIssue} onClose={() => setSelectedIssue(undefined)} />
+      <DataQualityIssueDialog issue={selectedIssue} onClose={() => setSelectedIssue(undefined)} onFix={onFix} />
     </section>
   )
 }
@@ -67,16 +70,25 @@ function IssueList({ issues, onSelect }: { issues: readonly DataQualityIssue[]; 
 
   return (
     <div className="data-quality-issue-grid">
-      {issues.map((issue) => (
-        <button type="button" key={issue.id} className="data-quality-issue-card" onClick={() => onSelect(issue)}>
-          <span className="data-quality-issue-meta">
-            <span className={`data-quality-severity data-quality-severity-${issue.severity}`}>{severityLabels[issue.severity]}</span>
-            <span className="data-quality-category">{categoryLabels[issue.category]}</span>
-          </span>
-          <span className="data-quality-issue-content"><strong>{issue.title}</strong><small>{issue.message}</small></span>
-          <span className="data-quality-issue-action">Подробнее<ChevronRight size={16} /></span>
-        </button>
-      ))}
+      {issues.map((issue) => <IssueCard issue={issue} onSelect={onSelect} key={issue.id} />)}
+    </div>
+  )
+}
+
+function IssueCard({ issue, onSelect }: { issue: DataQualityIssue; onSelect: (issue: DataQualityIssue) => void }) {
+  const resolution = resolutionOf(issue)
+
+  return (
+    <div className="data-quality-issue-item">
+      <button type="button" className="data-quality-issue-card" onClick={() => onSelect(issue)}>
+        <span className="data-quality-issue-meta">
+          <span className={`data-quality-severity data-quality-severity-${issue.severity}`}>{severityLabels[issue.severity]}</span>
+          <span className="data-quality-category">{categoryLabels[issue.category]}</span>
+        </span>
+        <span className="data-quality-issue-content"><strong>{issue.title}</strong><small>{issue.message}</small></span>
+        <span className="data-quality-issue-action">{resolution.kind === 'edit' ? 'Исправить' : 'Подробнее'}<ChevronRight size={16} /></span>
+      </button>
+      {resolution.kind === 'advice' && <DataQualityHint advice={resolution.advice} />}
     </div>
   )
 }

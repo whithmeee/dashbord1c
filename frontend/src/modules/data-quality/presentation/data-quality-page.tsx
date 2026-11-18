@@ -32,7 +32,7 @@ export function DataQualityPage() {
   if (quality.status === 'error') return <State icon={<AlertCircle />} title="Проверка не выполнена" text={describeError(quality.error)} retry={() => void dataQualityStore.load(quality.integrationId)} />
   if (quality.status !== 'success' || selectedIntegrationId === undefined || quality.report.summary.integrationId !== selectedIntegrationId) return <State icon={<LoaderCircle className="data-quality-spinner" />} title="Проверяем данные" text="Читаем карточки и договоры из 1С." />
 
-  return <DataQualityReportView report={quality.report} integrations={activeIntegrations} selectedIntegrationId={selectedIntegrationId} onSelect={setSelectedIntegrationId} onRefresh={() => void dataQualityStore.refresh()} />
+  return <DataQualityReportView report={quality.report} integrations={activeIntegrations} selectedIntegrationId={selectedIntegrationId} onSelect={setSelectedIntegrationId} onRefresh={() => void dataQualityStore.refresh()} onFix={dataQualityStore.fixCounterparty} />
 }
 
 function State({ icon, title, text, retry }: { icon: React.ReactNode; title: string; text: string; retry?: () => void }) {

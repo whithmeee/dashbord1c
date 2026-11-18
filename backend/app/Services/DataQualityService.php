@@ -12,9 +12,14 @@ class DataQualityService
 
     public function __construct(private readonly DataQualityInspector $inspector) {}
 
+    public function forget(Integration $integration): void
+    {
+        Cache::forget($this->key($integration));
+    }
+
     public function snapshot(Integration $integration, bool $refresh): DataQualitySnapshot
     {
-        $key = "onec:{$integration->id}:data-quality";
+        $key = $this->key($integration);
         if ($refresh) {
             Cache::forget($key);
         }
@@ -34,5 +39,10 @@ class DataQualityService
         Cache::put($key, $snapshot->toCacheArray(), self::CACHE_SECONDS);
 
         return $snapshot;
+    }
+
+    private function key(Integration $integration): string
+    {
+        return "onec:{$integration->id}:data-quality";
     }
 }

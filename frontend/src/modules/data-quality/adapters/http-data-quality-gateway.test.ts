@@ -21,6 +21,18 @@ describe('createHttpDataQualityGateway', () => {
     expect(get).toHaveBeenNthCalledWith(2, '/cabinet/data-quality/issues?integration_id=2', { signal })
   })
 
+  it('patches the counterparty card with only the changed field', async () => {
+    const patch = vi.fn().mockResolvedValue({ object_id: 'c1' })
+    const gateway = createHttpDataQualityGateway({ patch } as unknown as ApiClient)
+    const signal = new AbortController().signal
+
+    await gateway.fixCounterparty(2, 'c1', { kpp: '770701001' }, { signal })
+    await gateway.fixCounterparty(2, 'c1', { legalType: 'individual' })
+
+    expect(patch).toHaveBeenNthCalledWith(1, '/cabinet/data-quality/counterparties/c1', { integration_id: 2, inn: undefined, kpp: '770701001', legal_type: undefined }, { signal })
+    expect(patch).toHaveBeenNthCalledWith(2, '/cabinet/data-quality/counterparties/c1', { integration_id: 2, inn: undefined, kpp: undefined, legal_type: 'individual' }, undefined)
+  })
+
   it('preserves ApiError', async () => {
     const error = new ApiError('Offline', { kind: 'http', status: 502 })
     const gateway = createHttpDataQualityGateway({ get: vi.fn().mockRejectedValue(error) } as unknown as ApiClient)

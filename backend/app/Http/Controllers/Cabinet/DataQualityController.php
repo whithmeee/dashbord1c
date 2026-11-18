@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Cabinet;
 
+use App\Exceptions\DataQualityException;
 use App\Exceptions\OneCException;
+use App\Exceptions\OneCRejectedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DataQualityRequest;
+use App\Http\Requests\UpdateCounterpartyTaxDetailsRequest;
+use App\Services\CounterpartyTaxDetailsUpdater;
 use App\Services\DataQualityService;
 use Illuminate\Http\JsonResponse;
 
@@ -18,6 +22,30 @@ class DataQualityController extends Controller
     public function issues(DataQualityRequest $request, DataQualityService $service): JsonResponse
     {
         return $this->respond($request, $service, false);
+    }
+
+    public function updateCounterparty(UpdateCounterpartyTaxDetailsRequest $request, string $counterparty, CounterpartyTaxDetailsUpdater $updater): JsonResponse
+    {
+        $integration = $request->user()->ownerCompany()->integrations()->findOrFail($request->integer('integration_id'));
+        if (! $integration->is_active) {
+            return response()->json([
+                'message' => 'Выбранная база 1С отключена.',
+                'code' => 'integration_inactive',
+            ], 409);
+        }
+
+        try {
+            $updater->update($integration, $counterparty, $request->safe()->only(['inn', 'kpp', 'legal_type']));
+        } catch (DataQualityException|OneCRejectedException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        } catch (OneCException $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'code' => 'onec_unavailable',
+            ], 502);
+        }
+
+        return response()->json(['object_id' => $counterparty]);
     }
 
     private function respond(DataQualityRequest $request, DataQualityService $service, bool $summary): JsonResponse

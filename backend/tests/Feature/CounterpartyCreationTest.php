@@ -32,7 +32,7 @@ class CounterpartyCreationTest extends TestCase
         return str_replace(
             '<EntityType Name="Catalog_Контрагенты"><Property Name="Ref_Key" Type="Edm.Guid"/><Property Name="ИНН" Type="Edm.String"/>',
             '<EntityType Name="Catalog_Контрагенты"><Property Name="Ref_Key" Type="Edm.Guid"/><Property Name="ИНН" Type="Edm.String"/>'
-            .'<Property Name="КПП" Type="Edm.String"/><Property Name="НаименованиеПолное" Type="Edm.String"/><Property Name="ЮрФизЛицо" Type="Edm.String"/>',
+            .'<Property Name="КПП" Type="Edm.String"/><Property Name="НаименованиеПолное" Type="Edm.String"/><Property Name="ЮридическоеФизическоеЛицо" Type="Edm.String"/>',
             FakeAccountingBase::METADATA,
         );
     }
@@ -75,7 +75,7 @@ class CounterpartyCreationTest extends TestCase
                 'Description' => 'ООО Ромашка',
                 'НаименованиеПолное' => 'ООО Ромашка',
                 'ИНН' => '7701234567',
-                'ЮрФизЛицо' => 'ЮридическоеЛицо',
+                'ЮридическоеФизическоеЛицо' => 'ЮридическоеЛицо',
             ]);
     }
 

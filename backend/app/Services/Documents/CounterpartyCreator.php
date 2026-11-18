@@ -52,7 +52,7 @@ class CounterpartyCreator
             'НаименованиеПолное' => $party['name'],
             'ИНН' => $party['inn'],
             'КПП' => $party['kpp'] !== '' ? $party['kpp'] : null,
-            'ЮрФизЛицо' => strlen($party['inn']) === 10 ? 'ЮридическоеЛицо' : 'ИндивидуальныйПредприниматель',
+            'ЮридическоеФизическоеЛицо' => strlen($party['inn']) === 10 ? 'ЮридическоеЛицо' : 'ИндивидуальныйПредприниматель',
         ];
 
         return ['Description' => $party['name']] + array_filter(

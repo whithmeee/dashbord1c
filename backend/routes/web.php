@@ -38,6 +38,9 @@ Route::prefix('cabinet')->middleware(['auth:company,employee', 'last.seen', 'com
     Route::middleware('section:data_quality')->group(function () {
         Route::get('/data-quality/summary', [Cabinet\DataQualityController::class, 'summary']);
         Route::get('/data-quality/issues', [Cabinet\DataQualityController::class, 'issues']);
+        Route::patch('/data-quality/counterparties/{counterparty}', [Cabinet\DataQualityController::class, 'updateCounterparty'])
+            ->whereUuid('counterparty')
+            ->middleware('throttle:30,1');
     });
     Route::middleware('company.access:owner')->group(function () {
         Route::get('/settings', [Cabinet\SettingsController::class, 'show']);
