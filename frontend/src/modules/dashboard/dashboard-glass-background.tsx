@@ -10,17 +10,9 @@ export function DashboardGlassBackground() {
           height="120%"
           colorInterpolationFilters="sRGB"
         >
-          <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="alpha" />
-          <feDiffuseLighting in="alpha" surfaceScale="7" diffuseConstant="0.7071" result="lightX">
-            <feDistantLight azimuth="0" elevation="45" />
-          </feDiffuseLighting>
-          <feDiffuseLighting in="alpha" surfaceScale="7" diffuseConstant="0.7071" result="lightY">
-            <feDistantLight azimuth="90" elevation="45" />
-          </feDiffuseLighting>
-          <feColorMatrix in="lightX" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 .5 0 0 0 0 1" result="red" />
-          <feColorMatrix in="lightY" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="green" />
-          <feComposite in="red" in2="green" operator="arithmetic" k2="1" k3="1" result="map" />
-          <feDisplacementMap in="SourceGraphic" in2="map" scale="-30" xChannelSelector="R" yChannelSelector="G" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="2" seed="17" result="noise" />
+          <feGaussianBlur in="noise" stdDeviation="0.7" result="map" />
+          <feDisplacementMap in="SourceGraphic" in2="map" scale="32" xChannelSelector="R" yChannelSelector="G" />
           <feColorMatrix type="saturate" values="1.12" />
         </filter>
       </svg>
