@@ -6,6 +6,7 @@ use App\Exceptions\OneCException;
 use App\Exceptions\OneCRejectedException;
 use App\Services\OneCClient;
 use App\Services\OneCSchemaIndex;
+use Illuminate\Support\Facades\Log;
 
 class ItemUnits
 {
@@ -91,12 +92,15 @@ class ItemUnits
         $schema = $this->schemaIndex->load($client);
         $targets = $this->schemaIndex->unitCatalogs($client);
         $catalog = $targets[self::NOMENCLATURE] ?? null;
+        $row = $documentEntity === null ? null : ($targets["{$documentEntity}_Товары_RowType"] ?? null);
+
+        if ($row !== $catalog || $catalog === null) {
+            Log::info('documents.units_view_mode', ['card_catalog' => $catalog, 'row_catalog' => $row, 'document' => $documentEntity, 'references' => count($targets)]);
+        }
 
         if ($catalog === null || ! isset($schema[$catalog], $schema[self::NOMENCLATURE][self::CARD_FIELD])) {
             return ['catalog' => null, 'editable' => false, 'owned' => false];
         }
-
-        $row = $documentEntity === null ? null : ($targets["{$documentEntity}_Товары_RowType"] ?? null);
 
         return ['catalog' => $catalog, 'editable' => $row === $catalog, 'owned' => isset($schema[$catalog][self::OWNER_FIELD])];
     }
