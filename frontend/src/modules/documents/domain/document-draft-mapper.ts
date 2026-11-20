@@ -1,4 +1,4 @@
-import type { DocumentContract, DocumentData, DocumentDraft, DocumentIssue, DocumentItem, DocumentMatch, DocumentParty } from './document-draft'
+import type { DocumentContract, DocumentData, DocumentDraft, DocumentIssue, DocumentItem, DocumentMatch, DocumentParty, UnitChoice } from './document-draft'
 import { array, boolean, choice, integer, nullableString, number, record, string } from './document-draft-reader'
 
 const matches = ['found', 'matched', 'missing'] as const
@@ -34,8 +34,15 @@ function mapData(value: unknown): DocumentData {
     buyer: mapParty(source.buyer, 'document.data.buyer'),
     contract: mapContract(source.contract),
     items: array(source.items, 'document.data.items').map(mapItem),
+    units: source.units === undefined ? [] : array(source.units, 'document.data.units').map(mapUnit),
     total: number(source.total, 'document.data.total'),
   }
+}
+
+function mapUnit(value: unknown, index: number): UnitChoice {
+  const path = `document.data.units.${index}`
+  const source = record(value, path)
+  return { key: string(source.key, `${path}.key`), name: string(source.name, `${path}.name`) }
 }
 
 function mapParty(value: unknown, path: string): DocumentParty {
@@ -68,9 +75,16 @@ function mapItem(value: unknown, index: number): DocumentItem {
     amount: number(source.amount, `${path}.amount`),
     vatRate: string(source.vat_rate, `${path}.vat_rate`),
     unit: source.unit === undefined ? '' : string(source.unit, `${path}.unit`),
+    unitKey: optionalKey(source.unit_key, `${path}.unit_key`),
+    unitName: optionalKey(source.unit_name, `${path}.unit_name`),
+    catalogUnitKey: optionalKey(source.catalog_unit_key, `${path}.catalog_unit_key`),
     refKey: nullableString(source.ref_key, `${path}.ref_key`),
     match: mapMatch(source.match, `${path}.match`),
   }
+}
+
+function optionalKey(value: unknown, path: string): string | null {
+  return value === undefined ? null : nullableString(value, path)
 }
 
 function mapIssue(value: unknown, index: number): DocumentIssue {

@@ -24,8 +24,16 @@ export type DocumentItem = {
   readonly amount: number
   readonly vatRate: string
   readonly unit: string
+  readonly unitKey: string | null
+  readonly unitName: string | null
+  readonly catalogUnitKey: string | null
   readonly refKey: string | null
   readonly match: DocumentMatch
+}
+
+export type UnitChoice = {
+  readonly key: string
+  readonly name: string
 }
 
 export type DocumentData = {
@@ -36,6 +44,7 @@ export type DocumentData = {
   readonly buyer: DocumentParty
   readonly contract: DocumentContract
   readonly items: readonly DocumentItem[]
+  readonly units: readonly UnitChoice[]
   readonly total: number
 }
 

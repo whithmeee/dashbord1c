@@ -55,7 +55,12 @@ class NomenclatureDefaults
             : null;
     }
 
-    private function unitName(string $unit): string
+    public static function sameUnit(string $first, string $second): bool
+    {
+        return self::unitName($first) === self::unitName($second);
+    }
+
+    private static function unitName(string $unit): string
     {
         return rtrim(mb_strtolower(trim($unit)), '.');
     }

@@ -17,3 +17,20 @@ describe('document editor calendar', () => {
     expect(html).not.toContain('type="date"')
   })
 })
+
+describe('document editor units', () => {
+  it('renders a unit select for every item and the unit written in the document when it differs', () => {
+    const draft = mapDocumentDraft({
+      ...draftResponse,
+      data: {
+        ...draftResponse.data,
+        units: [{ key: 'unit-l', name: 'л' }],
+        items: [{ ...draftResponse.data.items[0], unit: 'шт.', unit_key: 'unit-l', unit_name: 'л', catalog_unit_key: 'unit-l' }],
+      },
+    })
+    const html = renderToStaticMarkup(<DocumentEditor data={draft.data} disabled={false} onSave={() => undefined} />)
+
+    expect(html).toContain('Единица измерения, позиция 1')
+    expect(html).toContain('В УПД: шт.')
+  })
+})

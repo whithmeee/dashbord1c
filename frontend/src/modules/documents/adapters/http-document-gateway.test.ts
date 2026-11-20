@@ -35,7 +35,7 @@ describe('document HTTP gateway', () => {
         total: 1000,
         counterparty: { name: 'ООО Ромашка', inn: '7701234567', kpp: '' },
         buyer: { name: 'ООО Осминог', inn: '7799999999', kpp: '' },
-        items: [{ name: 'Болт М8', quantity: 10, price: 100, amount: 1000, vat_rate: '20%', unit: '' }],
+        items: [{ name: 'Болт М8', quantity: 10, price: 100, amount: 1000, vat_rate: '20%', unit: '', unit_key: null }],
       },
     }, { signal })
     expect(post).toHaveBeenNthCalledWith(1, '/api/documents/12/retry', undefined, { signal })

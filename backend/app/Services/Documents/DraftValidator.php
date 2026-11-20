@@ -73,9 +73,24 @@ class DraftValidator
             } elseif ($item['match'] === 'matched') {
                 $issues[] = ['level' => 'warning', 'field' => "items.{$index}", 'message' => "Позиция {$number} подобрана по неполному совпадению, проверьте."];
             }
+
+            if ($item['match'] !== 'missing' && $this->unitDiffers($item)) {
+                $issues[] = ['level' => 'warning', 'field' => "items.{$index}.unit", 'message' => "Позиция {$number}: в УПД единица «{$item['unit']}», в 1С «{$item['unit_name']}». Выберите нужную единицу в таблице или исправьте карточку номенклатуры в 1С."];
+            }
         }
 
         return [...$issues, ...$this->total($data)];
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function unitDiffers(array $item): bool
+    {
+        $document = (string) ($item['unit'] ?? '');
+        $base = (string) ($item['unit_name'] ?? '');
+
+        return $document !== '' && $base !== '' && ! NomenclatureDefaults::sameUnit($document, $base);
     }
 
     /**

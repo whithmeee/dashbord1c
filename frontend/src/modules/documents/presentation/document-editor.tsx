@@ -3,6 +3,8 @@ import { DatePicker } from '../../../shared/ui/calendar-field'
 import './document-editor.css'
 import { addVat, amountsDifference, itemsSum } from '../domain/document-amounts'
 import type { DocumentData, DocumentItem, DocumentParty } from '../domain/document-draft'
+import { NO_UNIT, unitDiffers, unitOptions, withUnit } from '../domain/item-units'
+import { Select } from '../../../shared/ui/select'
 import { DocumentAmountsFix } from './document-amounts-fix'
 
 export function DocumentEditor({ data, disabled, onSave }: {
@@ -24,6 +26,13 @@ export function DocumentEditor({ data, disabled, onSave }: {
       items: current.items.map((entry, entryIndex) => entryIndex === index
         ? { ...entry, [field]: field === 'name' ? next : numeric(next) }
         : entry),
+    }))
+  }
+
+  function unit(index: number, next: string) {
+    setValue((current) => ({
+      ...current,
+      items: current.items.map((entry, entryIndex) => entryIndex === index ? withUnit(entry, current.units, next) : entry),
     }))
   }
 
@@ -55,6 +64,7 @@ export function DocumentEditor({ data, disabled, onSave }: {
           {value.items.map((entry, index) => (
             <div className="document-editor-item" key={`${index}-${entry.name}`}>
               <Field label={`Позиция ${index + 1}`}><input value={entry.name} onChange={(event) => item(index, 'name', event.target.value)} /></Field>
+              <UnitField item={entry} index={index} options={unitOptions(value.units)} onChange={(next) => unit(index, next)} />
               <Field label="Количество"><input type="number" min="0" step="0.0001" value={entry.quantity} onChange={(event) => item(index, 'quantity', event.target.value)} /></Field>
               <Field label="Цена"><input type="number" min="0" step="0.01" value={entry.price} onChange={(event) => item(index, 'price', event.target.value)} /></Field>
               <Field label="Сумма"><input type="number" min="0" step="0.01" value={entry.amount} onChange={(event) => item(index, 'amount', event.target.value)} /></Field>
@@ -67,6 +77,21 @@ export function DocumentEditor({ data, disabled, onSave }: {
       )}
       <button className="cabinet-button" type="submit" disabled={disabled}>Сохранить и проверить</button>
     </form>
+  )
+}
+
+function UnitField({ item, index, options, onChange }: {
+  item: DocumentItem
+  index: number
+  options: ReturnType<typeof unitOptions>
+  onChange: (value: string) => void
+}) {
+  return (
+    <div className="document-editor-field">
+      <span>Ед. изм.</span>
+      <Select ariaLabel={`Единица измерения, позиция ${index + 1}`} value={item.unitKey ?? NO_UNIT} options={options} onValueChange={onChange} />
+      {unitDiffers(item) && <small className="document-editor-unit-note">В УПД: {item.unit}</small>}
+    </div>
   )
 }
 

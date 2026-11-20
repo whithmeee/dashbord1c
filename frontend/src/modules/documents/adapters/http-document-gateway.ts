@@ -66,6 +66,7 @@ function toRequest(data: DocumentData): Record<string, unknown> {
       amount: item.amount,
       vat_rate: item.vatRate,
       unit: item.unit,
+      unit_key: item.unitKey,
     })),
   }
 }

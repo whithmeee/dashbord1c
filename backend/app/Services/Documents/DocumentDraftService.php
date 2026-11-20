@@ -25,6 +25,7 @@ class DocumentDraftService
         private readonly NomenclatureCreator $nomenclature,
         private readonly CounterpartyCreator $counterparties,
         private readonly VatAmountCorrector $vat,
+        private readonly ItemUnits $units,
     ) {}
 
     public function create(Company|Employee $author, Integration $integration, UploadedFile $file): DocumentDraft
@@ -141,7 +142,7 @@ class DocumentDraftService
      */
     private function fill(DocumentDraft $draft, OneCClient $client, array $data): DocumentDraft
     {
-        $resolved = $this->resolver->resolve($client, $this->vat->correct($data));
+        $resolved = $this->units->apply($client, $this->resolver->resolve($client, $this->vat->correct($data)));
         $draft->fill(['data' => $resolved, 'issues' => $this->validator->validate($resolved)])->save();
 
         return $draft;

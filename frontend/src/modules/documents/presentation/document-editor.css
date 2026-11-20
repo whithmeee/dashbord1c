@@ -48,6 +48,11 @@
 
 .document-editor-item {
   display: grid;
-  grid-template-columns: minmax(160px, 2fr) repeat(3, minmax(90px, 1fr));
+  grid-template-columns: minmax(160px, 2fr) minmax(90px, 1fr) repeat(3, minmax(90px, 1fr));
   gap: 8px;
+}
+
+.document-editor-unit-note {
+  color: var(--app-warning, #9a6b22);
+  font-size: 11px;
 }

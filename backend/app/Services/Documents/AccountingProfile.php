@@ -63,12 +63,24 @@ class AccountingProfile implements ConfigurationProfile
      */
     private function items(array $items): array
     {
-        return array_map(fn (array $item, int $index): array => [
+        return array_map(fn (array $item, int $index): array => array_filter([
             'LineNumber' => (string) ($index + 1),
             'Номенклатура_Key' => $item['ref_key'],
+            'ЕдиницаИзмерения_Key' => $this->changedUnit($item),
             'Количество' => $item['quantity'],
             'Цена' => $item['price'],
             'Сумма' => $item['amount'],
-        ], $items, array_keys($items));
+        ], fn (mixed $value): bool => $value !== null), $items, array_keys($items));
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function changedUnit(array $item): ?string
+    {
+        $chosen = $item['unit_key'] ?? null;
+        $card = $item['catalog_unit_key'] ?? null;
+
+        return $chosen !== null && $card !== null && $chosen !== $card ? $chosen : null;
     }
 }
