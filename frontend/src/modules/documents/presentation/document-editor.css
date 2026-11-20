@@ -56,3 +56,14 @@
   color: var(--app-warning, #9a6b22);
   font-size: 11px;
 }
+
+.document-editor-unit-value {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  color: var(--app-text);
+  font-size: 14px;
+}

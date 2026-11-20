@@ -25,6 +25,7 @@ describe('document editor units', () => {
       data: {
         ...draftResponse.data,
         units: [{ key: 'unit-l', name: 'л' }],
+        unit_mode: 'edit',
         items: [{ ...draftResponse.data.items[0], unit: 'шт.', unit_key: 'unit-l', unit_name: 'л', catalog_unit_key: 'unit-l' }],
       },
     })
@@ -32,5 +33,24 @@ describe('document editor units', () => {
 
     expect(html).toContain('Единица измерения, позиция 1')
     expect(html).toContain('В УПД: шт.')
+  })
+})
+
+describe('document editor units in a base that does not allow choosing', () => {
+  it('shows the unit of the card as text without a select', () => {
+    const draft = mapDocumentDraft({
+      ...draftResponse,
+      data: {
+        ...draftResponse.data,
+        unit_mode: 'view',
+        items: [{ ...draftResponse.data.items[0], unit: 'шт.', unit_key: 'unit-l', unit_name: 'л', catalog_unit_key: 'unit-l' }],
+      },
+    })
+    const html = renderToStaticMarkup(<DocumentEditor data={draft.data} disabled={false} onSave={() => undefined} />)
+
+    expect(html).toContain('<output')
+    expect(html).toContain('>л</output>')
+    expect(html).toContain('В УПД: шт.')
+    expect(html).not.toContain('role="combobox"')
   })
 })

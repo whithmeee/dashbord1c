@@ -3,6 +3,7 @@
 namespace App\Services\Documents;
 
 use App\Exceptions\DocumentException;
+use App\Exceptions\OneCException;
 use App\Models\Company;
 use App\Models\DocumentDraft;
 use App\Models\Employee;
@@ -142,10 +143,23 @@ class DocumentDraftService
      */
     private function fill(DocumentDraft $draft, OneCClient $client, array $data): DocumentDraft
     {
-        $resolved = $this->units->apply($client, $this->resolver->resolve($client, $this->vat->correct($data)));
+        $resolved = $this->resolver->resolve($client, $this->vat->correct($data));
+        $resolved = $this->units->apply($client, $resolved, $this->documentEntity($draft, $client, $resolved));
         $draft->fill(['data' => $resolved, 'issues' => $this->validator->validate($resolved)])->save();
 
         return $draft;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function documentEntity(DocumentDraft $draft, OneCClient $client, array $data): ?string
+    {
+        try {
+            return $this->profiles->byKey($draft->profile)->entity($data['type'], $this->schemaIndex->load($client));
+        } catch (OneCException) {
+            return null;
+        }
     }
 
     private function assertEditable(DocumentDraft $draft): void

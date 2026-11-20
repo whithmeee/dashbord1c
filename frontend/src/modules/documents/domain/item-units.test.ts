@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { mapDocumentDraft } from './document-draft-mapper'
-import { NO_UNIT, unitDiffers, unitOptions, withUnit } from './item-units'
+import { choicesOf, NO_UNIT, unitDiffers, unitOptions, withUnit } from './item-units'
 import { draftResponse } from '../testing/document-draft-fixture'
 
 const units = [{ key: 'unit-l', name: 'л' }, { key: 'unit-pcs', name: 'шт' }]
@@ -17,6 +17,7 @@ describe('item units', () => {
       },
     }).data
 
+    expect(data.unitMode).toBe('view')
     expect(data.units).toEqual([{ key: 'unit-l', name: 'л' }])
     expect(data.items[0]).toMatchObject({ unit: 'шт.', unitKey: 'unit-l', unitName: 'л', catalogUnitKey: 'unit-l' })
   })
@@ -34,6 +35,15 @@ describe('item units', () => {
     expect(unitDiffers({ ...base, unit: 'шт.', unitName: 'шт' })).toBe(false)
     expect(unitDiffers({ ...base, unit: '', unitName: 'л' })).toBe(false)
     expect(unitDiffers({ ...base, unit: 'шт', unitName: null })).toBe(false)
+  })
+
+  it('takes the choices of an item from its own list when the units belong to the nomenclature', () => {
+    const own = [{ key: 'own-pcs', name: 'шт' }]
+    const item = { ...base, unitChoices: own }
+
+    expect(choicesOf(item, units)).toEqual(own)
+    expect(choicesOf(base, units)).toEqual(units)
+    expect(withUnit(item, units, 'own-pcs')).toMatchObject({ unitKey: 'own-pcs', unitName: 'шт' })
   })
 
   it('applies the chosen unit and clears it for the empty choice', () => {

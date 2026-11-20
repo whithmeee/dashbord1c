@@ -27,9 +27,12 @@ export type DocumentItem = {
   readonly unitKey: string | null
   readonly unitName: string | null
   readonly catalogUnitKey: string | null
+  readonly unitChoices: readonly UnitChoice[] | null
   readonly refKey: string | null
   readonly match: DocumentMatch
 }
+
+export type UnitMode = 'edit' | 'view'
 
 export type UnitChoice = {
   readonly key: string
@@ -45,6 +48,7 @@ export type DocumentData = {
   readonly contract: DocumentContract
   readonly items: readonly DocumentItem[]
   readonly units: readonly UnitChoice[]
+  readonly unitMode: UnitMode
   readonly total: number
 }
 

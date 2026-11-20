@@ -11,7 +11,10 @@ class OneCSchemaIndex
     /** @var array<int, array<string, array<string, string>>> */
     private array $loaded = [];
 
-    public function __construct(private readonly OneCSchemaPolicy $policy) {}
+    public function __construct(
+        private readonly OneCSchemaPolicy $policy,
+        private readonly OneCUnitReferences $unitReferences,
+    ) {}
 
     /**
      * Allowed entities of the base with their allowed fields: entity => [field => Edm type].
@@ -25,6 +28,32 @@ class OneCSchemaIndex
         $id = $client->integrationId();
 
         return $this->loaded[$id] ??= $this->cached($client, "onec:{$id}:schema");
+    }
+
+    /**
+     * Catalog of units that the unit reference of an entity points to: owner type => catalog (empty when 1C does not tell).
+     *
+     * @return array<string, string>
+     *
+     * @throws OneCException
+     */
+    public function unitCatalogs(OneCClient $client): array
+    {
+        $key = "onec:{$client->integrationId()}:schema-refs";
+        $stored = Cache::get($key);
+
+        if (! is_string($stored)) {
+            Cache::lock("{$key}:build", 300)->block(240, function () use ($client, $key): void {
+                if (! is_string(Cache::get($key))) {
+                    $this->build($client);
+                }
+            });
+            $stored = Cache::get($key);
+        }
+
+        $decoded = is_string($stored) ? json_decode($stored, true) : null;
+
+        return is_array($decoded) ? $decoded : [];
     }
 
     /**
@@ -60,6 +89,11 @@ class OneCSchemaIndex
         try {
             $client->downloadMetadata($path);
             $index = $this->parse($path);
+            Cache::put(
+                "onec:{$client->integrationId()}:schema-refs",
+                (string) json_encode($this->unitReferences->read($path), JSON_UNESCAPED_UNICODE),
+                (int) config('services.onec.schema_cache_ttl'),
+            );
         } finally {
             @unlink($path);
         }

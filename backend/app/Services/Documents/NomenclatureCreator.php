@@ -3,6 +3,7 @@
 namespace App\Services\Documents;
 
 use App\Exceptions\DocumentException;
+use App\Exceptions\OneCException;
 use App\Exceptions\OneCRejectedException;
 use App\Services\OneCClient;
 use App\Services\OneCSchemaIndex;
@@ -35,7 +36,7 @@ class NomenclatureCreator
     {
         $schema = $this->requireSchema($client);
         $kinds = $this->catalog($client, $schema, self::KINDS);
-        $units = $this->catalog($client, $schema, self::UNITS);
+        $units = $this->unitCatalog($client, $schema);
         $items = [];
 
         foreach ($data['items'] as $index => $item) {
@@ -127,6 +128,21 @@ class NomenclatureCreator
         }
 
         return $schema;
+    }
+
+    /**
+     * @param  array<string, array<string, string>>  $schema
+     * @return list<array{key: string, name: string}>
+     */
+    private function unitCatalog(OneCClient $client, array $schema): array
+    {
+        try {
+            $entity = $this->schemaIndex->unitCatalogs($client)[self::ENTITY] ?? self::UNITS;
+        } catch (OneCException) {
+            $entity = self::UNITS;
+        }
+
+        return isset($schema[$entity]['Owner_Key']) ? [] : $this->catalog($client, $schema, $entity);
     }
 
     /**

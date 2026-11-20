@@ -35,6 +35,7 @@ function mapData(value: unknown): DocumentData {
     contract: mapContract(source.contract),
     items: array(source.items, 'document.data.items').map(mapItem),
     units: source.units === undefined ? [] : array(source.units, 'document.data.units').map(mapUnit),
+    unitMode: source.unit_mode === undefined ? 'view' : choice(source.unit_mode, ['edit', 'view'], 'document.data.unit_mode'),
     total: number(source.total, 'document.data.total'),
   }
 }
@@ -78,6 +79,7 @@ function mapItem(value: unknown, index: number): DocumentItem {
     unitKey: optionalKey(source.unit_key, `${path}.unit_key`),
     unitName: optionalKey(source.unit_name, `${path}.unit_name`),
     catalogUnitKey: optionalKey(source.catalog_unit_key, `${path}.catalog_unit_key`),
+    unitChoices: source.unit_choices === undefined || source.unit_choices === null ? null : array(source.unit_choices, `${path}.unit_choices`).map((entry, position) => mapUnit(entry, position)),
     refKey: nullableString(source.ref_key, `${path}.ref_key`),
     match: mapMatch(source.match, `${path}.match`),
   }

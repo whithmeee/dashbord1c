@@ -15,8 +15,12 @@ export function unitDiffers(item: DocumentItem): boolean {
   return item.unit !== '' && item.unitName !== null && normalized(item.unit) !== normalized(item.unitName)
 }
 
+export function choicesOf(item: DocumentItem, units: readonly UnitChoice[]): readonly UnitChoice[] {
+  return item.unitChoices ?? units
+}
+
 export function withUnit(item: DocumentItem, units: readonly UnitChoice[], value: string): DocumentItem {
-  const chosen = units.find(({ key }) => key === value)
+  const chosen = choicesOf(item, units).find(({ key }) => key === value)
 
   return { ...item, unitKey: chosen?.key ?? null, unitName: chosen?.name ?? null }
 }
